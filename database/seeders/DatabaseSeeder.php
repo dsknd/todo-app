@@ -19,5 +19,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // プロジェクト種別を登録
+        $this->call(ProjectTypeSeeder::class);
     }
 }

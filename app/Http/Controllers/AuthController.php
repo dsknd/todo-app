@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use App\Models\ProjectType;
 
 use Illuminate\Support\Facades\DB;
 
@@ -25,14 +24,6 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-        ]);
-
-        // デフォルトのProjectType（未分類）を作成
-        ProjectType::create([
-            'user_id' => $user->id,
-            'name' => ProjectType::DEFAULT_TYPE_NAME, // 例: "未分類"
-            'is_default' => true, // デフォルトとして設定
-            'is_primitive' => true, // 基本的なタイプ
         ]);
 
         // トークンを発行して返す（必要に応じて変更）

@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TodoController;
-use App\Http\Controllers\ProjectTypeController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryTodoController;
@@ -17,9 +16,6 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
-    // Project Types CRUD
-    Route::apiResource('project-types', ProjectTypeController::class);
-
     // Projects CRUD
     Route::apiResource('projects', ProjectController::class);
 

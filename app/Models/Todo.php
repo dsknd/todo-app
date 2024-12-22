@@ -42,4 +42,9 @@ class Todo extends Model
             'ancestor_id'
         )->withPivot('depth')->orderBy('depth');
     }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'category_todo');
+    }
 }

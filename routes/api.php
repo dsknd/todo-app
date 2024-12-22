@@ -8,6 +8,7 @@ use App\Http\Controllers\ProjectTypeController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CategoryTodoController;
+use App\Http\Controllers\TodoRelationshipController;
 
 
 // Public routes
@@ -27,6 +28,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // todos CRUD
     Route::apiResource('todos', TodoController::class);
+
+    // Attach and detach todos to todos
+    Route::post('/todos/{todoId}/attach-parent', [TodoRelationshipController::class, 'attach']);
+    Route::delete('/todos/{todoId}/detach-parent', [TodoRelationshipController::class, 'detach']);
 
     // Attach and detach categories to todos
     Route::post('/category-todo/{todoId}/attach', [CategoryTodoController::class, 'attach']);

@@ -3,6 +3,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\ProjectStatus;
+use App\Models\ProjectMember;
 
 class Project extends Model
 {
@@ -32,5 +35,14 @@ class Project extends Model
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    /**
+     * プロジェクトに関連付けられたメンバー
+     */
+    public function members()
+    {
+        return $this->belongsToMany(User::class, 'project_members')
+            ->using(ProjectMember::class); // カスタムPivotクラスを使用
     }
 }

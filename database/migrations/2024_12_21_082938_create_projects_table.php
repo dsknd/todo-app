@@ -13,7 +13,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->foreignId('status_id')->constrained('project_statuses');
+            $table->foreignId('status_id')->nullable()->constrained('project_statuses');
             $table->foreignId('owner_id')->constrained('users');
             $table->decimal('progress', 5, 2)->default(0);
             $table->timestamps();

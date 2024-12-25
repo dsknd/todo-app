@@ -22,6 +22,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Projects CRUD
     Route::apiResource('projects', ProjectController::class);
+    Route::post('/projects/{project}/add-member', [ProjectController::class, 'addMember']);
+    Route::post('/projects/{project}/remove-member', [ProjectController::class, 'removeMember']);
 
     // Categories CRUD
     Route::apiResource('categories', CategoryController::class);

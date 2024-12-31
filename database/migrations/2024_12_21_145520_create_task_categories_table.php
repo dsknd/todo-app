@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('task_categories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->string('name');
             $table->text('description')->nullable();
+            $table->enum('category_type', ['project', 'personal', 'common']); // カテゴリタイプを追加
+            $table->foreignId('created_by')->references('id')->on('users')->cascadeOnDelete(); // ユーザーIDを追加
             $table->timestamps();
-
-            $table->unique(['user_id', 'name']);
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('task_categories');
     }
 };

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CategoryTodo extends Model
+class RecurringTaskStatus extends Model
 {
     //
 }

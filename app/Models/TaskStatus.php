@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectStatus extends Model
+class TaskStatus extends Model
 {
     //
 }

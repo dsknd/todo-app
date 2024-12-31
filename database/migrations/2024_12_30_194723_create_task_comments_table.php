@@ -11,21 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('todos', function (Blueprint $table) {
+        Schema::create('task_comments', function (Blueprint $table) {
             // カラム
             $table->id();
+            $table->unsignedBigInteger('task_id');
             $table->unsignedBigInteger('user_id');
-            $table->string('title');
             $table->text('content');
-            $table->boolean('is_done')->default(false);
-            $table->dateTime('due_date');
             $table->timestamps();
 
-            // 外部キー
+            // 外部キー設定
+            $table->foreign('task_id')
+                ->references('id')
+                ->on('tasks')
+                ->cascadeOnDelete();
+
             $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete();
+
+            // インデックス設定
+            $table->index('task_id');
+            $table->index('user_id');
         });
     }
 
@@ -34,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('todos');
+        Schema::dropIfExists('task_comments');
     }
 };

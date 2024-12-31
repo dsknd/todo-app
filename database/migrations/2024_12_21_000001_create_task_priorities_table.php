@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_todo', function (Blueprint $table) {
+        Schema::create('task_priorities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->foreignId('todo_id')->constrained()->onDelete('cascade');
+            $table->string('name')->unique();
+            $table->integer('priority_level')->unique(); // 重要度レベルを追加
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('category_todo');
+        Schema::dropIfExists('task_priorities');
     }
 };

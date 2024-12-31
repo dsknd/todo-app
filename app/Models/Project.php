@@ -45,4 +45,12 @@ class Project extends Model
         return $this->belongsToMany(User::class, 'project_members')
             ->using(ProjectMember::class); // カスタムPivotクラスを使用
     }
+
+    /**
+     * プロジェクトに関連付けられたロール
+     */
+    public function roles()
+    {
+        return $this->hasMany(ProjectRole::class, 'project_id');
+    }
 }

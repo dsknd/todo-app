@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_statuses', function (Blueprint $table) {
+        Schema::create('task_types', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // ステータス名（例: 未着手, 進行中, 完了）
-            $table->string('description')->nullable(); // ステータスの説明
-            $table->string('color')->nullable(); // カラーコード（例: #FF0000）
+            $table->string('name');
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_statuses');
+        Schema::dropIfExists('task_types');
     }
 };

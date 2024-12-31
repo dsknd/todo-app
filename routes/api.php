@@ -25,20 +25,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/projects/{project}/add-member', [ProjectController::class, 'addMember']);
     Route::post('/projects/{project}/remove-member', [ProjectController::class, 'removeMember']);
 
-    // Categories CRUD
-    Route::apiResource('categories', CategoryController::class);
-
-    // todos CRUD
-    Route::apiResource('todos', TodoController::class);
-
-    // Attach and detach todos to todos
-    Route::post('/todos/{todoId}/attach-parent', [TodoRelationshipController::class, 'attach']);
-    Route::delete('/todos/{todoId}/detach-parent', [TodoRelationshipController::class, 'detach']);
-
-    // Attach and detach categories to todos
-    Route::post('/category-todo/{todoId}/attach', [CategoryTodoController::class, 'attach']);
-    Route::post('/category-todo/{todoId}/detach', [CategoryTodoController::class, 'detach']);
-
     // Logout
     Route::post('/logout', [AuthController::class, 'logout']);
 

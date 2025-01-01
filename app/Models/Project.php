@@ -4,6 +4,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
@@ -54,10 +56,16 @@ class Project extends Model
     /**
      * プロジェクトに関連するタスクを取得します。
      */
-    public function tasks()
+    public function tasks():HasMany
     {
-        return $this->hasMany(Task::class, 'project_id', 'id')
-            ->join('projects', 'tasks.project_id', '=', 'projects.id')
-            ->select('tasks.*'); // 必要なタスクのカラムを選択
+        return $this->hasMany(Task::class, 'project_id', 'id');
+    }
+
+    /**
+     * プロジェクトのステータス別にタスク数を取得します。
+     */
+    public function taskStatistics():HasMany
+    {
+        return $this->hasMany(ProjectTaskStatistic::class, 'project_id', 'id');
     }
 }

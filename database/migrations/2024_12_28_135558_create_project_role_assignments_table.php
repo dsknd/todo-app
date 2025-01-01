@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_member_roles', function (Blueprint $table) {
+        Schema::create('project_role_assignments', function (Blueprint $table) {
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('user_id'); // user_idを追加
             $table->unsignedBigInteger('role_id');
@@ -39,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_member_roles');
+        Schema::dropIfExists('project_role_assignments');
     }
 };

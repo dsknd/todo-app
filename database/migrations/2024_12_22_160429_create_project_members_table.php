@@ -3,25 +3,39 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\QueryException;
 
-class CreateProjectMembersTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    /**
+     * プロジェクトメンバーテーブルを作成
+     * @return void
+     * @throws QueryException
+     */
+    public function up(): void
     {
         Schema::create('project_members', function (Blueprint $table) {
-            // 外部キーとインデックス
-            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            // カラム定義
+            $table->unsignedBigInteger('project_id'); // プロジェクトID
+            $table->unsignedBigInteger('user_id');    // ユーザID
+            $table->timestamps();                             // 作成日時と更新日時
 
-            // 複合主キーを設定
+            // 外部キー制約
+            $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+
+            // 主キー制約
             $table->primary(['project_id', 'user_id']);
-
-            $table->timestamps();
         });
     }
 
-    public function down()
+    /**
+     * プロジェクトメンバーテーブルを削除
+     * @return void
+     * @throws QueryException
+     */
+    public function down():void
     {
         Schema::dropIfExists('project_members');
     }
-}
+};

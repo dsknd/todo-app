@@ -3,9 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\ProjectStatus;
-use App\Models\ProjectMember;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Project extends Model
 {
@@ -16,41 +14,50 @@ class Project extends Model
         'description',
         'start_date',
         'end_date',
-        'status',
+        'status_id',
         'owner_id',
         'progress'
     ];
 
     /**
-     * プロジェクトのステータスへのリレーション
+     * プロジェクトオーナ(作成者)を取得します。
      */
-    public function status()
-    {
-        return $this->belongsTo(ProjectStatus::class, 'project_status_id');
-    }
-
-    /**
-     * プロジェクトのオーナーへのリレーション
-     */
-    public function owner()
+    public function owner():BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
     /**
-     * プロジェクトに関連付けられたメンバー
+     * プロジェクトのステータスを取得します。
      */
-    public function members()
+    public function status():BelongsTo
     {
-        return $this->belongsToMany(User::class, 'project_members')
-            ->using(ProjectMember::class); // カスタムPivotクラスを使用
+        return $this->belongsTo(ProjectStatus::class, 'status_id');
     }
 
     /**
-     * プロジェクトに関連付けられたロール
+     * プロジェクトに参加しているユーザを取得します。
      */
-    public function roles()
+    public function members():BelongsToMany
     {
-        return $this->hasMany(ProjectRole::class, 'project_id');
+        return $this->belongsToMany(User::class, 'project_members', 'project_id', 'user_id')->withPivot('joined_at');
+    }
+
+    /**
+     * プロジェクトに関連するロールを取得します。
+     */
+    public function roles():HasMany
+    {
+        return $this->hasMany(ProjectRole::class);
+    }
+
+    /**
+     * プロジェクトに関連するタスクを取得します。
+     */
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'project_id', 'id')
+            ->join('projects', 'tasks.project_id', '=', 'projects.id')
+            ->select('tasks.*'); // 必要なタスクのカラムを選択
     }
 }

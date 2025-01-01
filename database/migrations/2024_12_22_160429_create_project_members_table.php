@@ -16,9 +16,9 @@ return new class extends Migration
     {
         Schema::create('project_members', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('project_id'); // プロジェクトID
-            $table->unsignedBigInteger('user_id');    // ユーザID
-            $table->timestamps();                             // 作成日時と更新日時
+            $table->unsignedBigInteger('project_id');      // プロジェクトID
+            $table->unsignedBigInteger('user_id');         // ユーザID
+            $table->timestamp('joined_at')->useCurrent(); // プロジェクト参画日時
 
             // 外部キー制約
             $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();

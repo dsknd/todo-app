@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Project;
 
-class ProjectController extends Controller
+class ProjectController
 {
     /**
      * Display a listing of the projects.
@@ -30,12 +30,12 @@ class ProjectController extends Controller
             'status_id' => 'nullable|exists:project_statuses,id',
             'progress' => 'nullable|integer|min:0|max:100',
         ]);
-    
+
         // デフォルト値を設定
         $validated['owner_id'] = Auth::id();
-    
+
         $project = Project::create($validated);
-    
+
         return response()->json([
             'message' => 'Project created successfully',
             'project' => $project,
@@ -93,28 +93,28 @@ class ProjectController extends Controller
     public function addMember(Request $request, Project $project)
     {
         $this->authorize('update', $project);
-    
+
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
         ]);
-    
+
         // 中間テーブルにメンバーを追加
         $project->members()->attach($validated['user_id']);
-    
+
         return response()->json(['message' => 'Member added successfully'], 200);
     }
 
     public function removeMember(Request $request, Project $project)
     {
         $this->authorize('update', $project);
-    
+
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
         ]);
-    
+
         // 中間テーブルからメンバーを削除
         $project->members()->detach($validated['user_id']);
-    
+
         return response()->json(['message' => 'Member removed successfully'], 200);
     }
 }

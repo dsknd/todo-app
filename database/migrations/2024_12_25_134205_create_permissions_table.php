@@ -27,7 +27,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('scopes', function (Blueprint $table) {
+        Schema::create('permissions', function (Blueprint $table) {
             // カラム定義
             $table->id();
             $table->string('resource');                             // リソース名
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->timestamps();
 
             // 外部キー制約
-            $table->foreign('parent_id')->references('id')->on('scopes')->cascadeOnDelete();
+            $table->foreign('parent_id')->references('id')->on('permissions')->cascadeOnDelete();
 
             // ユニーク制約
             $table->unique(['resource', 'action'], 'unique_resource_action');
@@ -53,6 +53,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('scopes');
+        Schema::dropIfExists('permissions');
     }
 };

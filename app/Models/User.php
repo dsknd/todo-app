@@ -3,15 +3,20 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
+
+    public mixed $participatedProjects;
 
     /**
      * The attributes that are mass assignable.
@@ -47,19 +52,43 @@ class User extends Authenticatable
         ];
     }
 
-    // ユーザーが複数の Todo を持つリレーションを定義
-    public function todos()
+    /**
+     * ユーザが所有するプロジェクトを取得します。
+     */
+    public function projects():HasMany
     {
-        return $this->hasMany(Todo::class);
+        return $this->hasMany(Project::class, 'created_by');
     }
 
-    public function categories()
+    /**
+     * ユーザが参加しているプロジェクトを取得します。
+     */
+    public function participatedProjects():HasManyThrough
     {
-        return $this->hasMany(Category::class);
+        return $this->hasManyThrough(
+            Project::class,
+            ProjectMember::class,
+            'user_id',     // 中間テーブルのユーザーID
+            'id',          // プロジェクトテーブルのID
+            'id',          // ユーザーテーブルのID
+            'project_id'   // 中間テーブルのプロジェクトID
+        );
     }
 
-    public function projects()
+    /**
+     * プロジェクトロールのリレーションシップ
+     *
+     * このユーザーが割り当てられているプロジェクトロールを取得します。
+     */
+    public function projectRoles():HasManyThrough
     {
-        return $this->hasMany(Project::class, 'owner_id');
+        return $this->hasManyThrough(
+            ProjectRole::class,
+            ProjectRoleAssignment::class,
+            'user_id',     // 中間テーブルのユーザーID
+            'id',          // ロールテーブルのID
+            'id',          // ユーザーテーブルのID
+            'role_id'      // 中間テーブルのロールID
+        );
     }
 }

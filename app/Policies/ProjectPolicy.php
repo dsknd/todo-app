@@ -17,21 +17,33 @@ class ProjectPolicy
     }
 
     /**
-     * Determine if the given project can be viewed by the user.
+     * プロジェクトを表示できるかどうかを決定します。
+     *
+     * プロジェクトのオーナーまたはメンバーであれば許可します。
+     *
+     * @param User $user
+     * @param Project $project
+     * @return Response
+     *
      */
-    public function view(User $user, Project $project)
+    public function view(User $user, Project $project): Response
     {
-        // プロジェクトのメンバーであれば許可
-        return $project->members->contains($user->id);
+        $is_owner = $user->id === $project->owner_id;
+        $is_member = $project->members->contains($user->id);
+        if ($is_owner || $is_member) {
+            return Response::allow();
+        } else {
+            return Response::deny('You are not a member of this project.');
+        }
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
-    {
-        return false;
-    }
+//    public function create(User $user): bool
+//    {
+//        return false;
+//    }
 
     /**
      * Determine whether the user can update the model.

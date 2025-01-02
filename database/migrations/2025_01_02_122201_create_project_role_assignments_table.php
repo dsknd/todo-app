@@ -12,25 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('project_role_assignments', function (Blueprint $table) {
-            $table->unsignedBigInteger('project_id');
-            $table->unsignedBigInteger('user_id'); // user_idを追加
-            $table->unsignedBigInteger('role_id');
+            // カラム定義
+            $table->unsignedBigInteger('role_id');    // ロールID
+            $table->unsignedBigInteger('project_id'); // プロジェクトID
+            $table->unsignedBigInteger('user_id');    // ユーザーID
+            $table->timestamps();
 
             // 外部キー制約
-            $table->foreign(['project_id', 'user_id'])
-                  ->references(['project_id', 'user_id'])
-                  ->on('project_members')
-                  ->cascadeOnDelete();
+            $table->foreign('role_id')->references('id')->on('project_roles')->cascadeOnDelete();
+            $table->foreign(['project_id', 'user_id'])->references(['project_id', 'user_id'])->on('project_members')->cascadeOnDelete();
 
-            $table->foreign('role_id')
-                  ->references('id')
-                  ->on('project_roles')
-                  ->cascadeOnDelete();
-
-            // 複合主キー
+            // 主キー制約
             $table->primary(['project_id', 'user_id', 'role_id']);
-
-            $table->timestamps();
         });
     }
 

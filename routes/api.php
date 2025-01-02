@@ -11,7 +11,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
-    // Projects statuses CRUD
+    // プロジェクトステータス
     Route::apiResource('project-statuses', ProjectStatusController::class)->only(['index', 'show']);
 
     // Projects CRUD

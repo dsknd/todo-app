@@ -17,15 +17,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_scopes', function (Blueprint $table) {
+        Schema::create('project_permissions', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('scope_id'); // スコープID
+            $table->unsignedBigInteger('permission_id'); // パーミッションID
+            $table->unsignedBigInteger('project_id');    // プロジェクトID
 
             // 外部キー制約
-            $table->foreign('scope_id')->references('id')->on('scopes')->cascadeOnDelete();
+            $table->foreign('permission_id')->references('id')->on('permissions')->cascadeOnDelete();
+            $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
 
             // 主キー制約
-            $table->primary('scope_id');
+            $table->primary(['permission_id', 'project_id']);
         });
     }
 
@@ -36,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_scopes');
+        Schema::dropIfExists('project_permissions');
     }
 };

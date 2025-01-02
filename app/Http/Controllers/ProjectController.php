@@ -5,16 +5,32 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Project;
+use Symfony\Component\HttpFoundation\Response;
 
-class ProjectController
+class ProjectController extends Controller
 {
     /**
-     * Display a listing of the projects.
+     * ユーザが作成したプロジェクトまたは参加しているプロジェクトを取得します。
      */
-    public function index()
+    public function index($request)
     {
-        $projects = Auth::user()->projects;
-        return response()->json($projects, 200);
+        $user = auth()->user();
+
+        // Determine the filter: 'created' or 'participated'
+        $filter = $request->query('filter', 'participated');
+
+        if ($filter === 'created') {
+            // Fetch projects created by the user
+            $projects = Project::where('created_by', $user->id)->get();
+        } elseif ($filter === 'participated') {
+            // Fetch projects the user is participating in
+            $projects = $user->participatedProjects; // Assuming a relationship exists
+        } else {
+            // Handle invalid filter
+            return response()->json(['error' => 'Invalid filter'], 400);
+        }
+
+        return response()->json($projects);
     }
 
     /**
@@ -28,11 +44,9 @@ class ProjectController
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'status_id' => 'nullable|exists:project_statuses,id',
-            'progress' => 'nullable|integer|min:0|max:100',
         ]);
 
-        // デフォルト値を設定
-        $validated['owner_id'] = Auth::id();
+        $validated['created_by'] = Auth::id();
 
         $project = Project::create($validated);
 

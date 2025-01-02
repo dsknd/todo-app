@@ -11,6 +11,9 @@ use Illuminate\Database\QueryException;
  * このテーブルは、プロジェクトごとに異なるロールを定義するためのものです。
  * 例えば、プロジェクトAでは「管理者」「編集者」「閲覧者」の3つのロールを定義し、
  * プロジェクトBでは「管理者」「編集者」「閲覧者」「ゲスト」の4つのロールを定義することができます。
+ *
+ * また、scopesカラムには、各ロールに適用されるスコープのリストをJSON形式で保持します。
+ * (例) ["project:read", "project:write", "task:read", "task:write"]
  */
 return new class extends Migration
 {
@@ -24,10 +27,11 @@ return new class extends Migration
         Schema::create('project_roles', function (Blueprint $table) { // `$table` をコールバック引数として明示
             // カラム定義
             $table->id();
-            $table->string('name');                     // ロール名
-            $table->string('description')->nullable();  // ロールの説明
-            $table->unsignedBigInteger('project_id');   // プロジェクトID
-            $table->timestamps();                               // 作成日時、更新日時
+            $table->string('name');                                        // ロール名
+            $table->string('description')->nullable();                     // ロールの説明
+            $table->unsignedBigInteger('project_id');                      // プロジェクトID
+            $table->JSON('scopes');                                        // Json形式のスコープリスト
+            $table->timestamps();                                                  // 作成日時、更新日時
 
             // 外部キー制約
             $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();

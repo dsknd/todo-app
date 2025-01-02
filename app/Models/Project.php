@@ -18,16 +18,15 @@ class Project extends Model
         'start_date',
         'end_date',
         'status_id',
-        'owner_id',
-        'progress'
+        'created_by',
     ];
 
     /**
-     * プロジェクトオーナ(作成者)を取得します。
+     * プロジェクト作成者を取得します。
      */
-    public function owner():BelongsTo
+    public function user():BelongsTo
     {
-        return $this->belongsTo(User::class, 'owner_id');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     /**

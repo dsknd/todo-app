@@ -32,6 +32,29 @@ namespace App\Models{
 /**
  * 
  *
+ * @property int $category_id
+ * @property int $type_id
+ * @property int|null $project_id
+ * @property-read \App\Models\TaskCategory $category
+ * @property-read \App\Models\Project|null $project
+ * @property-read \App\Models\TaskType $type
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomTaskCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomTaskCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomTaskCategory query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomTaskCategory whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomTaskCategory whereProjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomTaskCategory whereTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomTaskCategory withProjectTaskCategories($projectId = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomTaskCategory withTaskCategories($projectId = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomTaskCategory withTaskCategory($categoryId = null)
+ */
+	class CustomTaskCategory extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property int $id
  * @property string $name
  * @property string|null $description
@@ -343,12 +366,11 @@ namespace App\Models{
  * @property int $id
  * @property string $name
  * @property string|null $description
- * @property int $is_personal
- * @property int $is_project
- * @property int|null $project_id
  * @property int $created_by
+ * @property int $is_custom
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\CustomTaskCategory|null $customCategory
  * @property-read \App\Models\Project|null $project
  * @property-read \App\Models\Project|null $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskCategory newModelQuery()
@@ -358,11 +380,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskCategory whereCreatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskCategory whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskCategory whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskCategory whereIsPersonal($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskCategory whereIsProject($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskCategory whereIsCustom($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskCategory whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskCategory whereProjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskCategory whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskCategory withCustomCategory($categoryId = null)
  */
 	class TaskCategory extends \Eloquent {}
 }

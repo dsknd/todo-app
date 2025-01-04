@@ -27,7 +27,6 @@ return new class extends Migration
             $table->id();                                                 // ID
             $table->string('name');                               // カテゴリ名
             $table->text('description')->nullable();              // 説明
-            $table->unsignedBigInteger('created_by');             // 作成者
             $table->boolean('is_custom')->default(false);   // 個人カテゴリかどうか
             $table->timestamps();                                         // 作成日時と更新日時
         });

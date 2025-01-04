@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateProjectTaskCategoryRequest;
+use App\Models\Project;
 use App\Models\TaskCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
+use Exception;
+use Throwable;
 
 class TaskCategoryController extends Controller
 {
@@ -30,20 +35,7 @@ class TaskCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO: ポリシーを使用してアクセス制御を実装
-        // TODO: バリデーションを実装
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:255',
-            'is_personal' => 'required|boolean',
-            'is_project' => 'required|boolean',
-            'project_id' => 'nullable|exists:projects,id',
-            'created_by' => 'required|exists:users,id',
-        ]);
-
-        $taskCategory = TaskCategory::create($validated);
-
-        return response()->json($taskCategory, Response::HTTP_CREATED);
+        //
     }
 
     /**

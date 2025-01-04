@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProjectTaskCategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectStatusController;
@@ -20,7 +21,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('projects', ProjectController::class);
 
     //　タスクカテゴリ
-    Route::apiResource('task-categories', TaskCategoryController::class);
+    Route::apiResource('task-categories', TaskCategoryController::class)->only(['index', 'show']);
+    Route::apiResource(
+        '/projects/{project}/task-categories',
+        ProjectTaskCategoryController::class)->only(['index', 'create', 'store', 'update', 'destroy']);
 
     // Projects CRUD
 //    Route::apiResource('projects', ProjectController::class);

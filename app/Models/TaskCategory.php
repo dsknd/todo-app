@@ -11,10 +11,7 @@ class TaskCategory extends Model
     protected $fillable = [
         'name',
         'description',
-        'is_personal',
-        'is_project',
-        'project_id',
-        'created_by',
+        'is_custom',
     ];
 
     /**
@@ -22,15 +19,18 @@ class TaskCategory extends Model
      */
     public function customCategory(): HasOne
     {
-        return $this->hasOne(CustomTaskCategory::class);
+        return $this->hasOne(CustomTaskCategory::class, 'category_id', 'id');
     }
 
-    /**
-     * カテゴリを作成したユーザを取得します。
-     */
-    public function user(): BelongsTo
+    public function scopeWithCustomCategory($query, $categoryId = null)
     {
-        return $this->belongsTo(Project::class);
+        return $query->select('task_categories.*', 'custom_task_categories.type_id', 'custom_task_categories.project_id')
+            ->join('custom_task_categories', function ($join) use ($categoryId) {
+                $join->on('task_categories.id', '=', 'custom_task_categories.category_id');
+                if($categoryId) {
+                    $join->where('custom_task_categories.category_id', $categoryId);
+                }
+            });
     }
 
     /**

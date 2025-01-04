@@ -25,11 +25,13 @@ return new class extends Migration
             $table->unsignedInteger('member_count')->default(0);        // メンバー数
             $table->unsignedInteger('task_count')->default(0);          // タスク数
             $table->unsignedBigInteger('created_by');                         // 作成者
+            $table->unsignedBigInteger('category_id');                        // カテゴリID
             $table->timestamps();                                                     // 作成日時、更新日時
 
             // 外部キー制約
             $table->foreign('status_id')->references('id')->on('project_statuses')->cascadeOnDelete();
             $table->foreign('created_by')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('category_id')->references('id')->on('categories')->cascadeOnDelete();
         });
     }
 

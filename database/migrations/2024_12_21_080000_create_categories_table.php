@@ -22,12 +22,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('task_categories', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             // カラム定義
             $table->id();                                                 // ID
             $table->string('name');                               // カテゴリ名
             $table->text('description')->nullable();              // 説明
-            $table->boolean('is_custom')->default(false);   // 個人カテゴリかどうか
             $table->timestamps();                                         // 作成日時と更新日時
         });
     }
@@ -39,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_categories');
+        Schema::dropIfExists('categories');
     }
 };

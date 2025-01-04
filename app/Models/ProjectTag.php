@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TaskType extends Model
+class ProjectTag extends Model
 {
     //
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PersonalTagController;
 use App\Http\Controllers\ProjectTaskCategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -20,11 +21,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // プロジェクト
     Route::apiResource('projects', ProjectController::class);
 
-    //　タスクカテゴリ
-//    Route::apiResource('task-categories', TaskCategoryController::class)->only(['index', 'show']);
-    Route::apiResource(
-        '/projects/{project}/task-categories',
-        ProjectTaskCategoryController::class)->only(['index', 'create', 'store', 'update', 'destroy']);
+    // ユーザー自身のタグ
+    Route::prefix('users/me')->group(function () {
+        Route::get('tags', [PersonalTagController::class, 'index']);
+        Route::post('tags', [PersonalTagController::class, 'store']);
+        Route::get('tags/{tag}', [PersonalTagController::class, 'show']);
+        Route::patch('tags/{tag}', [PersonalTagController::class, 'update']);
+        Route::delete('tags/{tag}', [PersonalTagController::class, 'destroy']);
+    });
 
     // Projects CRUD
 //    Route::apiResource('projects', ProjectController::class);

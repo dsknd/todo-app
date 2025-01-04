@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('description')->nullable();                          // プロジェクトの説明
             $table->date('start_date')->nullable();                           // 開始日
             $table->date('end_date')->nullable();                             // 終了日
-            $table->unsignedBigInteger('status_id');                          // ステータスID
+            $table->unsignedBigInteger('project_status_id');                  // プロジェクトステータスID
             $table->unsignedInteger('member_count')->default(0);        // メンバー数
             $table->unsignedInteger('task_count')->default(0);          // タスク数
             $table->unsignedBigInteger('created_by');                         // 作成者
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->timestamps();                                                     // 作成日時、更新日時
 
             // 外部キー制約
-            $table->foreign('status_id')->references('id')->on('project_statuses')->cascadeOnDelete();
+            $table->foreign('project_status_id')->references('id')->on('project_statuses')->cascadeOnDelete();
             $table->foreign('created_by')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('category_id')->references('id')->on('categories')->cascadeOnDelete();
         });

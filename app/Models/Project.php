@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,9 +18,17 @@ class Project extends Model
         'description',
         'start_date',
         'end_date',
-        'status_id',
+        'project_status_id',
+        'member_count',
+        'task_count',
         'created_by',
+        'category_id',
     ];
+
+    public function invitations():HasMany
+    {
+        return $this->hasMany(ProjectInvitation::class);
+    }
 
     /**
      * プロジェクト作成者を取得します。
@@ -67,5 +76,25 @@ class Project extends Model
     public function taskStatistics():HasMany
     {
         return $this->hasMany(ProjectTaskStatistic::class, 'project_id', 'id');
+    }
+
+
+
+    public function scopeWithDetail(Builder $query): Builder
+    {
+        return $query->select(
+            'projects.id',
+            'projects.name',
+            'projects.description',
+            'projects.start_date',
+            'projects.end_date',
+            'projects.member_count',
+            'projects.task_count',
+            'projects.created_by',
+            'categories.name as category', // カテゴリ名
+            'project_statuses.name as project_status' // プロジェクトステータス名
+        )
+            ->leftJoin('categories', 'projects.category_id', '=', 'categories.id')
+            ->leftJoin('project_statuses', 'projects.project_status_id', '=', 'project_statuses.id');
     }
 }

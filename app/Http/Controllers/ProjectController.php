@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Categories;
+use App\Enums\ProjectInvitationStatuses;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,20 +32,18 @@ class ProjectController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        // ユーザを取得
         $user = auth()->user();
-
         // ユーザが作成したプロジェクトまたは参加しているプロジェクトを取得かを判断
         $filter = $request->query('filter', 'participated');
 
         // プロジェクトを取得
         if ($filter === 'created') {
             // ユーザが作成したプロジェクトを取得
-            $projects = $user->projects;
+            $projects = $user->projects()->withDetail()->get();
             return response()->json($projects);
         } elseif ($filter === 'participated') {
             // ユーザが参加しているプロジェクトを取得
-            $projects = $user->participatedProjects;
+            $projects = $user->participatedProjects()->withDetail()->get(); // () を追加
             return response()->json($projects);
         } else {
             // フィルタが無効な場合
@@ -64,7 +65,10 @@ class ProjectController extends Controller
         ]);
 
         // プロジェクトのデフォルトステータスを設定
-        $validated['status_id'] = ProjectStatus::Pending()->value;
+        $validated['project_status_id'] = ProjectStatus::Pending()->value;
+
+        // プロジェクトのカテゴリを設定
+        $validated['category_id'] = Categories::NA;
 
         // プロジェクトの作成者を設定
         $validated['created_by'] = Auth::id();
@@ -85,7 +89,6 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         // TODO: ポリシーを使用してプロジェクトの表示権限を確認
-
         return response()->json($project, Response::HTTP_OK);
     }
 
@@ -101,7 +104,8 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
-            'status' => 'nullable|exists:project_statuses,id',
+            'project_status_id' => 'nullable|exists:project_statuses,id',
+            'category_id' => 'nullable|exists:categories,id',
         ]);
 
         $project->update($validated);
@@ -126,19 +130,29 @@ class ProjectController extends Controller
         ], Response::HTTP_NO_CONTENT);
     }
 
-//    public function addMember(Request $request, Project $project)
-//    {
-//        $this->authorize('update', $project);
-//
-//        $validated = $request->validate([
-//            'user_id' => 'required|exists:users,id',
-//        ]);
-//
-//        // 中間テーブルにメンバーを追加
-//        $project->members()->attach($validated['user_id']);
-//
-//        return response()->json(['message' => 'Member added successfully'], 200);
-//    }
+    public function invite(Request $request, Project $project)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $user = auth()->user();
+        $is_self = $user->id === $validated['user_id'];
+        if($is_self){
+            return response()->json(['error' => 'You cannot invite yourself']);
+        }
+
+        // プロジェクト招待を作成
+        $project->invitations()->create([
+            'invited_by' => $user->id,
+            'invitee_id' => $validated['user_id'],
+            'status_id' => ProjectInvitationStatuses::PENDING,
+            'expires_at' => now()->addDays(7),
+        ]);
+
+
+        return response()->json(['message' => 'Member added successfully'], 200);
+    }
 //
 //    public function removeMember(Request $request, Project $project)
 //    {

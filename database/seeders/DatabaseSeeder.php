@@ -22,6 +22,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             OwnershipTypeSeeder::class,
+            ProjectStatusSeeder::class,
+            CategorySeeder::class,
+            ProjectInvitationStatusSeeder::class,
         ]);
     }
 }

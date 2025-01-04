@@ -15,20 +15,33 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
-    // プロジェクトステータス
-    Route::apiResource('project-statuses', ProjectStatusController::class)->only(['index', 'show']);
 
-    // プロジェクト
-    Route::apiResource('projects', ProjectController::class);
+    // プロジェクトアクション
+    // ====================================================================================
+    Route::post('/projects/{project}/invite', [ProjectController::class, 'invite']);
+    Route::patch('projects/{project}', [ProjectController::class, 'update']);
+    Route::delete('projects/{project}', [ProjectController::class, 'destroy']);
 
-    // ユーザー自身のタグ
+    Route::apiResource('projects', ProjectController::class)
+        ->only(['index', 'show', 'store', 'update', 'destroy']);
+    Route::post('projects/{projects}/invite', [ProjectTaskCategoryController::class, 'invite']);
+
+
+    // ユーザーアクション
+    // ====================================================================================
     Route::prefix('users/me')->group(function () {
+        // タグ
         Route::get('tags', [PersonalTagController::class, 'index']);
         Route::post('tags', [PersonalTagController::class, 'store']);
         Route::get('tags/{tag}', [PersonalTagController::class, 'show']);
         Route::patch('tags/{tag}', [PersonalTagController::class, 'update']);
         Route::delete('tags/{tag}', [PersonalTagController::class, 'destroy']);
+
+        // プロジェクト
+        Route::post('/projects/{project}/join', [ProjectController::class, 'join']);
+        Route::post('/projects/{project}/leave', [ProjectController::class, 'leave']);
     });
+
 
     // Projects CRUD
 //    Route::apiResource('projects', ProjectController::class);

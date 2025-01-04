@@ -12,6 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('project_invitations', function (Blueprint $table) {
+            // カラム定義
+            $table->id();                                     // ID
             $table->unsignedBigInteger('project_id'); // プロジェクトID
             $table->unsignedBigInteger('invited_by'); // 招待作成者（ProjectMember）
             $table->unsignedBigInteger('invitee_id'); // 招待されたユーザー（登録済みユーザーの場合）
@@ -27,8 +29,6 @@ return new class extends Migration
             ->references(['project_id', 'user_id'])
             ->on('project_members')
             ->cascadeOnDelete();
-
-            $table->primary(['project_id', 'invited_by', 'invitee_id', 'expires_at']);
 
             $table->index('invitee_id');
         });

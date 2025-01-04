@@ -19,7 +19,6 @@ class TaskCategorySeeder extends Seeder
             [
                 'name' => 'General',
                 'description' => 'General tasks category',
-                'created_by' => 1, // サンプルユーザーID
                 'is_custom' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -27,15 +26,13 @@ class TaskCategorySeeder extends Seeder
             [
                 'name' => 'Development',
                 'description' => 'Tasks related to development',
-                'created_by' => 2,
-                'is_custom' => true,
+                'is_custom' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'Testing',
                 'description' => 'Tasks for testing and QA',
-                'created_by' => 1,
                 'is_custom' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -43,8 +40,7 @@ class TaskCategorySeeder extends Seeder
             [
                 'name' => 'Design',
                 'description' => 'Tasks for design team',
-                'created_by' => 3,
-                'is_custom' => true,
+                'is_custom' => false,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

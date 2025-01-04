@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('projects', ProjectController::class);
 
     //　タスクカテゴリ
-    Route::apiResource('task-categories', TaskCategoryController::class)->only(['index', 'show']);
+//    Route::apiResource('task-categories', TaskCategoryController::class)->only(['index', 'show']);
     Route::apiResource(
         '/projects/{project}/task-categories',
         ProjectTaskCategoryController::class)->only(['index', 'create', 'store', 'update', 'destroy']);

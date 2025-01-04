@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CustomTaskCategory extends Model
 {
     protected $primaryKey = 'category_id';
+
+    public $timestamps = false;
+
     protected $fillable = [
         'type_id',
         'project_id',
@@ -45,7 +48,6 @@ class CustomTaskCategory extends Model
             'custom_task_categories.*',
             'task_categories.name',
             'task_categories.description',
-            'task_categories.created_by'
         )->leftJoin('task_categories', function ($join) use ($categoryId) {
                 $join->on('custom_task_categories.category_id', '=', 'task_categories.id');
                 if ($categoryId) {
@@ -77,7 +79,7 @@ class CustomTaskCategory extends Model
      */
     public function scopeWithTaskCategories($query, $projectId = null)
     {
-        return $query->select('custom_task_categories.*', 'task_categories.name', 'task_categories.description', 'task_categories.created_by')
+        return $query->select('custom_task_categories.*', 'task_categories.name', 'task_categories.description')
             ->join('task_categories', function ($join) use ($projectId) {
                 $join->on('custom_task_categories.category_id', '=', 'task_categories.id');
 

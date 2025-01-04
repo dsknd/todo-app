@@ -10,8 +10,10 @@ use App\Models\TaskCategory;
 use App\Models\TaskType;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
+use App\Enums\TaskTypes;
 
 class ProjectTaskCategoryController extends Controller
 {
@@ -56,8 +58,6 @@ class ProjectTaskCategoryController extends Controller
      */
     public function store(CreateProjectTaskCategoryRequest $request, string $projectId)
     {
-        // TODO: ポリシーを使用してアクセス制御を実装
-
         // ユーザを取得
         $user = auth()->user();
 
@@ -75,13 +75,13 @@ class ProjectTaskCategoryController extends Controller
                 $taskCategory = TaskCategory::create([
                     'name' => $request->input('name'),
                     'description' => $request->input('description'),
-                    'created_by' => $user->id,
                     'is_custom' => true,
                 ]);
 
                 // カスタムタスクカテゴリ(サブタイプ)の作成
                 $taskCategory->customCategory()->create([
-                    'type_id' => $request->input('type_id'),
+                    'type_id' => TaskTypes::Project,
+                    'created_by' => $user->id,
                     'project_id' => $projectId,
                 ]);
 
@@ -90,8 +90,9 @@ class ProjectTaskCategoryController extends Controller
 
             return response()->json($taskCategory->load('customCategory'), Response::HTTP_CREATED);
 
-        } catch (Throwable) {
+        } catch (Throwable $e) {
             // その他のエラーが発生した場合
+            Log::error('An unexpected error occurred', ['exception' => $e]);
             return response()->json(
                 ['message' => 'An unexpected error occurred while creating the task category.'],
                 Response::HTTP_INTERNAL_SERVER_ERROR

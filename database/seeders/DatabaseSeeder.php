@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ProjectStatusSeeder::class,
             TaskCategorySeeder::class,
+            TaskTypeSeeder::class,
         ]);
     }
 }

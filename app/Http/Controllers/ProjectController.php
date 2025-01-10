@@ -32,7 +32,7 @@ class ProjectController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $user = auth()->user();
+        $user = Auth::user();
         // ユーザが作成したプロジェクトまたは参加しているプロジェクトを取得かを判断
         $filter = $request->query('filter', 'participated');
 
@@ -56,6 +56,8 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+        // TODO: ポリシーを使用してプロジェクトの作成権限を確認
+
         // プロジェクトの作成
         $validated = $request->validate([
             'name' => 'required|string|max:255', // プロジェクトの名前(必須、文字列、最大255文字)
@@ -64,16 +66,18 @@ class ProjectController extends Controller
             'end_date' => 'nullable|date',       // プロジェクトの終了日(NULL可、日付)
         ]);
 
-        // プロジェクトのデフォルトステータスを設定
-        $validated['project_status_id'] = ProjectStatus::Pending()->value;
+        // create project data
+        $projectData = [
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'start_date' => $validated['start_date'] ?? null,
+            'end_date' => $validated['end_date'] ?? null,
+            'project_status_id' => ProjectStatus::Pending()->value,
+            'category_id' => Categories::NA,
+            'created_by' => Auth::id(),
+        ];
 
-        // プロジェクトのカテゴリを設定
-        $validated['category_id'] = Categories::NA;
-
-        // プロジェクトの作成者を設定
-        $validated['created_by'] = Auth::id();
-
-        $project = Project::create($validated);
+        $project = Project::create($projectData);
         // TODO: オーナーロールの作成
         // TODO: オーナーロールの割当
 
@@ -88,8 +92,9 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
+        $projectDetail = Project::withDetail()->find($project->id);
         // TODO: ポリシーを使用してプロジェクトの表示権限を確認
-        return response()->json($project, Response::HTTP_OK);
+        return response()->json($projectDetail, Response::HTTP_OK);
     }
 
     /**
@@ -136,7 +141,7 @@ class ProjectController extends Controller
             'user_id' => 'required|exists:users,id',
         ]);
 
-        $user = auth()->user();
+        $user = Auth::user();
         $is_self = $user->id === $validated['user_id'];
         if($is_self){
             return response()->json(['error' => 'You cannot invite yourself']);

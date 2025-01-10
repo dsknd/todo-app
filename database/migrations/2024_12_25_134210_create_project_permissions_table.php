@@ -20,14 +20,13 @@ return new class extends Migration
         Schema::create('project_permissions', function (Blueprint $table) {
             // カラム定義
             $table->unsignedBigInteger('permission_id'); // パーミッションID
-            $table->unsignedBigInteger('project_id');    // プロジェクトID
+            $table->timestamps();
 
             // 外部キー制約
             $table->foreign('permission_id')->references('id')->on('permissions')->cascadeOnDelete();
-            $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
 
             // 主キー制約
-            $table->primary(['permission_id', 'project_id']);
+            $table->primary('permission_id');
         });
     }
 

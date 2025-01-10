@@ -38,6 +38,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('tags/{tag}', [PersonalTagController::class, 'destroy']);
 
         // プロジェクト
+        Route::get('projects', [ProjectController::class, 'index']);
+        Route::get('projects/{project}', [ProjectController::class, 'show']);
+        Route::post('projects', [ProjectController::class, 'store']);
+        Route::patch('projects/{project}', [ProjectController::class, 'update']);
+        Route::delete('projects/{project}', [ProjectController::class, 'destroy']);
         Route::post('/projects/{project}/join', [ProjectController::class, 'join']);
         Route::post('/projects/{project}/leave', [ProjectController::class, 'leave']);
     });

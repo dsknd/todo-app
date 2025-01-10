@@ -24,7 +24,7 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             // カラム定義
-            $table->id();                                                   // ID
+            $table->id();                                           // ID
             $table->string('title');                                // タイトル
             $table->text('description')->nullable();                // 詳細
             $table->date('due_date')->nullable();                   // 期限日
@@ -33,8 +33,8 @@ return new class extends Migration
             $table->unsignedBigInteger ('user_id');                 // 作成者
             $table->unsignedBigInteger('status_id')->nullable();    // ステータス
             $table->unsignedBigInteger('project_id')->nullable();   // プロジェクトID(タスク種別が"project"の場合のみ)
-            $table->boolean('is_recurring')->default(false);  // 継続タスクかどうか
-            $table->timestamps();                                           // 作成日時と更新日時
+            $table->boolean('is_recurring')->default(false);        // 継続タスクかどうか
+            $table->timestamps();                                   // 作成日時と更新日時
 
             //外部キー制約
             $table->foreign('ownership_type_id')->references('id')->on('ownership_types')->cascadeOnDelete();

@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             ProjectStatusSeeder::class,
             CategorySeeder::class,
             ProjectInvitationStatusSeeder::class,
+            PermissionSeeder::class,
+            ProjectPermissionSeeder::class,
         ]);
     }
 }

@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\QueryException;
 
 /**
  * プロジェクトごとのロールを管理するためのマイグレーションクラス
@@ -19,32 +18,33 @@ return new class extends Migration
 {
     /**
      * プロジェクトロールテーブルを作成
-     * @return void
-     * @throws QueryException
      */
     public function up(): void
     {
-        Schema::create('project_roles', function (Blueprint $table) { // `$table` をコールバック引数として明示
+        Schema::create('project_roles', function (Blueprint $table) {
             // カラム定義
             $table->id();
             $table->string('name');                                        // ロール名
             $table->string('description')->nullable();                     // ロールの説明
             $table->unsignedBigInteger('project_id');                      // プロジェクトID
-            $table->JSON('scopes');                                        // Json形式のスコープリスト
-            $table->timestamps();                                                  // 作成日時、更新日時
+            $table->unsignedBigInteger('project_permission_id');           // 権限ID   
+            $table->timestamps();                                          // 作成日時、更新日時
 
             // 外部キー制約
             $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
+            $table->foreign('project_permission_id')->references('permission_id')->on('project_permissions')->cascadeOnDelete();
 
             // ユニーク制約
             $table->unique(['project_id', 'name']);
+
+            // インデックス
+            $table->index('project_id');
+            $table->index('project_permission_id');
         });
     }
 
     /**
      * プロジェクトロールテーブルを削除
-     * @return void
-     * @throws QueryException
      */
     public function down(): void
     {

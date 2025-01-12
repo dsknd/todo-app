@@ -21,37 +21,33 @@ use Illuminate\Database\QueryException;
 return new class extends Migration
 {
     /**
-     * スコープテーブルを作成
-     * @return void
-     * @throws QueryException
+     * テーブルを作成
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('permissions', function (Blueprint $table) {
             // カラム定義
-            $table->id();
-            $table->string('resource');                             // リソース名
-            $table->string('action');                               // アクション名
-            $table->string('name');                                 // スコープの名前
-            $table->string('description')->nullable();              // スコープの説明
-            $table->unsignedBigInteger('parent_id')->nullable();    // 親スコープID
-            $table->timestamps();
-
-            // 外部キー制約
-            $table->foreign('parent_id')->references('id')->on('permissions')->cascadeOnDelete();
+            $table->id();                                    // ID
+            $table->string('scope');                         // スコープ 例: projects:tasks:admin
+            $table->string('resource');                      // リソース 例: projects.tasks
+            $table->string('action');                        // アクション 例: admin
+            $table->string('display_name');                  // 表示名 例: プロジェクト管理者
+            $table->string('description')->nullable();       // 説明
+            $table->timestamps();                            // 作成日時、更新日時
 
             // ユニーク制約
-            $table->unique(['resource', 'action'], 'unique_resource_action');
+            $table->unique(['scope']);
 
+            // インデックス
+            $table->index('resource');
+            $table->index('action');
         });
     }
-
+    
     /**
-     * スコープテーブルを削除
-     * @return void
-     * @throws QueryException
+     * テーブルを削除
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('permissions');
     }

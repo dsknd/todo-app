@@ -6,12 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Permission extends Model
 {
-
     protected $fillable = [
-        'resource',
-        'action',
-        'name',
+        'scope',
+        'display_name',
         'description',
-        'parent_id',
     ];
+
 }

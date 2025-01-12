@@ -1,26 +1,72 @@
 <?php
 
-
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\Permission;
+use App\Models\ProjectPermission;
 
+/**
+ * プロジェクトに関する権限を挿入するシーダークラス
+ */
 class ProjectPermissionSeeder extends Seeder
 {
+    /**
+     * プロジェクトに関する権限を挿入する
+     */
     public function run(): void
     {
-        // プロジェクト権限データ
-        $projectPermissions = [
-            ['permission_id' => 1], // projects: read
-            ['permission_id' => 2], // projects: write
-            ['permission_id' => 3], // projects: delete
-            ['permission_id' => 4], // project_invitations: invite
-            ['permission_id' => 5], // project_invitations: approve
-            ['permission_id' => 6], // project_invitations: revoke
-        ];
+        DB::transaction(function () {
+            // プロジェクトに関する権限を取得
+            $projectPermissions = Permission::where('resource', 'projects')->get();
 
-        // データの挿入
-        DB::table('project_permissions')->insert($projectPermissions);
+            // プロジェクトタスクに関する権限を取得
+            $projectTaskPermissions = Permission::where('resource', 'projects.tasks')->get();
+
+            // プロジェクト役割に関する権限を取得
+            $projectRolePermissions = Permission::where('resource', 'projects.roles')->get();
+
+            // プロジェクトメンバーに関する権限を取得
+            $projectMemberPermissions = Permission::where('resource', 'projects.members')->get();
+
+            // プロジェクト招待に関する権限を取得
+            $projectInvitationPermissions = Permission::where('resource', 'projects.invitations')->get();
+
+            // プロジェクトに関する権限を挿入
+            foreach ($projectPermissions as $permission) {
+                ProjectPermission::create([
+                    'permission_id' => $permission->id,
+                ]);
+            }
+
+            // プロジェクトタスクに関する権限を挿入
+            foreach ($projectTaskPermissions as $permission) {
+                ProjectPermission::create([
+                    'permission_id' => $permission->id,
+                ]);
+            }
+
+            // プロジェクト役割に関する権限を挿入
+            foreach ($projectRolePermissions as $permission) {
+                ProjectPermission::create([
+                    'permission_id' => $permission->id,
+                ]);
+            }
+
+            // プロジェクトメンバーに関する権限を挿入
+            foreach ($projectMemberPermissions as $permission) {
+                ProjectPermission::create([
+                    'permission_id' => $permission->id,
+                ]);
+            }
+
+            // プロジェクト招待に関する権限を挿入
+            foreach ($projectInvitationPermissions as $permission) {
+                ProjectPermission::create([
+                    'permission_id' => $permission->id,
+                ]);
+            }
+        });
     }
 }

@@ -18,14 +18,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // プロジェクトアクション
     // ====================================================================================
-    Route::post('/projects/{project}/invite', [ProjectController::class, 'invite']);
-    Route::patch('projects/{project}', [ProjectController::class, 'update']);
-    Route::delete('projects/{project}', [ProjectController::class, 'destroy']);
+    Route::apiResource('projects', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 
-    Route::apiResource('projects', ProjectController::class)
-        ->only(['index', 'show', 'store', 'update', 'destroy']);
-    Route::post('projects/{projects}/invite', [ProjectTaskCategoryController::class, 'invite']);
-
+    // プロジェクトロールアクション
+    // ====================================================================================
+    Route::post('/projects/{project}/members/{user}/roles/{role}',[ProjectController::class, 'assignRole']);
+    Route::delete('/projects/{project}/members/{user}/roles/{role}', [ProjectController::class, 'removeRole']);
 
     // ユーザーアクション
     // ====================================================================================

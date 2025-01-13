@@ -26,6 +26,9 @@ return new class extends Migration
 
             // 主キー制約
             $table->primary(['project_id', 'user_id']);
+
+            // インデックス
+            $table->index('user_id');
         });
     }
 

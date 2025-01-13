@@ -13,6 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Enums\ProjectStatus;
 use Illuminate\Support\Facades\DB;
 use App\Enums\ProjectPermissions;
+use App\Enums\ProjectStatuses;
+use App\Enums\ProjectRoleTypes;
+use App\Models\ProjectPermission;
+use App\Models\ProjectRole;
 
 class ProjectController extends Controller
 {
@@ -72,49 +76,83 @@ class ProjectController extends Controller
             'description' => $validated['description'] ?? null,
             'start_date' => $validated['start_date'] ?? null,
             'end_date' => $validated['end_date'] ?? null,
-            'project_status_id' => ProjectStatus::Pending()->value,
+            'project_status_id' => ProjectStatuses::PENDING,
             'category_id' => Categories::NA,
             'created_by' => Auth::id(),
         ];
 
         // トランザクションを使用してプロジェクトを作成
-        $newProject = null;
+        $project = null;
 
-        DB::transaction(function () use ($projectData, &$newProject) {
+        DB::transaction(function () use ($projectData, &$project) {
             // プロジェクトを作成
-            $newProject = Project::create($projectData);
+            $project = Project::create($projectData);
+
+            // プロジェクト作成者をプロジェクトメンバーに登録
+            $project->projectMembers()->attach($project->created_by, ['joined_at' => now()]);
 
             // デフォルトのロールを作成
-            $newProjectRoles = $newProject->projectRoles()->createMany([
+            $projectRoles = $project->projectRoles()->createMany([
                 [
-                    'project_permission_id' => ProjectPermissions::OWNER,
                     'name' => 'オーナー', 
-                    'description' => 'プロジェクトのオーナーです。'
+                    'description' => 'プロジェクトのオーナーです。',
+                    'project_role_type_id' => ProjectRoleTypes::DEFAULT,
                 ],
                 [
-                    'project_permission_id' => ProjectPermissions::ADMIN,
                     'name' => '管理者',
-                    'description' => 'プロジェクトの管理者です。'
+                    'description' => 'プロジェクトの管理者です。',
+                    'project_role_type_id' => ProjectRoleTypes::DEFAULT,
                 ],
                 [
-                    'project_permission_id' => ProjectPermissions::MEMBER,
                     'name' => 'メンバー',
-                    'description' => 'プロジェクトのメンバーです。'
+                    'description' => 'プロジェクトのメンバーです。',
+                    'project_role_type_id' => ProjectRoleTypes::DEFAULT,
                 ],
             ]);
 
-            // プロジェクト作成者をプロジェクトメンバーに登録
-            $newProject->projectMembers()->attach($newProject->created_by, ['joined_at' => now()]);
+            // デフォルトのロールに権限を割り当て
+            $ownerRole = $projectRoles[0];
+            $adminRole = $projectRoles[1];
+            $memberRole = $projectRoles[2];
+
+            $ownerRole->projectPermissions()->attach([
+                ProjectPermissions::PROJECT_WILDCARD,
+                ProjectPermissions::PROJECT_TASK_WILDCARD,
+                ProjectPermissions::PROJECT_ROLE_WILDCARD,
+                ProjectPermissions::PROJECT_MEMBER_WILDCARD,
+                ProjectPermissions::PROJECT_INVITATION_WILDCARD,
+            ]);
+
+            $adminRole->projectPermissions()->attach([
+                ProjectPermissions::PROJECT_READ,
+                ProjectPermissions::PROJECT_UPDATE,
+                ProjectPermissions::PROJECT_DELETE,
+                ProjectPermissions::PROJECT_TASK_WILDCARD,
+                ProjectPermissions::PROJECT_ROLE_WILDCARD,
+                ProjectPermissions::PROJECT_MEMBER_WILDCARD,
+                ProjectPermissions::PROJECT_INVITATION_WILDCARD,
+            ]);
+
+            $memberRole->projectPermissions()->attach([
+                ProjectPermissions::PROJECT_READ,
+                ProjectPermissions::PROJECT_TASK_WILDCARD,
+                ProjectPermissions::PROJECT_ROLE_READ,
+                ProjectPermissions::PROJECT_MEMBER_READ,
+            ]);
 
             // プロジェクト作成者にオーナーロールを割り当て
-            $ownerRole = $newProjectRoles[0];
-            $ownerRole->projectMembers()->attach($newProject->created_by, ['joined_at' => now()]);
+            $ownerRole->projectMembers()->attach([
+                $project->created_by => [
+                    'project_id' => $project->id,
+                    'joined_at' => now(),
+                ]
+            ]);
         });
 
         // レスポンス
         return response()->json([
             'message' => 'Project created successfully',
-            'project' => $newProject,
+            'project' => $project,
         ], 201);
     }
 
@@ -185,7 +223,6 @@ class ProjectController extends Controller
             'status_id' => ProjectInvitationStatuses::PENDING,
             'expires_at' => now()->addDays(7),
         ]);
-
 
         return response()->json(['message' => 'Member added successfully'], 200);
     }

@@ -23,6 +23,10 @@ class ProjectPermissionSeeder extends Seeder
             // 権限IDの配列を定義
             $permissionIds = [
                 ProjectPermissions::PROJECT_WILDCARD,
+                ProjectPermissions::PROJECT_READ,
+                ProjectPermissions::PROJECT_UPDATE,
+                ProjectPermissions::PROJECT_DELETE,
+                ProjectPermissions::PROJECT_TASK_WILDCARD,
                 ProjectPermissions::PROJECT_TASK_READ,
                 ProjectPermissions::PROJECT_TASK_CREATE,
                 ProjectPermissions::PROJECT_TASK_UPDATE,

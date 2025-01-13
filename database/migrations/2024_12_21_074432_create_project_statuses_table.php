@@ -12,10 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('project_statuses', function (Blueprint $table) {
-            $table->id(); // プライマリキー
-            $table->string('name')->unique(); // ステータス名
+            $table->unsignedBigInteger('id');        // ID(手動)
+            $table->string('name');                  // ステータス名
             $table->text('description')->nullable(); // 説明
-            $table->timestamps(); // 作成・更新日時
+            $table->timestamps();                    // 作成・更新日時
+
+            // 主キー制約
+            $table->primary('id');
+
+            // ユニーク制約
+            $table->unique('name');
         });
     }
 

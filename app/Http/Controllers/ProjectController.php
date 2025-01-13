@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Project;
 use Symfony\Component\HttpFoundation\Response;
 use App\Enums\ProjectStatus;
+use Illuminate\Support\Facades\DB;
+use App\Enums\ProjectPermissions;
 
 class ProjectController extends Controller
 {
@@ -56,8 +58,6 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO: ポリシーを使用してプロジェクトの作成権限を確認
-
         // プロジェクトの作成
         $validated = $request->validate([
             'name' => 'required|string|max:255', // プロジェクトの名前(必須、文字列、最大255文字)
@@ -66,7 +66,7 @@ class ProjectController extends Controller
             'end_date' => 'nullable|date',       // プロジェクトの終了日(NULL可、日付)
         ]);
 
-        // create project data
+        // プロジェクトデータを作成
         $projectData = [
             'name' => $validated['name'],
             'description' => $validated['description'] ?? null,
@@ -77,13 +77,44 @@ class ProjectController extends Controller
             'created_by' => Auth::id(),
         ];
 
-        $project = Project::create($projectData);
-        // TODO: オーナーロールの作成
-        // TODO: オーナーロールの割当
+        // トランザクションを使用してプロジェクトを作成
+        $newProject = null;
 
+        DB::transaction(function () use ($projectData, &$newProject) {
+            // プロジェクトを作成
+            $newProject = Project::create($projectData);
+
+            // デフォルトのロールを作成
+            $newProjectRoles = $newProject->projectRoles()->createMany([
+                [
+                    'project_permission_id' => ProjectPermissions::OWNER,
+                    'name' => 'オーナー', 
+                    'description' => 'プロジェクトのオーナーです。'
+                ],
+                [
+                    'project_permission_id' => ProjectPermissions::ADMIN,
+                    'name' => '管理者',
+                    'description' => 'プロジェクトの管理者です。'
+                ],
+                [
+                    'project_permission_id' => ProjectPermissions::MEMBER,
+                    'name' => 'メンバー',
+                    'description' => 'プロジェクトのメンバーです。'
+                ],
+            ]);
+
+            // プロジェクト作成者をプロジェクトメンバーに登録
+            $newProject->projectMembers()->attach($newProject->created_by, ['joined_at' => now()]);
+
+            // プロジェクト作成者にオーナーロールを割り当て
+            $ownerRole = $newProjectRoles[0];
+            $ownerRole->projectMembers()->attach($newProject->created_by, ['joined_at' => now()]);
+        });
+
+        // レスポンス
         return response()->json([
             'message' => 'Project created successfully',
-            'project' => $project,
+            'project' => $newProject,
         ], 201);
     }
 
@@ -143,7 +174,7 @@ class ProjectController extends Controller
 
         $user = Auth::user();
         $is_self = $user->id === $validated['user_id'];
-        if($is_self){
+        if ($is_self) {
             return response()->json(['error' => 'You cannot invite yourself']);
         }
 
@@ -158,18 +189,18 @@ class ProjectController extends Controller
 
         return response()->json(['message' => 'Member added successfully'], 200);
     }
-//
-//    public function removeMember(Request $request, Project $project)
-//    {
-//        $this->authorize('update', $project);
-//
-//        $validated = $request->validate([
-//            'user_id' => 'required|exists:users,id',
-//        ]);
-//
-//        // 中間テーブルからメンバーを削除
-//        $project->members()->detach($validated['user_id']);
-//
-//        return response()->json(['message' => 'Member removed successfully'], 200);
-//    }
+    //
+    //    public function removeMember(Request $request, Project $project)
+    //    {
+    //        $this->authorize('update', $project);
+    //
+    //        $validated = $request->validate([
+    //            'user_id' => 'required|exists:users,id',
+    //        ]);
+    //
+    //        // 中間テーブルからメンバーを削除
+    //        $project->members()->detach($validated['user_id']);
+    //
+    //        return response()->json(['message' => 'Member removed successfully'], 200);
+    //    }
 }

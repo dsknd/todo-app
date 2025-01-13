@@ -24,22 +24,30 @@ return new class extends Migration
         Schema::create('project_roles', function (Blueprint $table) {
             // カラム定義
             $table->id();
-            $table->string('name');                                        // ロール名
-            $table->string('description')->nullable();                     // ロールの説明
-            $table->unsignedBigInteger('project_id');                      // プロジェクトID
-            $table->unsignedBigInteger('project_permission_id');           // 権限ID   
+            $table->unsignedBigInteger('project_role_type_id');            // プロジェクトロールタイプID
+            $table->unsignedBigInteger('project_id')->nullable();          // プロジェクトID
+            $table->unsignedBigInteger('created_by')->nullable();          // 作成者ID
+            $table->string('name');                                        // プロジェクトロール名
+            $table->string('description')->nullable();                     // プロジェクトロールの説明
             $table->timestamps();                                          // 作成日時、更新日時
 
             // 外部キー制約
-            $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
-            $table->foreign('project_permission_id')->references('permission_id')->on('project_permissions')->cascadeOnDelete();
+            $table->foreign('project_role_type_id')
+                ->references('id')
+                ->on('project_role_types')
+                ->cascadeOnDelete();
+
+            $table->foreign(['project_id', 'created_by'])
+                ->references(['project_id', 'user_id'])
+                ->on('project_members')
+                ->nullOnDelete();
 
             // ユニーク制約
             $table->unique(['project_id', 'name']);
 
             // インデックス
             $table->index('project_id');
-            $table->index('project_permission_id');
+            $table->index('project_role_type_id');
         });
     }
 

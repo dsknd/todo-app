@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_invitation_statuses', function (Blueprint $table) {
-            // カラム定義
+        Schema::create('project_role_types', function (Blueprint $table) {
             $table->unsignedBigInteger('id');
             $table->string('name');
-            $table->string('description')->nullable();
+            $table->string('description');
             $table->timestamps();
 
             // 主キー制約
             $table->primary('id');
-
-            // ユニーク制約
-            $table->unique('name');
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_invitation_statuses');
+        Schema::dropIfExists('project_role_types');
     }
 };

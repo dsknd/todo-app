@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OwnershipType extends Model
+class ProjectRoleType extends Model
 {
-    protected $table = 'ownership_types';
+    protected $table = 'project_role_types';
 
     protected $keyType = 'int';
 
@@ -17,6 +17,6 @@ class OwnershipType extends Model
     protected $fillable = [
         'id',
         'name',
-        'description'
+        'description',
     ];
 }

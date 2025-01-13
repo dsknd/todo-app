@@ -1,0 +1,42 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('project_permission_assignments', function (Blueprint $table) {
+            // カラム定義
+            $table->unsignedBigInteger('project_permission_id');
+            $table->unsignedBigInteger('project_role_id');
+            
+            // 外部キー制約
+            $table->foreign('project_permission_id')
+                ->references('permission_id')
+                ->on('project_permissions')
+                ->onDelete('cascade');
+
+            $table->foreign('project_role_id')
+                ->references('id')
+                ->on('project_roles')
+                ->onDelete('cascade');
+
+            // 複合主キー
+            $table->primary(['project_permission_id', 'project_role_id']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('project_permission_assignments');
+    }
+};

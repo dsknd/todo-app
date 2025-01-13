@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Permissions;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Permission;
 use App\Models\ProjectPermission;
+use App\Enums\ProjectPermissions;
 
 /**
  * プロジェクトに関する権限を挿入するシーダークラス
@@ -18,54 +20,35 @@ class ProjectPermissionSeeder extends Seeder
     public function run(): void
     {
         DB::transaction(function () {
-            // プロジェクトに関する権限を取得
-            $projectPermissions = Permission::where('resource', 'projects')->get();
+            // 権限IDの配列を定義
+            $permissionIds = [
+                ProjectPermissions::PROJECT_WILDCARD,
+                ProjectPermissions::PROJECT_TASK_READ,
+                ProjectPermissions::PROJECT_TASK_CREATE,
+                ProjectPermissions::PROJECT_TASK_UPDATE,
+                ProjectPermissions::PROJECT_TASK_DELETE,
+                ProjectPermissions::PROJECT_ROLE_WILDCARD,
+                ProjectPermissions::PROJECT_ROLE_READ,
+                ProjectPermissions::PROJECT_ROLE_CREATE,
+                ProjectPermissions::PROJECT_ROLE_UPDATE,
+                ProjectPermissions::PROJECT_ROLE_DELETE,
+                ProjectPermissions::PROJECT_MEMBER_WILDCARD,
+                ProjectPermissions::PROJECT_MEMBER_READ,
+                ProjectPermissions::PROJECT_MEMBER_CREATE,
+                ProjectPermissions::PROJECT_MEMBER_UPDATE,
+                ProjectPermissions::PROJECT_MEMBER_DELETE,
+                ProjectPermissions::PROJECT_INVITATION_WILDCARD,
+                ProjectPermissions::PROJECT_INVITATION_READ,
+                ProjectPermissions::PROJECT_INVITATION_CREATE,
+                ProjectPermissions::PROJECT_INVITATION_UPDATE,
+                ProjectPermissions::PROJECT_INVITATION_DELETE,
+            ];
 
-            // プロジェクトタスクに関する権限を取得
-            $projectTaskPermissions = Permission::where('resource', 'projects.tasks')->get();
-
-            // プロジェクト役割に関する権限を取得
-            $projectRolePermissions = Permission::where('resource', 'projects.roles')->get();
-
-            // プロジェクトメンバーに関する権限を取得
-            $projectMemberPermissions = Permission::where('resource', 'projects.members')->get();
-
-            // プロジェクト招待に関する権限を取得
-            $projectInvitationPermissions = Permission::where('resource', 'projects.invitations')->get();
-
-            // プロジェクトに関する権限を挿入
-            foreach ($projectPermissions as $permission) {
-                ProjectPermission::create([
-                    'permission_id' => $permission->id,
-                ]);
-            }
-
-            // プロジェクトタスクに関する権限を挿入
-            foreach ($projectTaskPermissions as $permission) {
-                ProjectPermission::create([
-                    'permission_id' => $permission->id,
-                ]);
-            }
-
-            // プロジェクト役割に関する権限を挿入
-            foreach ($projectRolePermissions as $permission) {
-                ProjectPermission::create([
-                    'permission_id' => $permission->id,
-                ]);
-            }
-
-            // プロジェクトメンバーに関する権限を挿入
-            foreach ($projectMemberPermissions as $permission) {
-                ProjectPermission::create([
-                    'permission_id' => $permission->id,
-                ]);
-            }
-
-            // プロジェクト招待に関する権限を挿入
-            foreach ($projectInvitationPermissions as $permission) {
-                ProjectPermission::create([
-                    'permission_id' => $permission->id,
-                ]);
+            // 各権限IDに対して個別にレコードを作成
+            foreach ($permissionIds as $permissionId) {
+                $projectPermission = new ProjectPermission();
+                $projectPermission->permission_id = $permissionId;
+                $projectPermission->save();
             }
         });
     }

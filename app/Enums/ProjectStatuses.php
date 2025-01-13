@@ -11,11 +11,12 @@ use BenSampo\Enum\Enum;
  * @method static static OnHold()
  * @method static static Cancelled()
  */
-final class ProjectStatus extends Enum
+final class ProjectStatuses extends Enum
 {
-    const Pending = 1;
-    const InProgress = 2;
-    const Completed = 3;
-    const OnHold = 4;
-    const Cancelled = 5;
+    const PENDING = 1;
+    const IN_PROGRESS = 2;
+    const COMPLETED = 3;
+    const ON_HOLD = 4;
+    const CANCELLED = 5;
 }
+

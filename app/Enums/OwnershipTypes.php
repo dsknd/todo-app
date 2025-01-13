@@ -5,11 +5,11 @@ namespace App\Enums;
 use BenSampo\Enum\Enum;
 
 /**
- * @method static static Personal()
- * @method static static Project()
+ * @method static static PERSONAL()
+ * @method static static PROJECT()
  */
 final class OwnershipTypes extends Enum
 {
-    const Personal = 1;
-    const Project = 2;
+    const PERSONAL = 1;
+    const PROJECT = 2;
 }

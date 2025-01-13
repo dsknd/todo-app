@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-
+use App\Enums\Categories;
 class CategorySeeder extends Seeder
 {
     /**
@@ -15,34 +15,29 @@ class CategorySeeder extends Seeder
         // プロジェクトカテゴリのデータ
         $categories = [
             [
+                'id' => Categories::NA,
                 'name' => 'N/A',
                 'description' => 'No category specified.',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
+                'id' => Categories::SOFTWARE_DEVELOPMENT,
                 'name' => 'Software Development',
                 'description' => 'Projects related to software development and programming.',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
+                'id' => Categories::MARKETING,
                 'name' => 'Marketing',
                 'description' => 'Projects related to marketing campaigns and activities.',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
+                'id' => Categories::RESEARCH,
                 'name' => 'Research',
                 'description' => 'Projects focused on research and innovation.',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
+                'id' => Categories::OPERATIONS,
                 'name' => 'Operations',
                 'description' => 'Projects related to operations and logistics.',
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
         ];
 

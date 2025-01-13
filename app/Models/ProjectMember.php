@@ -11,5 +11,6 @@ class ProjectMember extends Pivot
     protected $fillable = [
         'project_id',
         'user_id',
+        'joined_at',
     ];
 }

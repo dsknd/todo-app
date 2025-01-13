@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
-
+use App\Models\ProjectMember;
+use App\Models\Category;
 class Project extends Model
 {
     use HasFactory;
@@ -25,7 +25,7 @@ class Project extends Model
         'category_id',
     ];
 
-    public function invitations():HasMany
+    public function projectInvitations():HasMany
     {
         return $this->hasMany(ProjectInvitation::class);
     }
@@ -33,31 +33,35 @@ class Project extends Model
     /**
      * プロジェクト作成者を取得します。
      */
-    public function user():BelongsTo
+    public function projectCreatedBy():BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    // TODO: プロジェクトのカテゴリを取得
+
     /**
      * プロジェクトのステータスを取得します。
      */
-    public function status():BelongsTo
+    public function projectStatus():BelongsTo
     {
-        return $this->belongsTo(ProjectStatus::class, 'status_id');
+        return $this->belongsTo(ProjectStatus::class, 'project_status_id');
     }
 
     /**
      * プロジェクトに参加しているユーザを取得します。
      */
-    public function members():BelongsToMany
+    public function projectMembers():BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'project_members', 'project_id', 'user_id')->withPivot('joined_at');
+        return $this->belongsToMany(User::class, 'project_members', 'project_id', 'user_id')
+                    ->using(ProjectMember::class)
+                    ->withPivot('joined_at');
     }
 
     /**
      * プロジェクトに関連するロールを取得します。
      */
-    public function roles():HasMany
+    public function projectRoles():HasMany
     {
         return $this->hasMany(ProjectRole::class);
     }
@@ -65,7 +69,7 @@ class Project extends Model
     /**
      * プロジェクトに関連するタスクを取得します。
      */
-    public function tasks():HasMany
+    public function projectTasks():HasMany
     {
         return $this->hasMany(Task::class, 'project_id', 'id');
     }
@@ -73,13 +77,14 @@ class Project extends Model
     /**
      * プロジェクトのステータス別にタスク数を取得します。
      */
-    public function taskStatistics():HasMany
+    public function projectTaskStatistics():HasMany
     {
         return $this->hasMany(ProjectTaskStatistic::class, 'project_id', 'id');
     }
 
-
-
+    /**
+     * プロジェクトの詳細を取得します。
+     */
     public function scopeWithDetail(Builder $query): Builder
     {
         return $query->select(

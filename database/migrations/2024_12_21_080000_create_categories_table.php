@@ -24,10 +24,16 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             // カラム定義
-            $table->id();                                                 // ID
-            $table->string('name')->unique();                     // カテゴリ名
-            $table->text('description')->nullable();              // 説明
+            $table->unsignedBigInteger('id');                             // ID(手動)
+            $table->string('name');                                       // カテゴリ名
+            $table->text('description')->nullable();                      // 説明
             $table->timestamps();                                         // 作成日時と更新日時
+
+            // 主キー制約
+            $table->primary('id');
+
+            // ユニーク制約
+            $table->unique('name');
         });
     }
 

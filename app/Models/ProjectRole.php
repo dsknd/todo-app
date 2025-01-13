@@ -10,6 +10,8 @@ class ProjectRole extends Model
 
     protected $fillable = [
         'project_id',
+        'project_role_type_id',
+        'project_permission_id',
         'name',
         'description',
     ];
@@ -23,10 +25,27 @@ class ProjectRole extends Model
     }
 
     /**
+     * 関連するプロジェクトロールタイプを取得
+     */
+    public function projectRoleType()
+    {
+        return $this->belongsTo(ProjectRoleType::class, 'project_role_type_id');
+    }
+
+    /**
      * このロールに関連付けられたスコープを取得
      */
     public function scopes()
     {
         return $this->belongsToMany(Scope::class, 'project_role_scopes', 'project_role_id', 'scope_id');
+    }
+
+    /**
+     * このロールに関連付けられたプロジェクトメンバーを取得
+     */
+    public function projectMembers()
+    {
+        return $this->belongsToMany(User::class, 'project_role_assignments', 'project_role_id', 'user_id')
+                    ->using(ProjectRoleAssignment::class);
     }
 }

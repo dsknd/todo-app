@@ -12,10 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ownership_types', function (Blueprint $table) {
-            $table->id();
+            // カラム定義
+            $table->unsignedBigInteger('id');
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
+
+            // 主キー制約
+            $table->primary('id');
+
+            // ユニーク制約
+            $table->unique('name');
+
         });
     }
 

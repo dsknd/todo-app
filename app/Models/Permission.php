@@ -43,12 +43,4 @@ class Permission extends Model
         return $this->hasMany(PermissionClosure::class, 'descendant_id', 'id');
     }
 
-    /**
-     * ProjectPermission との1対1（hasOne）。
-     * ※ project_permissions.permission_id = permissions.id
-     */
-    public function projectPermission()
-    {
-        return $this->hasOne(ProjectPermission::class, 'permission_id');
-    }
 }

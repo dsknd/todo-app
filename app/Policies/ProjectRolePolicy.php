@@ -9,9 +9,20 @@ use Illuminate\Auth\Access\Response;
 use App\Enums\ProjectPermissions;
 use Illuminate\Support\Facades\Log;
 use App\Models\Permission;
+use App\UseCases\CheckProjectRolePermissionUseCase;
 
+/**
+ * プロジェクトロールのポリシー
+ */
 class ProjectRolePolicy
 {
+    private CheckProjectRolePermissionUseCase $checkProjectRolePermissionUseCase;
+
+    public function __construct(CheckProjectRolePermissionUseCase $checkProjectRolePermissionUseCase)
+    {
+        $this->checkProjectRolePermissionUseCase = $checkProjectRolePermissionUseCase;
+    }
+
     /**
      * Determine whether the user can view any models.
      */
@@ -21,65 +32,82 @@ class ProjectRolePolicy
     }
 
     /**
-     * Determine whether the user can view the model.
+     * プロジェクトロールを閲覧できるかどうかを判定する
      */
     public function view(User $user, ProjectRole $projectRole): bool
     {
-        return false;
+        // プロジェクトロールを閲覧するために必要な権限
+        $requiredPermission = ProjectPermissions::PROJECT_ROLE_READ();
+
+        // ユーザーがプロジェクトロールを閲覧するために必要な権限を持っているかどうかを判定する
+        $hasRequiredPermission = $this->checkProjectRolePermissionUseCase->hasPermission(
+            $user,
+            $projectRole->project,
+            $requiredPermission
+        );
+
+        return $hasRequiredPermission;
     }
 
     /**
-     * Determine whether the user can create models.
+     * プロジェクトロールを作成できるかどうかを判定する
      */
     public function create(User $user, Project $project): bool
     {
-        $requiredPermissionId = ProjectPermissions::PROJECT_ROLE_CREATE;
+        // プロジェクトロールを作成するために必要な権限
+        $requiredPermission = ProjectPermissions::PROJECT_ROLE_CREATE();
 
-        $permissions = $user->projectRolesForProject($project->id)
-            ->with([
-                'projectPermissions.permission.descendants' => function ($query) {
-                    $query->select('id', 'scope', 'ancestor_id', 'descendant_id'); // 必要なフィールドを指定
-                }
-            ])
-            ->select('id') // 必要に応じて親のフィールドを絞り込む
-            ->get();
+        // ユーザーがプロジェクトロールを作成するために必要な権限を持っているかどうかを判定する
+        $hasRequiredPermission = $this->checkProjectRolePermissionUseCase->hasPermission(
+            $user,
+            $project,
+            $requiredPermission
+        );
 
-        // 子孫の scope のみを抽出
-        $permissionIds = $permissions->flatMap(function ($role) {
-            return $role->projectPermissions->flatMap(function ($projectPermission) {
-                return $projectPermission->permission->descendants->pluck('id');
-            });
-        });
-
-        Log::info('permissionIds: ' . $permissionIds);
-
-        // 必要な権限が含まれているか確認
-        if ($permissionIds->contains($requiredPermissionId)) {
-            Log::info("The required permission '{$requiredPermissionId}' is granted.");
-            return true;
-        } else {
-            Log::warning("The required permission '{$requiredPermissionId}' is missing.");
-            return false;
-        }
+        // 必要な権限を持っている場合は true を返す
+        return $hasRequiredPermission;
     }
+    
     /**
-     * Determine whether the user can update the model.
+     * プロジェクトロールを更新できるかどうかを判定する
      */
     public function update(User $user, ProjectRole $projectRole): bool
     {
-        return false;
+        // プロジェクトロールを更新するために必要な権限
+        $requiredPermission = ProjectPermissions::PROJECT_ROLE_UPDATE();
+
+        // ユーザーがプロジェクトロールを更新するために必要な権限を持っているかどうかを判定する
+        $hasRequiredPermission = $this->checkProjectRolePermissionUseCase->hasPermission(
+            $user,
+            $projectRole->project,
+            $requiredPermission
+        );
+
+        // 必要な権限を持っている場合は true を返す
+        return $hasRequiredPermission;
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * プロジェクトロールを削除できるかどうかを判定する
      */
     public function delete(User $user, ProjectRole $projectRole): bool
     {
-        return false;
+        // プロジェクトロールを削除するために必要な権限
+        $requiredPermission = ProjectPermissions::PROJECT_ROLE_DELETE();
+
+        // ユーザーがプロジェクトロールを削除するために必要な権限を持っているかどうかを判定する
+        $hasRequiredPermission = $this->checkProjectRolePermissionUseCase->hasPermission(
+            $user,
+            $projectRole->project,
+            $requiredPermission
+        );
+
+        // 必要な権限を持っている場合は true を返す
+        return $hasRequiredPermission;
     }
 
     /**
-     * Determine whether the user can restore the model.
+     * プロジェクトロールを復元できるかどうかを判定する
      */
     public function restore(User $user, ProjectRole $projectRole): bool
     {

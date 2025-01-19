@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\UseCases\CheckProjectRolePermissionUseCase;
+use App\UseCases\Implementations\CheckProjectRolePermission;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(CheckProjectRolePermissionUseCase::class, CheckProjectRolePermission::class);
     }
 
     /**

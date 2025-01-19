@@ -7,8 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectStatusController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TaskCategoryController;
-
-
+use App\Http\Controllers\ProjectRoleAssignmentController;
+use App\Http\Controllers\ProjectRoleController;
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -20,10 +20,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // ====================================================================================
     Route::apiResource('projects', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 
+    // プロジェクトロール
+    Route::apiResource('project-roles', ProjectRoleController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+
     // プロジェクトロールアクション
     // ====================================================================================
-    Route::post('/projects/{project}/members/{user}/roles/{role}',[ProjectController::class, 'assignRole']);
-    Route::delete('/projects/{project}/members/{user}/roles/{role}', [ProjectController::class, 'removeRole']);
+
+    Route::post('/projects/{project}/members/{user}/roles/{projectRole}',[ProjectRoleAssignmentController::class, 'attach']);
+    Route::delete('/projects/{project}/members/{user}/roles/{projectRole}', [ProjectRoleAssignmentController::class, 'detach']);
 
     // ユーザーアクション
     // ====================================================================================

@@ -11,5 +11,21 @@ class ProjectPermissionAssignment extends Pivot
         'project_permission_id',
         'project_role_id',
     ];
+
+    /**
+     * ProjectPermission とのリレーション (belongsTo)
+     */
+    public function projectPermission()
+    {
+        return $this->belongsTo(ProjectPermission::class, 'project_permission_id');
+    }
+
+    /**
+     * ProjectRole とのリレーション (belongsTo)
+     */
+    public function projectRole()
+    {
+        return $this->belongsTo(ProjectRole::class, 'project_role_id');
+    }
 }
 

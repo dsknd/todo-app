@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\ProjectRole;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
+use App\Enums\ProjectRoleTypes;
+use App\Models\Project;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProjectRoleController extends Controller
 {
@@ -26,21 +30,32 @@ class ProjectRoleController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * プロジェクトロールを作成します。
      */
     public function store(Request $request)
     {
-        // TODO: ポリシーを使用してプロジェクトロールの作成権限を確認
-
-        // validate
+        // バリデーション
         $validated = $request->validate([
             'project_id' => 'required|exists:projects,id',
-            'user_id' => 'required|exists:users,id',
-            'scope' => 'required|in:admin,member',
+            'name' => 'required|string',
+            'description' => 'nullable|string',
         ]);
 
-        // create project role
-        $projectRole = ProjectRole::create($validated);
+        // プロジェクトを取得
+        $projectId = $request->query('project_id');
+        $project = Project::findOrFail($projectId);
+
+        // ポリシーを使用してプロジェクトロールの作成権限を確認
+        $this->authorize('create', [ProjectRole::class, $project]);
+
+        // プロジェクトロールを作成
+        $projectRole = ProjectRole::create([
+            'project_role_type_id' => ProjectRoleTypes::CUSTOM,
+            'project_id' => $projectId,
+            'created_by' => Auth::user()->id,
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+        ]);
 
         return response()->json($projectRole, Response::HTTP_CREATED);
     }
@@ -48,18 +63,17 @@ class ProjectRoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(ProjectRole $projectRole)
     {
-        // TODO: ポリシーを使用してプロジェクトロールの表示権限を確認
 
-        $projectRole = ProjectRole::findOrFail($id);
+        // TODO: ポリシーを使用してプロジェクトロールの表示権限を確認
         return response()->json($projectRole, Response::HTTP_OK);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(ProjectRole $projectRole)
     {
     }
 

@@ -11,6 +11,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use App\Models\ProjectMember;
+use App\Models\ProjectRole;
+use App\Models\ProjectRoleAssignment;
+use App\Models\Permission;
+use App\Models\ProjectPermissionAssignment;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -55,7 +61,7 @@ class User extends Authenticatable
     /**
      * ユーザが所有するプロジェクトを取得します。
      */
-    public function projects():HasMany
+    public function projects(): HasMany
     {
         return $this->hasMany(Project::class, 'created_by');
     }
@@ -63,7 +69,7 @@ class User extends Authenticatable
     /**
      * ユーザが参加しているプロジェクトを取得します。
      */
-    public function participatedProjects():HasManyThrough
+    public function participatedProjects(): HasManyThrough
     {
         return $this->hasManyThrough(
             Project::class,
@@ -76,19 +82,34 @@ class User extends Authenticatable
     }
 
     /**
-     * プロジェクトロールのリレーションシップ
-     *
-     * このユーザーが割り当てられているプロジェクトロールを取得します。
+     * ユーザーが属するプロジェクトメンバーシップ
      */
-    public function projectRoles():HasManyThrough
+    public function projectMembers()
     {
-        return $this->hasManyThrough(
+        return $this->hasMany(ProjectMember::class, 'user_id');
+    }
+
+    /**
+     * ユーザーが割り当てられているプロジェクトロール
+     */
+    public function projectRoles()
+    {
+        return $this->belongsToMany(
             ProjectRole::class,
-            ProjectRoleAssignment::class,
-            'user_id',     // 中間テーブルのユーザーID
-            'id',          // ロールテーブルのID
-            'id',          // ユーザーテーブルのID
-            'role_id'      // 中間テーブルのロールID
-        );
+            'project_role_assignments', // 中間テーブル
+            'user_id',                  // 中間テーブル上のユーザーID
+            'project_role_id'           // 中間テーブル上のプロジェクトロールID
+        )
+            ->using(ProjectRoleAssignment::class) // Pivot モデルの指定
+            ->withTimestamps(); // タイムスタンプを扱う場合
+    }
+
+
+    /**
+     * ユーザーが特定のプロジェクトに割り当てられているロールを取得します。
+     */
+    public function projectRolesForProject($projectId)
+    {
+        return $this->projectRoles()->where('project_roles.project_id', $projectId);
     }
 }

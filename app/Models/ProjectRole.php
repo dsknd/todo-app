@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ProjectRoleAssignment;
 
 class ProjectRole extends Model
 {
@@ -38,7 +40,7 @@ class ProjectRole extends Model
     public function projectMembers()
     {
         return $this->belongsToMany(User::class, 'project_role_assignments', 'project_role_id', 'user_id')
-                    ->using(ProjectRoleAssignment::class);
+            ->using(ProjectRoleAssignment::class);
     }
 
     //=========================================================================================
@@ -53,11 +55,18 @@ class ProjectRole extends Model
     public function projectPermissions()
     {
         return $this->belongsToMany(
-            ProjectPermission::class,               // 中間テーブルのモデル
-            'project_permission_assignments',       // 中間テーブルのテーブル名
-            'project_role_id',                      // このモデルの外部キー
-            'project_permission_id'                 // 関連するモデルの外部キー
-        )
-        ->using(ProjectPermissionAssignment::class);
+            ProjectPermission::class,
+            'project_permission_assignments',
+            'project_role_id',
+            'project_permission_id'
+        );
+    }
+
+    /**
+     * project_role_assignments テーブルとの1対多リレーションを定義
+     */
+    public function projectRoleAssignments()
+    {
+        return $this->hasMany(ProjectRoleAssignment::class, 'project_role_id');
     }
 }

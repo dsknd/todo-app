@@ -13,7 +13,7 @@ use App\Models\ProjectPermission;
 use App\Http\Resources\PermissionResource;
 use App\Http\Requests\StoreProjectRoleRequest;
 use App\Http\Requests\UpdateProjectRoleRequest;
-
+use App\UseCases\CheckProjectRolePermissionUseCase;
 class ProjectRoleController extends Controller
 {
     /**
@@ -50,10 +50,9 @@ class ProjectRoleController extends Controller
     {
         // プロジェクトを取得
         $projectId = $request->input('project_id');
-        $project = Project::findOrFail($projectId);
 
         // ポリシーを使用してプロジェクトロールの作成権限を確認
-        $this->authorize('create', [ProjectRole::class, $project]);
+        $this->authorize('create', $projectId);
 
         // プロジェクトロールを作成
         $projectRole = ProjectRole::create([
@@ -88,9 +87,10 @@ class ProjectRoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectRoleRequest $request, string $id)
+    public function update(UpdateProjectRoleRequest $request, int $projectRoleId)
     {
-        // TODO: ポリシーを使用してプロジェクトロールの編集権限を確認
+        $projectRole = ProjectRole::findOrFail($projectRoleId);
+        $this->authorize('update', $projectRole);
 
         // validate
         $validated = $request->validate([
@@ -98,8 +98,8 @@ class ProjectRoleController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        DB::transaction(function () use ($request, $id) {
-            $projectRole = ProjectRole::findOrFail($id);
+        DB::transaction(function () use ($request, $projectRoleId) {
+            $projectRole = ProjectRole::findOrFail($projectRoleId);
             $projectRole->update($request->all());
         });
 

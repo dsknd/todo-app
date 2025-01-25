@@ -17,26 +17,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('task_relationships', function (Blueprint $table) {
+        Schema::create('task_dependencies', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('parent_task_id'); // 親タスクID
-            $table->unsignedBigInteger('child_task_id');  // 子タスクID
-            $table->unsignedInteger('depth');             // 階層
+            $table->unsignedBigInteger('task_id'); // タスクID
+            $table->unsignedBigInteger('dependency_task_id');  // 依存タスクID
             $table->timestamps();                                 // 作成日時と更新日時
 
             // 外部キー制約
-            $table->foreign('parent_task_id')
+            $table->foreign('task_id')
                 ->references('id')
                 ->on('tasks')
                 ->cascadeOnDelete();
 
-            $table->foreign('child_task_id')
+            $table->foreign('dependency_task_id')
                 ->references('id')
                 ->on('tasks')
                 ->cascadeOnDelete();
 
             // 主キー制約
-            $table->primary(['parent_task_id', 'child_task_id']);
+            $table->primary(['task_id', 'dependency_task_id']);
         });
     }
 
@@ -47,6 +46,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_relationships');
+        Schema::dropIfExists('task_dependencies');
     }
 };

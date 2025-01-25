@@ -19,14 +19,15 @@ return new class extends Migration
     {
         Schema::create('project_task_assignments', function (Blueprint $table){
             // カラム定義
-            $table->unsignedBigInteger('project_id');  // プロジェクト
-            $table->unsignedBigInteger('task_id');     // タスク
-            $table->unsignedBigInteger('assignee_id'); // 割り当てたユーザ
-            $table->unsignedBigInteger('assigned_by'); // 割り当てられたユーザ
+            $table->unsignedBigInteger('project_task_id');    // タスク
+            $table->unsignedBigInteger('project_id');         // プロジェクト
+            $table->unsignedBigInteger('assignee_id');        // 割り当てたユーザ
+            $table->unsignedBigInteger('assigned_by');        // 割り当てられたユーザ
             $table->timestamps();
 
             // 外部キー制約
-            $table->foreign('task_id')->references('id')->on('tasks')->cascadeOnDelete();
+            $table->foreign('project_task_id')->references('task_id')->on('project_tasks')->cascadeOnDelete();
+
             $table->foreign(['project_id', 'assignee_id'])
                 ->references(['project_id', 'user_id'])
                 ->on('project_members')
@@ -38,7 +39,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             // 主キー制約
-            $table->primary(['task_id', 'project_id', 'assignee_id']);
+            $table->primary(['project_task_id', 'project_id', 'assignee_id']);
         });
     }
 

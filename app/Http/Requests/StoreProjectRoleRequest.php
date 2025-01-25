@@ -26,7 +26,6 @@ class StoreProjectRoleRequest extends FormRequest
             'project_id' => 'required|integer',
             'name' => 'required|string',
             'description' => 'nullable|string',
-            'permission_ids' => 'required|array',
         ];
     }
 
@@ -41,8 +40,6 @@ class StoreProjectRoleRequest extends FormRequest
             'name.required' => '"name" is required.',
             'name.string' => '"name" is not a valid string.',
             'description.string' => '"description" is not a valid string.',
-            'permission_ids.required' => '"permission_ids" is required.',
-            'permission_ids.array' => '"permission_ids" is not a valid array.',
         ];
     }
 }

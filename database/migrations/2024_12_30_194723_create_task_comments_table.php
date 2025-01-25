@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('task_id');
             $table->unsignedBigInteger('user_id');
             $table->text('content');
+            $table->unsignedBigInteger('parent_id')->nullable();
             $table->timestamps();
 
             // 外部キー設定
@@ -28,6 +29,11 @@ return new class extends Migration
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
+                ->cascadeOnDelete();
+
+            $table->foreign('parent_id')
+                ->references('id')
+                ->on('task_comments')
                 ->cascadeOnDelete();
 
             // インデックス設定

@@ -9,9 +9,9 @@ use App\UseCases\CheckProjectRolePermissionUseCase;
 
 class CheckProjectRolePermission implements CheckProjectRolePermissionUseCase
 {
-    public function hasPermission(User $user, Project $project, ProjectPermissions $requiredPermission): bool
+    public function hasPermission(User $user, int $projectId, ProjectPermissions $requiredPermission): bool
     {
-        $hasRequiredPermission = $user->projectRolesForProject($project->id)
+        $hasRequiredPermission = $user->projectRolesForProject($projectId)
             ->whereHas('projectPermissions.permission.descendants', function ($query) use ($requiredPermission) {
                 $query->select('id')->where('id', $requiredPermission->value);
             })

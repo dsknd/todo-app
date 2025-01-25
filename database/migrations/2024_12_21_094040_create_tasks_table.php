@@ -32,7 +32,6 @@ return new class extends Migration
             $table->unsignedBigInteger ('priority_id')->nullable(); // 優先度
             $table->unsignedBigInteger ('user_id');                 // 作成者
             $table->unsignedBigInteger('status_id')->nullable();    // ステータス
-            $table->unsignedBigInteger('project_id')->nullable();   // プロジェクトID(タスク種別が"project"の場合のみ)
             $table->boolean('is_recurring')->default(false);        // 継続タスクかどうか
             $table->timestamps();                                   // 作成日時と更新日時
 
@@ -41,7 +40,6 @@ return new class extends Migration
             $table->foreign('priority_id')->references('id')->on('task_priorities')->cascadeOnDelete();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('status_id')->references('id')->on('task_statuses')->cascadeOnDelete();
-            $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
         });
     }
 

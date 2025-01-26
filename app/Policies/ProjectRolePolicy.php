@@ -34,7 +34,7 @@ class ProjectRolePolicy
     /**
      * プロジェクトロールを閲覧できるかどうかを判定する
      */
-    public function view(User $user, int $projectId): bool
+    public function view(User $user, Project $project): bool
     {
         // プロジェクトロールを閲覧するために必要な権限
         $requiredPermission = ProjectPermissions::PROJECT_ROLE_READ();
@@ -42,7 +42,7 @@ class ProjectRolePolicy
         // ユーザーがプロジェクトロールを閲覧するために必要な権限を持っているかどうかを判定する
         $hasRequiredPermission = $this->checkProjectRolePermissionUseCase->hasPermission(
             $user,
-            $projectId,
+            $project,
             $requiredPermission
         );
 
@@ -52,7 +52,7 @@ class ProjectRolePolicy
     /**
      * プロジェクトロールを作成できるかどうかを判定する
      */
-    public function create(User $user, int $projectId): bool
+    public function create(User $user, Project $project): bool
     {
         // プロジェクトロールを作成するために必要な権限
         $requiredPermission = ProjectPermissions::PROJECT_ROLE_CREATE();
@@ -60,7 +60,7 @@ class ProjectRolePolicy
         // ユーザーがプロジェクトロールを作成するために必要な権限を持っているかどうかを判定する
         $hasRequiredPermission = $this->checkProjectRolePermissionUseCase->hasPermission(
             $user,
-            $projectId,
+            $project,
             $requiredPermission
         );
 
@@ -71,7 +71,7 @@ class ProjectRolePolicy
     /**
      * プロジェクトロールを更新できるかどうかを判定する
      */
-    public function update(User $user, int $projectId): bool
+    public function update(User $user, Project $project): bool
     {
         // プロジェクトロールを更新するために必要な権限
         $requiredPermission = ProjectPermissions::PROJECT_ROLE_UPDATE();
@@ -79,7 +79,7 @@ class ProjectRolePolicy
         // ユーザーがプロジェクトロールを更新するために必要な権限を持っているかどうかを判定する
         $hasRequiredPermission = $this->checkProjectRolePermissionUseCase->hasPermission(
             $user,
-            $projectId,
+            $project,
             $requiredPermission
         );
 
@@ -90,7 +90,7 @@ class ProjectRolePolicy
     /**
      * プロジェクトロールを削除できるかどうかを判定する
      */
-    public function delete(User $user, int $projectId): bool
+    public function delete(User $user, Project $project): bool
     {
         // プロジェクトロールを削除するために必要な権限
         $requiredPermission = ProjectPermissions::PROJECT_ROLE_DELETE();
@@ -98,7 +98,7 @@ class ProjectRolePolicy
         // ユーザーがプロジェクトロールを削除するために必要な権限を持っているかどうかを判定する
         $hasRequiredPermission = $this->checkProjectRolePermissionUseCase->hasPermission(
             $user,
-            $projectId,
+            $project,
             $requiredPermission
         );
 

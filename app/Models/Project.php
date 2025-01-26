@@ -1,105 +1,192 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\ProjectMember;
-use App\Models\Category;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Project extends Model
 {
-    use HasFactory;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',
         'description',
-        'start_date',
-        'end_date',
+        'parent_project_id',
+        'planned_start_date',
+        'planned_end_date',
+        'actual_start_date',
+        'actual_end_date',
         'project_status_id',
+        'progress',
         'member_count',
         'task_count',
         'created_by',
         'category_id',
     ];
 
-    public function projectInvitations():HasMany
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'planned_start_date' => 'datetime',
+        'planned_end_date' => 'datetime',
+        'actual_start_date' => 'datetime',
+        'actual_end_date' => 'datetime',
+        'progress' => 'decimal:2',
+        'member_count' => 'integer',
+        'task_count' => 'integer',
+    ];
+
+    /**
+     * 親プロジェクトとの関連
+     */
+    public function parentProject(): BelongsTo
     {
-        return $this->hasMany(ProjectInvitation::class);
+        return $this->belongsTo(Project::class, 'parent_project_id');
     }
 
     /**
-     * プロジェクト作成者を取得します。
+     * 子プロジェクトとの関連
      */
-    public function projectCreatedBy():BelongsTo
+    public function childProjects(): HasMany
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->hasMany(Project::class, 'parent_project_id');
     }
 
-    // TODO: プロジェクトのカテゴリを取得
-
     /**
-     * プロジェクトのステータスを取得します。
+     * プロジェクトステータスとの関連
      */
-    public function projectStatus():BelongsTo
+    public function status(): BelongsTo
     {
         return $this->belongsTo(ProjectStatus::class, 'project_status_id');
     }
 
     /**
-     * プロジェクトに参加しているユーザを取得します。
+     * カテゴリーとの関連
      */
-    public function projectMembers():BelongsToMany
+    public function category(): BelongsTo
     {
-        return $this->belongsToMany(User::class, 'project_members', 'project_id', 'user_id')
-                    ->using(ProjectMember::class)
-                    ->withPivot('joined_at');
+        return $this->belongsTo(Category::class);
     }
 
     /**
-     * プロジェクトに関連するロールを取得します。
+     * 作成者との関連
      */
-    public function projectRoles():HasMany
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * プロジェクトメンバーとの関連
+     */
+    public function members(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'project_members')
+            ->withPivot(['joined_at'])
+            ->withTimestamps();
+    }
+
+    /**
+     * プロジェクトタスクとの関連
+     */
+    public function tasks(): BelongsToMany
+    {
+        return $this->belongsToMany(Task::class, 'project_tasks')
+            ->withPivot(['display_order', 'project_wbs_number', 'weight'])
+            ->withTimestamps();
+    }
+
+    /**
+     * プロジェクトマイルストーンとの関連
+     */
+    public function milestones(): HasMany
+    {
+        return $this->hasMany(ProjectMilestone::class);
+    }
+
+    /**
+     * プロジェクトロールとの関連
+     */
+    public function roles(): HasMany
     {
         return $this->hasMany(ProjectRole::class);
     }
 
     /**
-     * プロジェクトに関連するタスクを取得します。
+     * プロジェクト招待との関連
      */
-    public function projectTasks():HasMany
+    public function invitations(): HasMany
     {
-        return $this->hasMany(Task::class, 'project_id', 'id');
+        return $this->hasMany(ProjectInvitation::class);
     }
 
     /**
-     * プロジェクトのステータス別にタスク数を取得します。
+     * プロジェクトの進捗率を計算して更新
      */
-    public function projectTaskStatistics():HasMany
+    public function updateProgress(): void
     {
-        return $this->hasMany(ProjectTaskStatistic::class, 'project_id', 'id');
+        $this->progress = $this->tasks()
+            ->withPivot('weight')
+            ->get()
+            ->average(fn ($task) => $task->progress * $task->pivot->weight) ?? 0;
+        
+        $this->save();
     }
 
     /**
-     * プロジェクトの詳細を取得します。
+     * プロジェクトの開始日を取得（計画または実績）
      */
-    public function scopeWithDetail(Builder $query): Builder
+    public function getStartDate(): ?\DateTime
     {
-        return $query->select(
-            'projects.id',
-            'projects.name',
-            'projects.description',
-            'projects.start_date',
-            'projects.end_date',
-            'projects.member_count',
-            'projects.task_count',
-            'projects.created_by',
-            'categories.name as category', // カテゴリ名
-            'project_statuses.name as project_status' // プロジェクトステータス名
-        )
-            ->leftJoin('categories', 'projects.category_id', '=', 'categories.id')
-            ->leftJoin('project_statuses', 'projects.project_status_id', '=', 'project_statuses.id');
+        return $this->actual_start_date ?? $this->planned_start_date;
+    }
+
+    /**
+     * プロジェクトの終了日を取得（計画または実績）
+     */
+    public function getEndDate(): ?\DateTime
+    {
+        return $this->actual_end_date ?? $this->planned_end_date;
+    }
+
+    /**
+     * プロジェクトが遅延しているかどうかを判定
+     */
+    public function isDelayed(): bool
+    {
+        if (!$this->planned_end_date) {
+            return false;
+        }
+
+        if ($this->actual_end_date) {
+            return $this->actual_end_date > $this->planned_end_date;
+        }
+
+        return now() > $this->planned_end_date;
+    }
+
+    /**
+     * プロジェクトの全階層パスを取得
+     * 
+     * @return array<Project> 親プロジェクトから順に並んだ配列
+     */
+    public function getHierarchyPath(): array
+    {
+        $path = [$this];
+        $current = $this;
+
+        while ($current->parentProject) {
+            $current = $current->parentProject;
+            array_unshift($path, $current);
+        }
+
+        return $path;
     }
 }

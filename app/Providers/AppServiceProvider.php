@@ -23,6 +23,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // サービスのバインド
+        $this->app->singleton(\App\Services\MilestoneProgressService::class);
+
+        // Observerの登録
+        \App\Models\ProjectMember::observe(\App\Observers\ProjectMemberObserver::class);
+        \App\Models\ProjectTask::observe(\App\Observers\ProjectTaskObserver::class);
+        \App\Models\MilestoneTask::observe(\App\Observers\MilestoneTaskObserver::class);
+        \App\Models\Task::observe(\App\Observers\TaskObserver::class);
+
         DB::listen(function ($query) {
             // クエリ内容、バインディング、実行時間をログに出力
             Log::info('SQL: ' . $query->sql);

@@ -27,7 +27,7 @@ class ProjectRoleController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create(Request $request, Project $project)
     {
         //プロジェクトロールの権限を取得
         $permissions = ProjectPermission::with([
@@ -46,18 +46,16 @@ class ProjectRoleController extends Controller
     /**
      * プロジェクトロールを作成します。
      */
-    public function store(StoreProjectRoleRequest $request)
+    public function store(StoreProjectRoleRequest $request, Project $project)
     {
-        // プロジェクトを取得
-        $projectId = $request->input('project_id');
 
         // ポリシーを使用してプロジェクトロールの作成権限を確認
-        $this->authorize('create', $projectId);
+        $this->authorize('create', $project);
 
         // プロジェクトロールを作成
         $projectRole = ProjectRole::create([
             'project_role_type_id' => ProjectRoleTypes::CUSTOM,
-            'project_id' => $projectId,
+            'project_id' => $project->id,
             'created_by' => Auth::user()->id,
             'name' => $request->input('name'),
             'description' => $request->input('description'),

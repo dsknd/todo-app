@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ProjectRoleTypes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ProjectRoleAssignment;
@@ -11,11 +12,20 @@ class ProjectRole extends Model
     use HasFactory;
 
     protected $fillable = [
-        'project_role_type_id',
+        'type',
         'project_id',
         'created_by',
         'name',
         'description',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'type' => ProjectRoleTypes::class,
     ];
 
     /**
@@ -24,14 +34,6 @@ class ProjectRole extends Model
     public function project()
     {
         return $this->belongsTo(Project::class, 'project_id');
-    }
-
-    /**
-     * 関連するプロジェクトロールタイプを取得
-     */
-    public function projectRoleType()
-    {
-        return $this->belongsTo(ProjectRoleType::class, 'project_role_type_id');
     }
 
     /**
@@ -68,5 +70,13 @@ class ProjectRole extends Model
     public function projectRoleAssignments()
     {
         return $this->hasMany(ProjectRoleAssignment::class, 'project_role_id');
+    }
+
+    /**
+     * デフォルトの権限セットを取得
+     */
+    public function getDefaultPermissions(): array
+    {
+        return $this->type->getDefaultPermissions();
     }
 }

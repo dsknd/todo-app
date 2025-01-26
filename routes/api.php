@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('projects', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 
     // プロジェクトロール
-    Route::apiResource('project-roles', ProjectRoleController::class)->only(['index', 'create', 'show', 'store', 'update', 'destroy']);
+    Route::apiResource('projects/{project}/roles', ProjectRoleController::class)->only(['index', 'create', 'show', 'store', 'update', 'destroy']);
 
     // プロジェクトロールアクション
     // ====================================================================================

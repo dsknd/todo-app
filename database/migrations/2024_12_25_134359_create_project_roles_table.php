@@ -1,5 +1,8 @@
 <?php
 
+use App\Enums\ProjectRoles;
+use App\Enums\ProjectRoleTypes;
+use App\Models\ProjectRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,20 +26,15 @@ return new class extends Migration
     {
         Schema::create('project_roles', function (Blueprint $table) {
             // カラム定義
-            $table->id();
-            $table->unsignedBigInteger('project_role_type_id');            // プロジェクトロールタイプID
-            $table->unsignedBigInteger('project_id')->nullable();          // プロジェクトID
-            $table->unsignedBigInteger('created_by')->nullable();          // 作成者ID
-            $table->string('name');                                        // プロジェクトロール名
-            $table->string('description')->nullable();                     // プロジェクトロールの説明
-            $table->timestamps();                                          // 作成日時、更新日時
+            $table->id();                                                                        // ID
+            $table->enum('project_role_type', array_column(ProjectRoleTypes::cases(), 'value')); // ロールの種類(default, custom)
+            $table->unsignedBigInteger('project_id')->nullable();                                // プロジェクトID
+            $table->unsignedBigInteger('created_by')->nullable();                                // 作成者ID
+            $table->string('name');                                                              // プロジェクトロール名
+            $table->string('description')->nullable();                                           // プロジェクトロールの説明
+            $table->timestamps();                                                                // 作成日時、更新日時
 
             // 外部キー制約
-            $table->foreign('project_role_type_id')
-                ->references('id')
-                ->on('project_role_types')
-                ->cascadeOnDelete();
-
             $table->foreign(['project_id', 'created_by'])
                 ->references(['project_id', 'user_id'])
                 ->on('project_members')
@@ -47,7 +45,7 @@ return new class extends Migration
 
             // インデックス
             $table->index('project_id');
-            $table->index('project_role_type_id');
+            $table->index('project_role_type');
         });
     }
 

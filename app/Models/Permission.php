@@ -3,44 +3,129 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Permission extends Model
 {
-    protected $table = 'permissions';
-
-    protected $keyType = 'int';
-
-    protected $primaryKey = 'id';
-
-    public $incrementing = false;
-
     protected $fillable = [
-        'id',
-        'scope',
-        'resource',
-        'action',
-        'display_name',
+        'name',
         'description',
+        'parent_permission_id',
     ];
 
-    public function descendants()
+    /**
+     * 親権限との関連
+     */
+    public function parentPermission()
     {
-        return $this->hasManyThrough(
-            Permission::class,      // 子モデル（最終的に取得したいモデル）
-            PermissionClosure::class, // 中間テーブル（閉包テーブル）
-            'ancestor_id',          // 中間テーブル内のこのモデルの外部キー
-            'id',                   // 子モデルのキー
-            'id',                   // 現在のモデルのキー
-            'descendant_id'         // 中間テーブルの子モデルの外部キー
-        );
+        return $this->belongsTo(Permission::class, 'parent_permission_id');
     }
 
     /**
-     * 祖先権限を取得 (閉包テーブルを直接利用)
+     * 子権限との関連
      */
-    public function ancestors()
+    public function childPermissions()
     {
-        return $this->hasMany(PermissionClosure::class, 'descendant_id', 'id');
+        return $this->hasMany(Permission::class, 'parent_permission_id');
     }
 
+    /**
+     * 権限のクロージャーテーブルを通じた子孫権限との関連
+     */
+    public function descendants(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Permission::class,
+            'permission_closures',
+            'ancestor_id',
+            'descendant_id'
+        )->withPivot(['depth']);
+    }
+
+    /**
+     * 権限のクロージャーテーブルを通じた祖先権限との関連
+     */
+    public function ancestors(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Permission::class,
+            'permission_closures',
+            'descendant_id',
+            'ancestor_id'
+        )->withPivot(['depth']);
+    }
+
+    /**
+     * プロジェクト権限との関連
+     */
+    public function projectPermissions(): HasMany
+    {
+        return $this->hasMany(ProjectPermission::class);
+    }
+
+    /**
+     * 権限の全階層パスを取得
+     * 
+     * @return array<Permission> 親権限から順に並んだ配列
+     */
+    public function getHierarchyPath(): array
+    {
+        $path = [$this];
+        $current = $this;
+
+        while ($current->parentPermission) {
+            $current = $current->parentPermission;
+            array_unshift($path, $current);
+        }
+
+        return $path;
+    }
+
+    /**
+     * クロージャーテーブルを更新
+     */
+    public function updateClosure(): void
+    {
+        // 既存のクロージャーを削除
+        \DB::table('permission_closures')
+            ->where('descendant_id', $this->id)
+            ->delete();
+
+        // 自己参照を追加（深さ0）
+        \DB::table('permission_closures')->insert([
+            'ancestor_id' => $this->id,
+            'descendant_id' => $this->id,
+            'depth' => 0,
+        ]);
+
+        if ($this->parent_permission_id) {
+            // 親の全祖先に対して、このノードへのパスを追加
+            $parentClosures = \DB::table('permission_closures')
+                ->where('descendant_id', $this->parent_permission_id)
+                ->get();
+
+            $newClosures = $parentClosures->map(function ($closure) {
+                return [
+                    'ancestor_id' => $closure->ancestor_id,
+                    'descendant_id' => $this->id,
+                    'depth' => $closure->depth + 1,
+                ];
+            })->all();
+
+            if (!empty($newClosures)) {
+                \DB::table('permission_closures')->insert($newClosures);
+            }
+        }
+    }
+
+    /**
+     * 指定された権限を含むかどうかを確認
+     */
+    public function contains(Permission $permission): bool
+    {
+        return $this->descendants()
+            ->where('permissions.id', $permission->id)
+            ->exists();
+    }
 }

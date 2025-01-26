@@ -15,23 +15,57 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('projects', function (Blueprint $table) {
-            // カラム定義
-            $table->id();                                                             // プロジェクトID
-            $table->string('name');                                           // プロジェクト名
-            $table->text('description')->nullable();                          // プロジェクトの説明
-            $table->date('start_date')->nullable();                           // 開始日
-            $table->date('end_date')->nullable();                             // 終了日
-            $table->unsignedBigInteger('project_status_id');                  // プロジェクトステータスID
-            $table->unsignedInteger('member_count')->default(0);        // メンバー数
-            $table->unsignedInteger('task_count')->default(0);          // タスク数
-            $table->unsignedBigInteger('created_by');                         // 作成者
-            $table->unsignedBigInteger('category_id');                        // カテゴリID
-            $table->timestamps();                                                     // 作成日時、更新日時
+            // 基本情報
+            $table->id();
+            $table->string('name');                                    // プロジェクト名
+            $table->text('description')->nullable();                   // プロジェクトの説明
+            
+            // 階層構造
+            $table->unsignedBigInteger('parent_project_id')->nullable();  // 親プロジェクト
+            
+            // 時間管理
+            $table->datetime('planned_start_date')->nullable();        // 予定開始日時
+            $table->datetime('planned_end_date')->nullable();         // 予定終了日時
+            $table->datetime('actual_start_date')->nullable();        // 実際の開始日時
+            $table->datetime('actual_end_date')->nullable();         // 実際の終了日時
+            
+            // 進捗管理
+            $table->unsignedBigInteger('project_status_id');         // プロジェクトステータス
+            $table->decimal('progress', 5, 2)->default(0);           // 進捗率（0-100%）
+            $table->unsignedInteger('member_count')->default(0);     // メンバー数
+            $table->unsignedInteger('task_count')->default(0);       // タスク数
+            
+            // 分類・作成者
+            $table->unsignedBigInteger('created_by');                // 作成者
+            $table->unsignedBigInteger('category_id');               // カテゴリ
+            
+            $table->timestamps();                                    // 作成日時、更新日時
+            $table->softDeletes();                                  // 論理削除
 
             // 外部キー制約
-            $table->foreign('project_status_id')->references('id')->on('project_statuses')->cascadeOnDelete();
-            $table->foreign('created_by')->references('id')->on('users')->cascadeOnDelete();
-            $table->foreign('category_id')->references('id')->on('categories')->cascadeOnDelete();
+            $table->foreign('parent_project_id')
+                ->references('id')
+                ->on('projects')
+                ->nullOnDelete();
+            
+            $table->foreign('project_status_id')
+                ->references('id')
+                ->on('project_statuses')
+                ->cascadeOnDelete();
+            
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete();
+            
+            $table->foreign('category_id')
+                ->references('id')
+                ->on('categories')
+                ->cascadeOnDelete();
+
+            // インデックス
+            $table->index('parent_project_id');
+            $table->index(['planned_start_date', 'planned_end_date']);
         });
     }
 

@@ -16,6 +16,6 @@ interface CheckProjectRolePermissionUseCase
      * @param ProjectPermissions $requiredPermission 必要な権限
      * @return bool ユーザーが必要な権限を持っている場合は true, そうでない場合は false
      */
-    public function hasPermission(User $user, int $projectId, ProjectPermissions $requiredPermission): bool;
+    public function hasPermission(User $user, Project $project, ProjectPermissions $requiredPermission): bool;
 }
 

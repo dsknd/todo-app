@@ -21,14 +21,22 @@ return new class extends Migration
             $table->timestamp('joined_at')->useCurrent(); // プロジェクト参画日時
 
             // 外部キー制約
-            $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('project_id')
+                ->references('id')
+                ->on('projects')
+                ->cascadeOnDelete();
+            
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete();
 
             // 主キー制約
             $table->primary(['project_id', 'user_id']);
 
             // インデックス
             $table->index('user_id');
+            $table->index('joined_at');
         });
     }
 
@@ -37,7 +45,7 @@ return new class extends Migration
      * @return void
      * @throws QueryException
      */
-    public function down():void
+    public function down(): void
     {
         Schema::dropIfExists('project_members');
     }

@@ -24,10 +24,8 @@ class DatabaseSeeder extends Seeder
             OwnershipTypeSeeder::class,
             ProjectStatusSeeder::class,
             CategorySeeder::class,
-            ProjectInvitationStatusSeeder::class,
             PermissionSeeder::class,
             ProjectPermissionSeeder::class,
-            ProjectRoleTypeSeeder::class,
         ]);
     }
 }

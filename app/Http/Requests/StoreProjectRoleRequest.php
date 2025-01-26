@@ -23,7 +23,6 @@ class StoreProjectRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'project_id' => 'required|integer',
             'name' => 'required|string',
             'description' => 'nullable|string',
         ];
@@ -35,8 +34,6 @@ class StoreProjectRoleRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'project_id.required' => '"project_id" is required.',
-            'project_id.integer' => '"project_id" is invalid.',
             'name.required' => '"name" is required.',
             'name.string' => '"name" is not a valid string.',
             'description.string' => '"description" is not a valid string.',

@@ -35,7 +35,6 @@ return new class extends Migration
             $table->text('description')->nullable();                // 詳細
             
             // 階層構造・WBS
-            $table->unsignedBigInteger('parent_task_id')->nullable();  // 親タスク
             $table->string('wbs_number')->nullable();                  // WBS番号
             
             // 時間管理
@@ -63,11 +62,6 @@ return new class extends Migration
             $table->softDeletes();                                // 論理削除
 
             // 外部キー制約
-            $table->foreign('parent_task_id')
-                ->references('id')
-                ->on('tasks')
-                ->nullOnDelete();
-            
             $table->foreign('ownership_type_id')
                 ->references('id')
                 ->on('ownership_types')
@@ -84,7 +78,6 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             // インデックス
-            $table->index('parent_task_id');
             $table->index('wbs_number');
             $table->index(['planned_start_date', 'planned_end_date']);
             $table->index(['importance', 'urgency']);

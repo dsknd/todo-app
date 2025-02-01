@@ -1,13 +1,11 @@
 <?php declare(strict_types=1);
 
 namespace App\Enums;
-
-use BenSampo\Enum\Enum;
-
+use App\Enums\PermissionEnum;
 /**
  * プロジェクトの権限IDを定義するEnumクラス
  * 
- * このEnumクラスは、プロジェクトの権限IDを定義するために使用されます。
+ * このEnumクラスは、プロジェクトの権限を定義するために使用されます。
  * 以下で定義されている権限を使用しています。
  * 
  * @method static static PROJECT_WILDCARD()
@@ -39,7 +37,7 @@ use BenSampo\Enum\Enum;
  * @method static static PROJECT_INVITATION_UPDATE()
  * @method static static PROJECT_INVITATION_DELETE()
  */
-final class ProjectPermissions extends Enum
+enum ProjectPermissionEnum: int
 {
     const PROJECT_WILDCARD = 1;
     const PROJECT_READ = 2;
@@ -69,4 +67,34 @@ final class ProjectPermissions extends Enum
     const PROJECT_INVITATION_CREATE = 22;
     const PROJECT_INVITATION_UPDATE = 23;
     const PROJECT_INVITATION_DELETE = 24;
+
+    public static function getScope(mixed $value): string
+    {
+        return PermissionEnum::getScope($value);
+    }
+
+    public static function getResource(mixed $value): string
+    {
+        return PermissionEnum::getResource($value);
+    }
+
+    public static function getAction(mixed $value): string
+    {
+        return PermissionEnum::getAction($value);
+    }
+
+    public static function getDisplayName(mixed $value): string
+    {
+        return PermissionEnum::getDisplayName($value);
+    }
+
+    public static function getDescription(mixed $value): string
+    {
+        return PermissionEnum::getDescription($value);
+    }
+
+    public static function getHierarchy(mixed $value): array
+    {
+        return PermissionEnum::getHierarchy($value);
+    }
 }

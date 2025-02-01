@@ -47,6 +47,7 @@ return new class extends Migration
             $table->enum('dependency_type', array_column(DependencyTypes::cases(), 'value'))
                 ->default(DependencyTypes::FINISH_TO_START->value)
                 ->comment('依存関係の種類（FS: 終了後開始, SS: 同時開始, FF: 同時終了, SF: 開始後終了）');
+                
             $table->integer('lag_minutes')
                 ->default(0)
                 ->comment('遅延（正）またはリード（負）時間（分単位）。例：60=1時間後、-30=30分前');

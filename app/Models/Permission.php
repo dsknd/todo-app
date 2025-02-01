@@ -9,26 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Permission extends Model
 {
     protected $fillable = [
-        'name',
+        'scope',
+        'resource',
+        'action',
+        'display_name',
         'description',
-        'parent_permission_id',
     ];
-
-    /**
-     * 親権限との関連
-     */
-    public function parentPermission()
-    {
-        return $this->belongsTo(Permission::class, 'parent_permission_id');
-    }
-
-    /**
-     * 子権限との関連
-     */
-    public function childPermissions()
-    {
-        return $this->hasMany(Permission::class, 'parent_permission_id');
-    }
 
     /**
      * 権限のクロージャーテーブルを通じた子孫権限との関連

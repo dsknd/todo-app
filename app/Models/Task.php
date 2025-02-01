@@ -15,7 +15,6 @@ class Task extends Model
     protected $fillable = [
         'title',
         'description',
-        'parent_task_id',
         'wbs_number',
         'planned_start_date',
         'planned_end_date',
@@ -49,14 +48,6 @@ class Task extends Model
         'urgency' => 'integer',
         'is_recurring' => 'boolean',
     ];
-
-    /**
-     * 親タスクとの関連
-     */
-    public function parentTask(): BelongsTo
-    {
-        return $this->belongsTo(Task::class, 'parent_task_id');
-    }
 
     /**
      * 子タスクとの関連

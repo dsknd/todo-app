@@ -2,114 +2,252 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\ProjectRole;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\DB;
 use App\Enums\ProjectRoleTypes;
-use App\Models\Project;
-use Illuminate\Support\Facades\Auth;
-use App\Models\ProjectPermission;
-use App\Http\Resources\PermissionResource;
 use App\Http\Requests\StoreProjectRoleRequest;
 use App\Http\Requests\UpdateProjectRoleRequest;
+use App\Http\Resources\PermissionResource;
+use App\Http\Resources\ProjectRoleResource;
+use App\Models\AppLog;
+use App\Models\Project;
+use App\Models\ProjectPermission;
+use App\Models\ProjectRole;
 use App\UseCases\CheckProjectRolePermissionUseCase;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
+
 class ProjectRoleController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * プロジェクトロールの一覧を取得
      */
-    public function index()
+    public function index(Project $project)
     {
-        //
-    }
+        $this->authorize('viewAny', [ProjectRole::class, $project]);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request, Project $project)
-    {
-        //プロジェクトロールの権限を取得
-        $permissions = ProjectPermission::with([
-            'permission.descendants' => function ($query) {
-                $query->whereColumn('id', '<>', 'ancestor_id') 
-                      ->select('id', 'scope', 'display_name', 'description');
-            }
-        ])->select('permission_id')->get();
+        $roles = ProjectRole::where('project_id', $project->id)
+            ->with(['projectPermissions', 'creator'])
+            ->get();
 
         return response()->json(
-            PermissionResource::collection($permissions->pluck('permission')),
+            ProjectRoleResource::collection($roles),
             Response::HTTP_OK
         );
     }
 
     /**
-     * プロジェクトロールを作成します。
+     * プロジェクトロール作成用の権限一覧を取得
+     */
+    public function create(Project $project)
+    {
+        $this->authorize('create', [ProjectRole::class, $project]);
+
+        $permissions = ProjectPermission::with([
+            'permission.descendants' => function ($query) {
+                $query->whereColumn('id', '<>', 'ancestor_id')
+                    ->select('id', 'name', 'description');
+            }
+        ])->select('id', 'permission_id', 'name', 'description')
+          ->orderBy('name')
+          ->get();
+
+        return response()->json(
+            PermissionResource::collection($permissions),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * プロジェクトロールを作成
      */
     public function store(StoreProjectRoleRequest $request, Project $project)
     {
+        $this->authorize('create', [ProjectRole::class, $project]);
 
-        // ポリシーを使用してプロジェクトロールの作成権限を確認
-        $this->authorize('create', $project);
+        $projectRole = DB::transaction(function () use ($request, $project) {
+            // プロジェクトロールを作成
+            $projectRole = ProjectRole::create([
+                'project_id' => $project->id,
+                'name' => $request->input('name'),
+                'description' => $request->input('description'),
+                'project_role_type_id' => ProjectRoleTypes::CUSTOM,
+                'created_by' => Auth::id(),
+            ]);
 
-        // プロジェクトロールを作成
-        $projectRole = ProjectRole::create([
-            'project_role_type_id' => ProjectRoleTypes::CUSTOM,
-            'project_id' => $project->id,
-            'created_by' => Auth::user()->id,
-            'name' => $request->input('name'),
-            'description' => $request->input('description'),
-        ]);
+            // 権限を割り当て
+            if ($request->has('permissions')) {
+                $projectRole->projectPermissions()->attach(
+                    $request->input('permissions')
+                );
+            }
 
-        return response()->json($projectRole, Response::HTTP_CREATED);
-    }
+            // ログを記録
+            AppLog::createEntry(
+                'create',
+                $projectRole,
+                Auth::user(),
+                'Created project role',
+                ['role_name' => $projectRole->name]
+            );
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(ProjectRole $projectRole)
-    {
-        // ポリシーを使用してプロジェクトロールの表示権限を確認
-        $this->authorize('view', $projectRole);
-
-        return response()->json($projectRole, Response::HTTP_OK);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ProjectRole $projectRole)
-    {
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateProjectRoleRequest $request, int $projectRoleId)
-    {
-        $projectRole = ProjectRole::findOrFail($projectRoleId);
-        $this->authorize('update', $projectRole);
-
-        // validate
-        $validated = $request->validate([
-            'name' => 'required|string',
-            'description' => 'nullable|string',
-        ]);
-
-        DB::transaction(function () use ($request, $projectRoleId) {
-            $projectRole = ProjectRole::findOrFail($projectRoleId);
-            $projectRole->update($request->all());
+            return $projectRole;
         });
 
-        return response()->json(['message' => 'Project role updated successfully'], Response::HTTP_OK);
-
+        return response()->json(
+            new ProjectRoleResource($projectRole->load('projectPermissions')),
+            Response::HTTP_CREATED
+        );
     }
 
     /**
-     * Remove the specified resource from storage.
+     * プロジェクトロールの詳細を取得
      */
-    public function destroy(string $id)
+    public function show(Project $project, ProjectRole $projectRole)
     {
-        //
+        $this->authorize('view', $projectRole);
+
+        return response()->json(
+            new ProjectRoleResource($projectRole->load(['projectPermissions', 'creator'])),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * プロジェクトロールを更新
+     */
+    public function update(UpdateProjectRoleRequest $request, Project $project, ProjectRole $projectRole)
+    {
+        $this->authorize('update', $projectRole);
+
+        // デフォルトロールは編集不可
+        if ($projectRole->project_role_type_id === ProjectRoleTypes::DEFAULT) {
+            return response()->json(
+                ['message' => 'Cannot modify default project role'],
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
+        $updatedRole = DB::transaction(function () use ($request, $projectRole) {
+            // 基本情報を更新
+            $projectRole->update([
+                'name' => $request->input('name'),
+                'description' => $request->input('description'),
+            ]);
+
+            // 権限を更新
+            if ($request->has('permissions')) {
+                $projectRole->projectPermissions()->sync($request->input('permissions'));
+            }
+
+            // ログを記録
+            AppLog::createEntry(
+                'update',
+                $projectRole,
+                Auth::user(),
+                'Updated project role',
+                [
+                    'role_name' => $projectRole->name,
+                    'changes' => $projectRole->getChanges(),
+                ]
+            );
+
+            return $projectRole;
+        });
+
+        return response()->json(
+            new ProjectRoleResource($updatedRole->load('projectPermissions')),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * プロジェクトロールを削除
+     */
+    public function destroy(Project $project, ProjectRole $projectRole)
+    {
+        $this->authorize('delete', $projectRole);
+
+        // デフォルトロールは削除不可
+        if ($projectRole->project_role_type_id === ProjectRoleTypes::DEFAULT) {
+            return response()->json(
+                ['message' => 'Cannot delete default project role'],
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
+        DB::transaction(function () use ($projectRole) {
+            // ログを記録
+            AppLog::createEntry(
+                'delete',
+                $projectRole,
+                Auth::user(),
+                'Deleted project role',
+                ['role_name' => $projectRole->name]
+            );
+
+            $projectRole->delete();
+        });
+
+        return response()->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * プロジェクトロールに権限を割り当て
+     */
+    public function assignPermissions(Request $request, Project $project, ProjectRole $projectRole)
+    {
+        $this->authorize('update', $projectRole);
+
+        $validated = $request->validate([
+            'permissions' => 'required|array',
+            'permissions.*' => 'exists:project_permissions,id',
+        ]);
+
+        DB::transaction(function () use ($projectRole, $validated) {
+            $projectRole->projectPermissions()->sync($validated['permissions']);
+
+            // ログを記録
+            AppLog::createEntry(
+                'assign_permissions',
+                $projectRole,
+                Auth::user(),
+                'Assigned permissions to project role',
+                [
+                    'role_name' => $projectRole->name,
+                    'permissions' => $validated['permissions'],
+                ]
+            );
+        });
+
+        return response()->json(
+            new ProjectRoleResource($projectRole->load('projectPermissions')),
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * プロジェクトロールの権限をチェック
+     */
+    public function checkPermission(
+        Request $request,
+        Project $project,
+        ProjectRole $projectRole,
+        CheckProjectRolePermissionUseCase $useCase
+    ) {
+        $this->authorize('view', $projectRole);
+
+        $validated = $request->validate([
+            'permission' => 'required|string|exists:project_permissions,name',
+        ]);
+
+        $hasPermission = $useCase->execute(
+            $projectRole,
+            $validated['permission']
+        );
+
+        return response()->json([
+            'has_permission' => $hasPermission,
+        ], Response::HTTP_OK);
     }
 }

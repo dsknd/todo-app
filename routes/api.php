@@ -1,57 +1,70 @@
 <?php
 
-use App\Http\Controllers\PersonalTagController;
 use App\Http\Controllers\ProjectTaskCategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ProjectStatusController;
 use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\TaskCategoryController;
-use App\Http\Controllers\ProjectRoleAssignmentController;
 use App\Http\Controllers\ProjectRoleController;
-// Public routes
+
+// パブリックルート
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Protected routes
+// 保護されたルート
 Route::middleware('auth:sanctum')->group(function () {
 
-    // プロジェクトアクション
-    // ====================================================================================
-    Route::apiResource('projects', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+    // プロジェクト
+    Route::apiResource('/projects', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+
+    // プロジェクトメンバ
+    Route::apiResource('/projects/{project}/members', ProjectTaskCategoryController::class)->only(['index', 'create', 'show', 'store', 'update', 'destroy']);
 
     // プロジェクトロール
-    Route::apiResource('projects/{project}/roles', ProjectRoleController::class)->only(['index', 'create', 'show', 'store', 'update', 'destroy']);
+    Route::apiResource('/projects/{project}/roles', ProjectRoleController::class)->only(['index', 'create', 'show', 'store', 'update', 'destroy']);
 
-    // プロジェクトロールアクション
-    // ====================================================================================
+    // プロジェクトロール権限割当
+    Route::apiResource('/projects/{project}/roles/{role}/permissions', ProjectRoleController::class)->only(['index', 'store', 'destroy']);
 
-    Route::post('/projects/{project}/members/{user}/roles/{projectRole}',[ProjectRoleAssignmentController::class, 'attach']);
-    Route::delete('/projects/{project}/members/{user}/roles/{projectRole}', [ProjectRoleAssignmentController::class, 'detach']);
+    // プロジェクト招待
+    Route::apiResource('/projects/{project}/invitations', ProjectController::class)->only(['index', 'store', 'destroy']);
 
-    // ユーザーアクション
-    // ====================================================================================
+    // プロジェクトタスク
+    Route::apiResource('/projects/{project}/tasks', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+
+    // プロジェクトタスクタグ
+    Route::apiResource('/projects/{project}/tags', ProjectController::class)->only(['index', 'store', 'destroy']);
+
+    // プロジェクトタスク依存関係
+    Route::apiResource('/projects/{project}/tasks/{task}/dependencies', ProjectController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // プロジェクトタスク割当
+    Route::apiResource('/projects/{project}/tasks/{task}/assignments', ProjectController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // プロジェクトマイルストーン
+    Route::apiResource('/projects/{project}/milestones', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+
+    // タスク
+    Route::apiResource('projects/{project}/tasks', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+
+    // タスク依存関係
+    Route::apiResource('/tasks/{task}/dependencies', ProjectController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // タスクコメント
+    Route::apiResource('/tasks/{task}/comments', ProjectController::class)->only(['index', 'store', 'update', 'destroy']);
+    
+    // タスクカテゴリ
+    Route::apiResource('/projects/{project}/task-categories', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+
+    // 
+
+    // タスクタグ
+    Route::apiResource('/tasks/{task}/tags', ProjectController::class)->only(['index', 'store', 'destroy']);
+
+    // 認証済みユーザ
     Route::prefix('users/me')->group(function () {
-        // タグ
-        Route::get('tags', [PersonalTagController::class, 'index']);
-        Route::post('tags', [PersonalTagController::class, 'store']);
-        Route::get('tags/{tag}', [PersonalTagController::class, 'show']);
-        Route::patch('tags/{tag}', [PersonalTagController::class, 'update']);
-        Route::delete('tags/{tag}', [PersonalTagController::class, 'destroy']);
-
-        // プロジェクト
-        Route::post('/projects/{project}/join', [ProjectController::class, 'join']);
-        Route::post('/projects/{project}/leave', [ProjectController::class, 'leave']);
+        Route::get('/', [AuthController::class, 'me']);
+        Route::put('/', [AuthController::class, 'update']);
+        Route::delete('/', [AuthController::class, 'destroy']);
     });
 
-
-    // Projects CRUD
-//    Route::apiResource('projects', ProjectController::class);
-//    Route::post('/projects/{project}/add-member', [ProjectController::class, 'addMember']);
-//    Route::post('/projects/{project}/remove-member', [ProjectController::class, 'removeMember']);
-//
-//    // Logout
-//    Route::post('/logout', [AuthController::class, 'logout']);
-
-    // Route::resource('users', UserController::class);
 });

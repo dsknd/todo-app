@@ -2,41 +2,68 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ProjectPermission;
+use App\Models\ProjectRole;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Project;
 
 class StoreProjectRoleRequest extends FormRequest
 {
     /**
-     * ユーザーがこのリクエストを実行できるかどうかを判定する
-     * 認可処理はポリシーを通して行うため、ここでは常に true を返す
+     * リクエストの認可を判定
      */
     public function authorize(): bool
     {
-        return true;
+        $project = $this->route('project');
+        return Auth::user()->can('create', [ProjectRole::class, $project]);
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * バリデーションルールを取得
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'description' => 'nullable|string',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                // 同じプロジェクト内で重複する名前を禁止
+                'unique:project_roles,name,NULL,id,project_id,' . $this->route('project')->id,
+            ],
+            'description' => 'nullable|string|max:1000',
+            'permissions' => 'array',
+            'permissions.*' => [
+                'integer',
+                'exists:project_permissions,id',
+                function ($attribute, $value, $fail) {
+                    // プロジェクト固有の権限の場合、同じプロジェクトに属していることを確認
+                    $permission = ProjectPermission::find($value);
+                    if ($permission && !$permission->is_custom) {
+                        return;
+                    }
+                    if ($permission && $permission->project_id !== $this->route('project')->id) {
+                        $fail('The selected permission is not available for this project.');
+                    }
+                },
+            ],
         ];
     }
 
     /**
-     * バリデーションエラーのカスタムメッセージを取得する
+     * バリデーションエラーメッセージをカスタマイズ
+     *
+     * @return array<string, string>
      */
     public function messages(): array
     {
         return [
-            'name.required' => '"name" is required.',
-            'name.string' => '"name" is not a valid string.',
-            'description.string' => '"description" is not a valid string.',
+            'name.required' => 'ロール名は必須です。',
+            'name.unique' => 'このロール名は既に使用されています。',
+            'permissions.*.exists' => '指定された権限は存在しません。',
         ];
     }
 }

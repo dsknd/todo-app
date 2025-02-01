@@ -25,7 +25,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             // カラム定義
             $table->unsignedBigInteger('id');                             // ID(手動)
-            $table->string('name');                                       // カテゴリ名
+            $table->string('display_name');                                       // 表示名
             $table->text('description')->nullable();                      // 説明
             $table->timestamps();                                         // 作成日時と更新日時
 
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->primary('id');
 
             // ユニーク制約
-            $table->unique('name');
+            $table->unique('display_name');
         });
     }
 

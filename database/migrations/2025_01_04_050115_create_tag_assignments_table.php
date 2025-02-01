@@ -16,13 +16,13 @@ return new class extends Migration
     {
         Schema::create('tag_assignments', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('tag_id');          // タグID
-            $table->morphs('taggable');                    // タグ付け対象（ポリモーフィック）
-            $table->unsignedBigInteger('assigned_by');     // タグ付けを行ったユーザーID
+            $table->unsignedBigInteger('tag_id');
+            $table->unsignedBigInteger('task_id');
+            $table->unsignedBigInteger('assigned_by');
             $table->timestamps();
 
             // 主キーの設定
-            $table->primary(['tag_id', 'taggable_type', 'taggable_id']);
+            $table->primary(['tag_id', 'task_id']);
 
             // 外部キー設定
             $table->foreign('tag_id')
@@ -34,9 +34,6 @@ return new class extends Migration
                 ->references('id')
                 ->on('users')
                 ->cascadeOnDelete();
-
-            // インデックス
-            $table->index(['taggable_type', 'taggable_id']);
         });
     }
 

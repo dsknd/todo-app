@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\OwnershipTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,38 +23,28 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->string('color', 7)->nullable();  // 色コード（例：#FF0000）
 
             // 所有情報
-            $table->boolean('is_personal')->default(false);  // 個人タグかどうか
-            $table->unsignedBigInteger('user_id');          // 作成者/所有者
-            $table->unsignedBigInteger('project_id')->nullable();  // プロジェクトタグの場合のプロジェクトID
+            $table->unsignedBigInteger('ownership_type_id');
 
-            // 階層構造
-            $table->unsignedBigInteger('parent_tag_id')->nullable();  // 親タグID
+            $table->unsignedBigInteger('created_by');          // 作成者/所有者
 
             $table->timestamps();
-            $table->softDeletes();
 
             // 外部キー制約
-            $table->foreign('user_id')
+            $table->foreign('created_by')
                 ->references('id')
                 ->on('users')
                 ->cascadeOnDelete();
 
-            $table->foreign('project_id')
+            $table->foreign('ownership_type_id')
                 ->references('id')
-                ->on('projects')
+                ->on('ownership_types')
                 ->cascadeOnDelete();
 
-            $table->foreign('parent_tag_id')
-                ->references('id')
-                ->on('tags')
-                ->nullOnDelete();
-
             // インデックス
-            $table->index(['is_personal', 'user_id']);
-            $table->index(['project_id', 'parent_tag_id']);
+            $table->index('ownership_type_id');
+            $table->index('created_by');
         });
     }
 

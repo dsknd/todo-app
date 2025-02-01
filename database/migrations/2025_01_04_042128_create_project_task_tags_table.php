@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_tags', function (Blueprint $table) {
+        Schema::create('project_task_tags', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('tag_id');          // タグID
-            $table->unsignedBigInteger('project_id');  // プロジェクトID
+            $table->unsignedBigInteger('tag_id');           // タグID
+            $table->unsignedBigInteger('project_id');       // プロジェクトID
 
             // 主キーの設定
             $table->primary('tag_id');
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_tags');
+        Schema::dropIfExists('project_task_tags');
     }
 };

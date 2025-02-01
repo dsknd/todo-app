@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ownership_types', function (Blueprint $table) {
             // カラム定義
             $table->unsignedBigInteger('id');
-            $table->string('name');
+            $table->string('display_name');
             $table->text('description')->nullable();
             $table->timestamps();
 
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->primary('id');
 
             // ユニーク制約
-            $table->unique('name');
+            $table->unique('display_name');
 
         });
     }

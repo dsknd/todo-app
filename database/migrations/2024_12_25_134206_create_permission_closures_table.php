@@ -16,7 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('ancestor_id');
             $table->unsignedBigInteger('descendant_id');
             $table->integer('depth');
-            $table->timestamps();
 
             // 主キー制約
             $table->primary(['ancestor_id', 'descendant_id']);

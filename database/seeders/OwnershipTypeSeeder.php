@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Enums\OwnershipTypes;
+use App\Models\OwnershipType;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
+use App\Enums\OwnershipTypeEnum;
 
 class OwnershipTypeSeeder extends Seeder
 {
@@ -16,18 +15,12 @@ class OwnershipTypeSeeder extends Seeder
      */
     public function run(): void
     {
-
-        DB::table('ownership_types')->insert([
-            [
-                'id' => OwnershipTypes::PERSONAL,
-                'name' => 'Personal',
-                'description' => 'Tasks owned personally by the user.',
-            ],
-            [
-                'id' => OwnershipTypes::PROJECT,
-                'name' => 'Project',
-                'description' => 'Tasks associated with a specific project.',
-            ],
-        ]);
+        foreach (OwnershipTypeEnum::cases() as $type) {
+            OwnershipType::create([
+                'id' => $type->value,
+                'display_name' => OwnershipTypeEnum::getDisplayName($type->value),
+                'description' => OwnershipTypeEnum::getDescription($type->value),
+            ]);
+        }
     }
 }

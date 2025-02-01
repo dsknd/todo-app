@@ -3,8 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Enums\ProjectInvitationStatuses;
-
+use App\Enums\ProjectInvitationStatusEnum;
 return new class extends Migration
 {
     /**
@@ -14,29 +13,26 @@ return new class extends Migration
     {
         Schema::create('project_invitations', function (Blueprint $table) {
             // カラム定義
-            $table->id();                                     // ID
-            $table->unsignedBigInteger('project_id'); // プロジェクトID
-            $table->unsignedBigInteger('inviter_by'); // 招待作成者（ProjectMember）
-            $table->unsignedBigInteger('invitee_id'); // 招待されたユーザー（登録済みユーザーの場合）
-            // $table->string('invitee_email')->nullable(); // 招待されたメールアドレス（未登録ユーザー）
-            $table->string('status')->default(ProjectInvitationStatuses::PENDING->value);
-            $table->timestamp('expires_at');                             // 招待の有効期限
+            $table->id()->comment('ID');
+            $table->unsignedBigInteger('project_id')->comment('プロジェクトID'); 
+            $table->unsignedBigInteger('inviter_by')->comment('招待作成者（ProjectMember）'); 
+            $table->unsignedBigInteger('project_invitation_status_id')->default(ProjectInvitationStatusEnum::PENDING->value);
+            $table->timestamp('expires_at')->comment('招待の有効期限');
             $table->timestamps();
 
             // 外部キー制約
-            $table->foreign('invitee_id')
-                ->references('id')
-                ->on('users')
-                ->cascadeOnDelete();
-
             $table->foreign(['project_id', 'inviter_by'])
                 ->references(['project_id', 'user_id'])
                 ->on('project_members')
                 ->cascadeOnDelete();
 
+            $table->foreign('project_invitation_status_id')
+                ->references('id')
+                ->on('project_invitation_statuses')
+                ->cascadeOnDelete();
+
             // インデックス
-            $table->index('invitee_id');
-            $table->index('status');
+            $table->index('project_invitation_status_id');
         });
     }
 

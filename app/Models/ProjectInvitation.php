@@ -2,32 +2,41 @@
 
 namespace App\Models;
 
-use App\Enums\ProjectInvitationStatuses;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\ProjectInvitationStatusEnum;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class ProjectInvitation extends Model
 {
+    /**
+     * 複数代入可能な属性
+     *
+     * @var array<string>
+     */
     protected $fillable = [
         'project_id',
-        'inviter_by',
-        'invitee_id',
-        'status',
+        'project_invitation_type_id',
+        'project_invitation_status_id',
         'expires_at',
     ];
 
     /**
-     * The attributes that should be cast.
+     * 属性のキャスト
      *
      * @var array<string, string>
      */
     protected $casts = [
-        'status' => ProjectInvitationStatuses::class,
+        'project_id' => 'integer',
+        'project_invitation_type_id' => 'integer',
+        'project_invitation_status_id' => 'integer',
         'expires_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**
-     * 関連するプロジェクトを取得
+     * プロジェクトを取得
      */
     public function project(): BelongsTo
     {
@@ -35,19 +44,35 @@ class ProjectInvitation extends Model
     }
 
     /**
-     * 招待者を取得
+     * 招待タイプを取得
      */
-    public function inviter(): BelongsTo
+    public function type(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'inviter_by');
+        return $this->belongsTo(ProjectInvitationType::class, 'project_invitation_type_id');
     }
 
     /**
-     * 被招待者を取得
+     * 招待ステータスを取得
      */
-    public function invitee(): BelongsTo
+    public function status(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'invitee_id');
+        return $this->belongsTo(ProjectInvitationStatus::class, 'project_invitation_status_id');
+    }
+
+    /**
+     * メール招待の詳細を取得
+     */
+    public function emailInvitation(): HasOne
+    {
+        return $this->hasOne(ProjectEmailInvitation::class);
+    }
+
+    /**
+     * ユーザー招待の詳細を取得
+     */
+    public function userInvitation(): HasOne
+    {
+        return $this->hasOne(ProjectUserInvitation::class);
     }
 
     /**
@@ -63,7 +88,7 @@ class ProjectInvitation extends Model
      * 
      * @throws \InvalidArgumentException ステータスの遷移が不正な場合
      */
-    public function updateStatus(ProjectInvitationStatuses $newStatus): void
+    public function updateStatus(ProjectInvitationStatusEnum $newStatus): void
     {
         if (!$this->status->canTransitionTo($newStatus)) {
             throw new \InvalidArgumentException("Cannot transition from {$this->status->value} to {$newStatus->value}");
@@ -78,7 +103,7 @@ class ProjectInvitation extends Model
      */
     public function accept(): void
     {
-        $this->updateStatus(ProjectInvitationStatuses::ACCEPTED);
+        $this->updateStatus(ProjectInvitationStatusEnum::ACCEPTED);
     }
 
     /**
@@ -86,7 +111,7 @@ class ProjectInvitation extends Model
      */
     public function decline(): void
     {
-        $this->updateStatus(ProjectInvitationStatuses::DECLINED);
+        $this->updateStatus(ProjectInvitationStatusEnum::DECLINED);
     }
 
     /**
@@ -94,6 +119,6 @@ class ProjectInvitation extends Model
      */
     public function cancel(): void
     {
-        $this->updateStatus(ProjectInvitationStatuses::CANCELED);
+        $this->updateStatus(ProjectInvitationStatusEnum::CANCELED);
     }
 }

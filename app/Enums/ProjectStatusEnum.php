@@ -46,5 +46,17 @@ enum ProjectStatusEnum: int
             default => throw new \ValueError("Invalid value: {$value}"),
         };
     }
+
+    public function getNextStatuses(): array
+    {
+        return match($this) {
+            self::PLANNING => [self::IN_PROGRESS],
+            self::IN_PROGRESS => [self::COMPLETED, self::ON_HOLD, self::CANCELLED],
+            self::COMPLETED => [],
+            self::ON_HOLD => [self::IN_PROGRESS],
+            self::CANCELLED => [],
+            default => [],
+        };
+    }
 }
 

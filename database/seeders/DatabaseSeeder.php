@@ -22,12 +22,14 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             OwnershipTypeSeeder::class,
-            ProjectStatusSeeder::class,
             CategorySeeder::class,
-            PermissionSeeder::class,
-            ProjectPermissionSeeder::class,
             ImportanceLevelSeeder::class,
             UrgencyLevelSeeder::class,
+            PermissionSeeder::class,
+            ProjectStatusSeeder::class,
+            ProjectInvitationTypeSeeder::class,
+            ProjectInvitationStatusSeeder::class,
+            ProjectPermissionSeeder::class,
         ]);
     }
 }

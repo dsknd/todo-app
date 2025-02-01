@@ -48,9 +48,9 @@ return new class extends Migration
             $table->decimal('actual_hours', 8, 2)->nullable();     // 実績時間
             
             // 進捗・優先度
-            $table->decimal('progress', 5, 2)->default(0);         // 進捗率（0-100%）
-            $table->unsignedTinyInteger('importance')->default(3); // 重要度（1-5）
-            $table->unsignedTinyInteger('urgency')->default(3);    // 緊急度（1-5）
+            $table->decimal('progress', 5, 2)->default(0);
+            $table->unsignedBigInteger('importance_level_id');
+            $table->unsignedBigInteger('urgency_level_id');
             
             // 分類・所有
             $table->unsignedBigInteger('ownership_type_id');       // 所有種別(project, personal)
@@ -62,6 +62,16 @@ return new class extends Migration
             $table->softDeletes();                                // 論理削除
 
             // 外部キー制約
+            $table->foreign('importance_level_id')
+                ->references('id')
+                ->on('importance_levels')
+                ->cascadeOnDelete();
+
+            $table->foreign('urgency_level_id')
+                ->references('id')
+                ->on('urgency_levels')
+                ->cascadeOnDelete();
+
             $table->foreign('ownership_type_id')
                 ->references('id')
                 ->on('ownership_types')
@@ -80,7 +90,8 @@ return new class extends Migration
             // インデックス
             $table->index('wbs_number');
             $table->index(['planned_start_date', 'planned_end_date']);
-            $table->index(['importance', 'urgency']);
+            $table->index('importance_level_id');
+            $table->index('urgency_level_id');
         });
     }
 

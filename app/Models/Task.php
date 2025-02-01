@@ -23,8 +23,8 @@ class Task extends Model
         'estimated_hours',
         'actual_hours',
         'progress',
-        'importance',
-        'urgency',
+        'importance_level_id',
+        'urgency_level_id',
         'ownership_type_id',
         'user_id',
         'status_id',
@@ -44,8 +44,6 @@ class Task extends Model
         'estimated_hours' => 'decimal:2',
         'actual_hours' => 'decimal:2',
         'progress' => 'decimal:2',
-        'importance' => 'integer',
-        'urgency' => 'integer',
         'is_recurring' => 'boolean',
     ];
 
@@ -79,6 +77,22 @@ class Task extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * 重要度レベルとの関連
+     */
+    public function importanceLevel(): BelongsTo
+    {
+        return $this->belongsTo(ImportanceLevel::class, 'importance_level_id');
+    }
+
+    /**
+     * 緊急度レベルとの関連
+     */
+    public function urgencyLevel(): BelongsTo
+    {
+        return $this->belongsTo(UrgencyLevel::class, 'urgency_level_id');
     }
 
     /**

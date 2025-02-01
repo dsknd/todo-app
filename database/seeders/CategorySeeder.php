@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use Illuminate\Database\Seeder;
 use App\Enums\CategoryEnum;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CategorySeeder extends Seeder
 {
@@ -13,12 +13,16 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        foreach (CategoryEnum::cases() as $category) {
-            Category::create([
-                'id' => $category->value,
-                'display_name' => CategoryEnum::getDisplayName($category->value),
-                'description' => CategoryEnum::getDescription($category->value),
-            ]);
-        }
+        DB::transaction(function () {
+            foreach (CategoryEnum::cases() as $category) {
+                DB::table('categories')->insert([
+                    'id' => $category->value,
+                    'name' => CategoryEnum::getDisplayName($category),
+                    'description' => CategoryEnum::getDescription($category),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        });
     }
 }

@@ -19,31 +19,31 @@ enum CategoryEnum: int
     case HOBBY = 4;        // 趣味
     case OTHER = 5;        // その他
 
-    public static function getDisplayName(mixed $value): string
+    /**
+     * カテゴリの表示名を取得
+     */
+    public static function getDisplayName(self $category): string
     {
-        $value = $value instanceof self ? $value->value : $value;
-
-        return match($value) {
-            1 => '仕事',
-            2 => '個人',
-            3 => '学習',
-            4 => '趣味',
-            5 => 'その他',
-            default => throw new \ValueError("Invalid value: {$value}"),
+        return match ($category) {
+            self::WORK => '仕事',
+            self::PERSONAL => '個人',
+            self::STUDY => '学習',
+            self::HOBBY => '趣味',
+            self::OTHER => 'その他',
         };
     }
 
-    public static function getDescription(mixed $value): string
+    /**
+     * カテゴリの説明を取得
+     */
+    public static function getDescription(self $category): string
     {
-        $value = $value instanceof self ? $value->value : $value;
-
-        return match($value) {
-            1 => '仕事関連のカテゴリ',
-            2 => '個人的なタスクのカテゴリ',
-            3 => '学習・研究に関するカテゴリ',
-            4 => '趣味に関するカテゴリ',
-            5 => 'その他のカテゴリ',
-            default => throw new \ValueError("Invalid value: {$value}"),
+        return match ($category) {
+            self::WORK => '仕事関連のタスク',
+            self::PERSONAL => '個人的なタスク',
+            self::STUDY => '学習・勉強関連のタスク',
+            self::HOBBY => '趣味関連のタスク',
+            self::OTHER => 'その他のタスク',
         };
     }
 }

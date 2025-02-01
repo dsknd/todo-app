@@ -13,23 +13,20 @@ return new class extends Migration
     /**
      * テーブルを作成
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('permissions', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('id');                // ID（手動）
+            $table->unsignedBigInteger('id')->primary();                // ID（手動）
             $table->string('scope');                         // スコープ 例: projects:tasks:admin
             $table->string('resource');                      // リソース 例: projects.tasks
             $table->string('action');                        // アクション 例: admin
-            $table->string('display_name');                  // 表示名 例: プロジェクト管理者
-            $table->string('description')->nullable();       // 説明
+            $table->string('display_name');                  // 表示名
+            $table->text('description')->nullable();       // 説明
             $table->timestamps();                            // 作成日時、更新日時
 
             // ユニーク制約
-            $table->unique(['scope']);
-
-            // 主キー制約
-            $table->primary('id');
+            $table->unique(['scope', 'resource', 'action']);
 
             // インデックス
             $table->index('resource');
@@ -40,7 +37,7 @@ return new class extends Migration
     /**
      * テーブルを削除
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('permissions');
     }

@@ -14,10 +14,11 @@ return new class extends Migration
     {
         // タスクのステータス
         Schema::create('task_statuses', function (Blueprint $table) {
-            $table->id(); // プライマリキー
-            $table->string('display_name')->unique(); // ステータス名
-            $table->text('description')->nullable(); // 説明
-            $table->timestamps(); // 作成・更新日時
+            $table->id()->comment('ID');
+            $table->timestamps();
+
+            // 主キー設定
+            $table->primary('id');
         });
     }
 

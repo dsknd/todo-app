@@ -18,12 +18,10 @@ class TaskStatusSeeder extends Seeder
     public function run(): void
     {
         DB::transaction(function () {
-            foreach (TaskStatusEnum::cases() as $taskStatus) {
-                $taskStatus = new TaskStatus();
-                $taskStatus->id = $taskStatus->value;
-                $taskStatus->display_name = $taskStatus->getDisplayName($taskStatus->value);
-                $taskStatus->description = $taskStatus->getDescription($taskStatus->value);
-                $taskStatus->save();
+            foreach (TaskStatusEnum::cases() as $status) {
+                DB::table('task_statuses')->insert([
+                    'id' => $status->value,
+                ]);
             }
         });
     }

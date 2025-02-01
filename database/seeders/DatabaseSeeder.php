@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
 //        ]);
 
         $this->call([
+            LocaleSeeder::class,
             OwnershipTypeSeeder::class,
             CategorySeeder::class,
             ImportanceLevelSeeder::class,
@@ -30,6 +31,8 @@ class DatabaseSeeder extends Seeder
             ProjectInvitationTypeSeeder::class,
             ProjectInvitationStatusSeeder::class,
             ProjectPermissionSeeder::class,
+            TaskStatusSeeder::class,
+            TaskStatusTranslationSeeder::class,
         ]);
     }
 }

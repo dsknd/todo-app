@@ -138,14 +138,6 @@ class Tag extends Model
     }
 
     /**
-     * タグの使用回数を取得
-     */
-    public function getUsageCount(): int
-    {
-        return TagAssignment::where('tag_id', $this->id)->count();
-    }
-
-    /**
      * タグの検証
      * 
      * @throws \InvalidArgumentException 検証エラーの場合

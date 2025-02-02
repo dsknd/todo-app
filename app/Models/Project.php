@@ -25,7 +25,6 @@ class Project extends Model
         'member_count',
         'task_count',
         'created_by',
-        'category_id',
     ];
 
     /**
@@ -65,14 +64,6 @@ class Project extends Model
     public function status(): BelongsTo
     {
         return $this->belongsTo(ProjectStatus::class, 'project_status_id');
-    }
-
-    /**
-     * カテゴリーとの関連
-     */
-    public function category(): BelongsTo
-    {
-        return $this->belongsTo(Category::class);
     }
 
     /**

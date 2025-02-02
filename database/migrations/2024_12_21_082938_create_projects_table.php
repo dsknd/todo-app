@@ -37,7 +37,6 @@ return new class extends Migration
             
             // 分類・作成者
             $table->unsignedBigInteger('created_by');                // 作成者
-            $table->unsignedBigInteger('category_id');               // カテゴリ
             
             $table->timestamps();                                    // 作成日時、更新日時
             $table->softDeletes();                                  // 論理削除
@@ -58,11 +57,6 @@ return new class extends Migration
                 ->on('users')
                 ->cascadeOnDelete();
             
-            $table->foreign('category_id')
-                ->references('id')
-                ->on('categories')
-                ->cascadeOnDelete();
-
             // インデックス
             $table->index('parent_project_id');
             $table->index(['planned_start_date', 'planned_end_date']);

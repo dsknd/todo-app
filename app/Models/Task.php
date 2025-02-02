@@ -26,6 +26,7 @@ class Task extends Model
         'importance_level_id',
         'urgency_level_id',
         'ownership_type_id',
+        'category_id',
         'user_id',
         'status_id',
         'is_recurring',
@@ -69,6 +70,14 @@ class Task extends Model
     public function ownershipType(): BelongsTo
     {
         return $this->belongsTo(OwnershipType::class);
+    }
+
+    /**
+     * カテゴリとの関連
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
     }
 
     /**

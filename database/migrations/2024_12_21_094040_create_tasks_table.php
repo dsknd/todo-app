@@ -54,6 +54,7 @@ return new class extends Migration
             
             // 分類・所有
             $table->unsignedBigInteger('ownership_type_id');       // 所有種別(project, personal)
+            $table->unsignedBigInteger('category_id');             // カテゴリ
             $table->unsignedBigInteger('user_id');                 // 作成者
             $table->unsignedBigInteger('status_id')->nullable();   // ステータス
             $table->boolean('is_recurring')->default(false);       // 継続タスクかどうか
@@ -75,6 +76,11 @@ return new class extends Migration
             $table->foreign('ownership_type_id')
                 ->references('id')
                 ->on('ownership_types')
+                ->cascadeOnDelete();
+
+            $table->foreign('category_id')
+                ->references('id')
+                ->on('categories')
                 ->cascadeOnDelete();
             
             $table->foreign('user_id')

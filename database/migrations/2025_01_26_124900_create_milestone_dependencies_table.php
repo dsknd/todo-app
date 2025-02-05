@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_milestone_dependencies', function (Blueprint $table) {
+        Schema::create('milestone_dependencies', function (Blueprint $table) {
             $table->unsignedBigInteger('dependent_milestone_id');    // 依存する側
             $table->unsignedBigInteger('dependency_milestone_id');   // 依存される側
             $table->string('dependency_type')                        // 依存タイプ
@@ -26,12 +26,12 @@ return new class extends Migration
             // 外部キー制約
             $table->foreign('dependent_milestone_id')
                 ->references('id')
-                ->on('project_milestones')
+                ->on('milestones')
                 ->cascadeOnDelete();
 
             $table->foreign('dependency_milestone_id')
                 ->references('id')
-                ->on('project_milestones')
+                ->on('milestones')
                 ->cascadeOnDelete();
 
             // 主キー制約
@@ -44,6 +44,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_milestone_dependencies');
+        Schema::dropIfExists('milestone_dependencies');
     }
 };

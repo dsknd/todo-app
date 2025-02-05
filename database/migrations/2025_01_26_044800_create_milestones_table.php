@@ -20,7 +20,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_milestones', function (Blueprint $table) {
+        Schema::create('milestones', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('project_id');
             $table->string('name');                    // マイルストーン名
@@ -41,7 +41,7 @@ return new class extends Migration
 
             $table->foreign('parent_milestone_id')
                 ->references('id')
-                ->on('project_milestones')
+                ->on('milestones')
                 ->nullOnDelete();
 
             // インデックス
@@ -57,6 +57,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_milestones');
+        Schema::dropIfExists('milestones');
     }
 };

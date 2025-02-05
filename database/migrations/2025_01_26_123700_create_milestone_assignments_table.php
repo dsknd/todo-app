@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('milestone_tasks', function (Blueprint $table) {
+        Schema::create('milestone_assignments', function (Blueprint $table) {
             // 関連ID
             $table->unsignedBigInteger('milestone_id');
             $table->unsignedBigInteger('task_id');
@@ -28,7 +28,7 @@ return new class extends Migration
             // 外部キー制約
             $table->foreign('milestone_id')
                 ->references('id')
-                ->on('project_milestones')
+                ->on('milestones')
                 ->cascadeOnDelete();
             
             $table->foreign('task_id')
@@ -49,6 +49,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('milestone_tasks');
+        Schema::dropIfExists('milestone_assignments');
     }
 };

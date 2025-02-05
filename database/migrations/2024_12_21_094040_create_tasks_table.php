@@ -43,12 +43,7 @@ return new class extends Migration
             $table->datetime('actual_start_date')->nullable();     // 実際の開始日時
             $table->datetime('actual_end_date')->nullable();      // 実際の終了日時
             
-            // 工数管理
-            $table->decimal('estimated_hours', 8, 2)->nullable();  // 見積時間
-            $table->decimal('actual_hours', 8, 2)->nullable();     // 実績時間
-            
             // 進捗・優先度
-            $table->decimal('progress', 5, 2)->default(0);
             $table->unsignedBigInteger('importance_level_id');
             $table->unsignedBigInteger('urgency_level_id');
             

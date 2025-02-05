@@ -21,6 +21,8 @@ class TaskStatusSeeder extends Seeder
             foreach (TaskStatusEnum::cases() as $status) {
                 DB::table('task_statuses')->insert([
                     'id' => $status->value,
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             }
         });

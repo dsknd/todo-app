@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
             ProjectPermissionSeeder::class,
             TaskStatusSeeder::class,
             TaskStatusTranslationSeeder::class,
+            TaskHistoryTypeTranslationSeeder::class,
         ]);
     }
 }

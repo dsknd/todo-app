@@ -53,8 +53,8 @@ return new class extends Migration
             $table->unsignedBigInteger('urgency_level_id');
             
             // 分類・所有
-            $table->unsignedBigInteger('ownership_type_id');       // 所有種別(project, personal)
             $table->unsignedBigInteger('category_id');             // カテゴリ
+            $table->unsignedBigInteger('project_id')->nullable();   // プロジェクトID
             $table->unsignedBigInteger('user_id');                 // 作成者
             $table->unsignedBigInteger('status_id')->nullable();   // ステータス
             $table->boolean('is_recurring')->default(false);       // 継続タスクかどうか
@@ -73,11 +73,6 @@ return new class extends Migration
                 ->on('urgency_levels')
                 ->cascadeOnDelete();
 
-            $table->foreign('ownership_type_id')
-                ->references('id')
-                ->on('ownership_types')
-                ->cascadeOnDelete();
-
             $table->foreign('category_id')
                 ->references('id')
                 ->on('categories')
@@ -91,6 +86,11 @@ return new class extends Migration
             $table->foreign('status_id')
                 ->references('id')
                 ->on('task_statuses')
+                ->cascadeOnDelete();
+
+            $table->foreign('project_id')
+                ->references('id')
+                ->on('projects')
                 ->cascadeOnDelete();
 
             // インデックス

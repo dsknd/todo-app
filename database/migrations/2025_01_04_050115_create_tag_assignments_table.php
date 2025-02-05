@@ -11,34 +11,34 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_task_tag_assignments', function (Blueprint $table) {
+        Schema::create('tag_assignments', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('project_task_tag_id');
-            $table->unsignedBigInteger('project_task_id');
-            $table->unsignedBigInteger('assigned_by');
+            $table->unsignedBigInteger('tag_id')->comment('タグID');
+            $table->unsignedBigInteger('task_id')->comment('タスクID');
+            $table->unsignedBigInteger('user_id')->comment('割り当て者');
             $table->timestamps();
 
             // 主キーの設定
-            $table->primary(['project_task_tag_id', 'project_task_id']);
+            $table->primary(['tag_id', 'task_id']);
 
             // 外部キー設定
-            $table->foreign('project_task_tag_id')
-                ->references('tag_id')
-                ->on('project_task_tags')
+            $table->foreign('tag_id')
+                ->references('id')
+                ->on('tags')
                 ->cascadeOnDelete();
 
-            $table->foreign('project_task_id')
-                ->references('task_id')
-                ->on('project_tasks')
+            $table->foreign('task_id')
+                ->references('id')
+                ->on('tasks')
                 ->cascadeOnDelete();
 
-            $table->foreign('assigned_by')
+            $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->cascadeOnDelete();
 
             // インデックスの設定
-            $table->index('project_task_id');
+            $table->index('task_id');
         });
     }
 
@@ -47,6 +47,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_task_tag_assignments');
+        Schema::dropIfExists('tag_assignments');
     }
 };

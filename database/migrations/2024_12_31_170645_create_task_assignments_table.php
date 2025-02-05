@@ -17,29 +17,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_task_assignments', function (Blueprint $table){
+        Schema::create('task_assignments', function (Blueprint $table){
             // カラム定義
-            $table->unsignedBigInteger('project_task_id');    // タスク
-            $table->unsignedBigInteger('project_id');         // プロジェクト
-            $table->unsignedBigInteger('assignee_id');        // 割り当てたユーザ
-            $table->unsignedBigInteger('assigned_by');        // 割り当てられたユーザ
+            $table->unsignedBigInteger('task_id');    // タスク
+            $table->unsignedBigInteger('project_id'); // プロジェクト
+            $table->unsignedBigInteger('assigned_user_id');        // 割り当てたユーザ
+            $table->unsignedBigInteger('assigner_user_id');        // 割り当てられたユーザ
             $table->timestamps();
 
             // 外部キー制約
-            $table->foreign('project_task_id')->references('task_id')->on('project_tasks')->cascadeOnDelete();
 
-            $table->foreign(['project_id', 'assignee_id'])
+            $table->foreign(['project_id', 'assigned_user_id'])
                 ->references(['project_id', 'user_id'])
                 ->on('project_members')
                 ->cascadeOnDelete();
 
-            $table->foreign(['project_id', 'assigned_by'])
+            $table->foreign(['project_id', 'assigner_user_id'])
                 ->references(['project_id', 'user_id'])
                 ->on('project_members')
                 ->cascadeOnDelete();
 
             // 主キー制約
-            $table->primary(['project_task_id', 'project_id', 'assignee_id']);
+            $table->primary(['task_id', 'project_id', 'assigned_user_id']);
         });
     }
 
@@ -50,6 +49,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_task_assignments');
+        Schema::dropIfExists('task_assignments');
     }
 };

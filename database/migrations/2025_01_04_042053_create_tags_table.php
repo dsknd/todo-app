@@ -20,31 +20,31 @@ return new class extends Migration
     {
         Schema::create('tags', function (Blueprint $table) {
             // 基本情報
-            $table->id();
-            $table->string('name');
-            $table->text('description')->nullable();
+            $table->id()->comment('タグID');
+            $table->string('name')->comment('タグ名');
+            $table->text('description')->nullable()->comment('タグの説明');
 
             // 所有情報
-            $table->unsignedBigInteger('ownership_type_id');
+            $table->unsignedBigInteger('user_id')->comment('作成者');
 
-            $table->unsignedBigInteger('created_by');          // 作成者/所有者
+            $table->unsignedBigInteger('project_id')->comment('プロジェクトID');
 
             $table->timestamps();
 
             // 外部キー制約
-            $table->foreign('created_by')
+            $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->cascadeOnDelete();
 
-            $table->foreign('ownership_type_id')
+            $table->foreign('project_id')
                 ->references('id')
-                ->on('ownership_types')
+                ->on('projects')
                 ->cascadeOnDelete();
 
             // インデックス
-            $table->index('ownership_type_id');
-            $table->index('created_by');
+            $table->index('user_id');
+            $table->index('project_id');
         });
     }
 

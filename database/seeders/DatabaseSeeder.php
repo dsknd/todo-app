@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             LocaleSeeder::class,
-            OwnershipTypeSeeder::class,
             CategorySeeder::class,
             ImportanceLevelSeeder::class,
             UrgencyLevelSeeder::class,

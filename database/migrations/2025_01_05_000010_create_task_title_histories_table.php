@@ -8,24 +8,22 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('task_histories', function (Blueprint $table) {
+        Schema::create('task_title_histories', function (Blueprint $table) {
             // カラム定義
-            $table->id();
-            $table->unsignedBigInteger('task_id');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('task_history_type_id');
+            $table->unsignedBigInteger('history_id');
+            $table->string('from_title')->nullable();
+            $table->string('to_title');
             $table->timestamps();
-
+            
             // 外部キー制約
-            $table->foreign('task_id')
+            $table->foreign('history_id')
                 ->references('id')
-                ->on('tasks')
+                ->on('task_histories')
                 ->cascadeOnDelete();
 
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->cascadeOnDelete();
+            // 主キー制約
+            $table->primary('history_id');
+
         });
     }
 

@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             ImportanceLevelSeeder::class,
             UrgencyLevelSeeder::class,
             TaskAssignmentTypeSeeder::class,
+            TagAssignmentTypeSeeder::class,
             PermissionSeeder::class,
             ProjectStatusSeeder::class,
             ProjectInvitationTypeSeeder::class,

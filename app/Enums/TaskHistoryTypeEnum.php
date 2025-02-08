@@ -13,4 +13,5 @@ enum TaskHistoryTypeEnum: int
     case IMPORTANCE = 7;  // 重要度変更
     case URGENCY = 8;    // 緊急度変更
     case CATEGORY = 9;    // カテゴリ変更
+    case TAG = 10;        // タグの追加/削除
 }

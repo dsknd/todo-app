@@ -20,6 +20,7 @@ enum TaskHistoryTypeTranslationEnum: string
             TaskHistoryTypeEnum::IMPORTANCE => '重要度変更',
             TaskHistoryTypeEnum::URGENCY => '緊急度変更',
             TaskHistoryTypeEnum::CATEGORY => 'カテゴリ変更',
+            TaskHistoryTypeEnum::TAG => 'タグ変更',
         };
     }
 
@@ -38,6 +39,7 @@ enum TaskHistoryTypeTranslationEnum: string
             TaskHistoryTypeEnum::IMPORTANCE => 'Importance Changed',
             TaskHistoryTypeEnum::URGENCY => 'Urgency Changed',
             TaskHistoryTypeEnum::CATEGORY => 'Category Changed',
+            TaskHistoryTypeEnum::TAG => 'Tag Changed',
         };
     }
 
@@ -56,6 +58,7 @@ enum TaskHistoryTypeTranslationEnum: string
             TaskHistoryTypeEnum::IMPORTANCE => 'タスクの重要度が変更された履歴',
             TaskHistoryTypeEnum::URGENCY => 'タスクの緊急度が変更された履歴',
             TaskHistoryTypeEnum::CATEGORY => 'タスクのカテゴリが変更された履歴',
+            TaskHistoryTypeEnum::TAG => 'タスクのタグが変更された履歴',
         };
     }
 
@@ -74,6 +77,7 @@ enum TaskHistoryTypeTranslationEnum: string
             TaskHistoryTypeEnum::IMPORTANCE => 'The history of the task importance being changed',
             TaskHistoryTypeEnum::URGENCY => 'The history of the task urgency being changed',
             TaskHistoryTypeEnum::CATEGORY => 'The history of the task category being changed',
+            TaskHistoryTypeEnum::TAG => 'The history of the task tag being changed',
         };
     }
 

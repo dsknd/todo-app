@@ -13,7 +13,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('task_history_type_id');
             $table->unsignedBigInteger('task_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->comment('アクションをしたユーザーID');
             $table->timestamps();
 
             // 外部キー制約

@@ -20,6 +20,13 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
+            // 外部キー設定
+            $table->foreign(['project_id', 'task_number'])
+                ->references(['project_id', 'task_number'])
+                ->on('tasks')
+                ->cascadeOnDelete();
+
+            // 主キー設定
             $table->primary(['project_id', 'task_number']);
         });
     }

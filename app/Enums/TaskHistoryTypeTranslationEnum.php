@@ -17,8 +17,7 @@ enum TaskHistoryTypeTranslationEnum: string
             TaskHistoryTypeEnum::PLANNED_SCHEDULE => '予定日時変更',
             TaskHistoryTypeEnum::ACTUAL_SCHEDULE => '実績日時変更',
             TaskHistoryTypeEnum::ASSIGNMENT => '担当者変更',
-            TaskHistoryTypeEnum::IMPORTANCE => '重要度変更',
-            TaskHistoryTypeEnum::URGENCY => '緊急度変更',
+            TaskHistoryTypeEnum::PRIORITY => '優先度変更',
             TaskHistoryTypeEnum::CATEGORY => 'カテゴリ変更',
             TaskHistoryTypeEnum::TAG => 'タグ変更',
         };
@@ -36,8 +35,7 @@ enum TaskHistoryTypeTranslationEnum: string
             TaskHistoryTypeEnum::PLANNED_SCHEDULE => 'Planned Schedule Changed',
             TaskHistoryTypeEnum::ACTUAL_SCHEDULE => 'Actual Schedule Changed',
             TaskHistoryTypeEnum::ASSIGNMENT => 'Assignment Changed',
-            TaskHistoryTypeEnum::IMPORTANCE => 'Importance Changed',
-            TaskHistoryTypeEnum::URGENCY => 'Urgency Changed',
+            TaskHistoryTypeEnum::PRIORITY => 'Priority Changed',
             TaskHistoryTypeEnum::CATEGORY => 'Category Changed',
             TaskHistoryTypeEnum::TAG => 'Tag Changed',
         };
@@ -55,8 +53,7 @@ enum TaskHistoryTypeTranslationEnum: string
             TaskHistoryTypeEnum::PLANNED_SCHEDULE => 'タスクの予定日時が変更された履歴',
             TaskHistoryTypeEnum::ACTUAL_SCHEDULE => 'タスクの実績日時が変更された履歴',
             TaskHistoryTypeEnum::ASSIGNMENT => 'タスクの担当者が変更された履歴',
-            TaskHistoryTypeEnum::IMPORTANCE => 'タスクの重要度が変更された履歴',
-            TaskHistoryTypeEnum::URGENCY => 'タスクの緊急度が変更された履歴',
+            TaskHistoryTypeEnum::PRIORITY => 'タスクの優先度が変更された履歴',
             TaskHistoryTypeEnum::CATEGORY => 'タスクのカテゴリが変更された履歴',
             TaskHistoryTypeEnum::TAG => 'タスクのタグが変更された履歴',
         };
@@ -74,8 +71,7 @@ enum TaskHistoryTypeTranslationEnum: string
             TaskHistoryTypeEnum::PLANNED_SCHEDULE => 'The history of the task planned schedule being changed',
             TaskHistoryTypeEnum::ACTUAL_SCHEDULE => 'The history of the task actual schedule being changed',
             TaskHistoryTypeEnum::ASSIGNMENT => 'The history of the task assignment being changed',
-            TaskHistoryTypeEnum::IMPORTANCE => 'The history of the task importance being changed',
-            TaskHistoryTypeEnum::URGENCY => 'The history of the task urgency being changed',
+            TaskHistoryTypeEnum::PRIORITY => 'The history of the task priority being changed',
             TaskHistoryTypeEnum::CATEGORY => 'The history of the task category being changed',
             TaskHistoryTypeEnum::TAG => 'The history of the task tag being changed',
         };

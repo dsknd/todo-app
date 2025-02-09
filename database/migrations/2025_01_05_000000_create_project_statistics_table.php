@@ -27,9 +27,8 @@ return new class extends Migration
             $table->integer('total_estimated_minutes')->default(0);
             $table->integer('total_actual_minutes')->default(0);
             
-            // 重要度・緊急度の分布
-            $table->json('importance_level_distribution')->nullable();
-            $table->json('urgency_level_distribution')->nullable();
+            // 優先度の分布
+            $table->json('priority_distribution')->nullable();
             
             // カテゴリ分布
             $table->json('category_distribution')->nullable();

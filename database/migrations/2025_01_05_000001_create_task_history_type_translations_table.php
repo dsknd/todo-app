@@ -15,6 +15,17 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->timestamps();
 
+            // 外部キー制約
+            $table->foreign('task_history_type_id')
+                ->references('id')
+                ->on('task_history_types')
+                ->cascadeOnDelete();
+
+            $table->foreign('locale_id')
+                ->references('id')
+                ->on('locales')
+                ->cascadeOnDelete();
+
             // 主キー制約
             $table->primary(['task_history_type_id', 'locale_id']);
 

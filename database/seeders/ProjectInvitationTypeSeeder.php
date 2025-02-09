@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\ProjectInvitationTypeEnum;
+use App\Enums\ProjectInvitationType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -10,16 +10,17 @@ class ProjectInvitationTypeSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::transaction(function () {
-            foreach (ProjectInvitationTypeEnum::cases() as $type) {
-                DB::table('project_invitation_types')->insert([
-                    'id' => $type->value,
-                    'display_name' => $type->getDisplayName($type->value),
-                    'description' => $type->getDescription($type->value),
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-        });
+        $types = [];
+        
+        foreach (ProjectInvitationType::cases() as $type) {
+            $types[] = [
+                'id' => $type->value,
+                'key' => ProjectInvitationType::getKey($type),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        DB::table('project_invitation_types')->insert($types);
     }
 } 

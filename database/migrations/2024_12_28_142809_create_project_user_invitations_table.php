@@ -20,6 +20,11 @@ return new class extends Migration
                 ->on('project_invitations')
                 ->cascadeOnDelete();
 
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete();
+
             // 主キー
             $table->primary('project_invitation_id');
 

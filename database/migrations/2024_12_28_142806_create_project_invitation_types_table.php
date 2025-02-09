@@ -10,13 +10,15 @@ return new class extends Migration
     {
         Schema::create('project_invitation_types', function (Blueprint $table) {
             // カラム定義
-            $table->id()->comment('ID');
-            $table->string('display_name')->comment('表示名');
-            $table->text('description')->nullable()->comment('説明');
+            $table->unsignedBigInteger('id');
+            $table->string('key')->comment('システム内部キー');
             $table->timestamps();
 
             // 主キー
             $table->primary('id');
+
+            // ユニーク設定
+            $table->unique('key');
         });
     }
 

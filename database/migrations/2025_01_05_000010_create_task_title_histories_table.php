@@ -29,6 +29,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('task_histories');
+        Schema::dropIfExists('task_title_histories');
     }
 }; 

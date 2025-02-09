@@ -35,6 +35,8 @@ class DatabaseSeeder extends Seeder
             TaskStatusSeeder::class,
             TaskStatusTranslationSeeder::class,
             TaskHistoryTypeTranslationSeeder::class,
+            MilestonePrioritySeeder::class,
+            MilestoneDependencyTypeSeeder::class,
         ]);
     }
 }

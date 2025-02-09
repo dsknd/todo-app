@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\Schema;
  * このテーブルは以下の情報を管理します：
  * - マイルストーンの基本情報（名前、説明、期日）
  * - プロジェクトとの関連
- * - マイルストーンの階層構造（親子関係）
- * - 進捗状況（達成状況、進捗率）
+ * - 進捗状況（達成状況）
  */
 return new class extends Migration
 {
@@ -26,12 +25,9 @@ return new class extends Migration
             $table->string('name');                    // マイルストーン名
             $table->text('description')->nullable();   // 説明
             $table->datetime('due_date');             // 期日
-            $table->unsignedInteger('priority');      // 優先度（1-5）
+            $table->unsignedBigInteger('priority_id'); // 優先度
             $table->boolean('is_achieved')->default(false); // 達成状況
-            $table->decimal('progress', 5, 2)->default(0);  // 進捗率（0-100%）
-            $table->unsignedBigInteger('parent_milestone_id')->nullable(); // 親マイルストーン
             $table->timestamps();
-            $table->softDeletes();  // 論理削除
 
             // 外部キー制約
             $table->foreign('project_id')
@@ -39,15 +35,14 @@ return new class extends Migration
                 ->on('projects')
                 ->cascadeOnDelete();
 
-            $table->foreign('parent_milestone_id')
+            $table->foreign('priority_id')
                 ->references('id')
-                ->on('milestones')
-                ->nullOnDelete();
+                ->on('milestone_priorities')
+                ->cascadeOnDelete();
 
             // インデックス
             $table->index('project_id');
             $table->index('due_date');
-            $table->index('parent_milestone_id');
         });
 
     }

@@ -9,10 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('task_statistics', function (Blueprint $table) {
-            $table->foreignId('task_id')
-                ->primary()
-                ->constrained('tasks')
-                ->cascadeOnDelete();
+            // カラム定義
+            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('task_number');
             
             // 作業時間
             $table->integer('estimated_minutes')->default(0);
@@ -37,6 +36,9 @@ return new class extends Migration
             $table->integer('overdue_days')->default(0);
             
             $table->timestamps();
+
+            // 主キー制約
+            $table->primary(['project_id', 'task_number']);
         });
     }
 

@@ -30,12 +30,12 @@ return new class extends Migration
     {
         Schema::create('tasks', function (Blueprint $table) {
             // 基本情報
-            $table->id();
+            $table->unsignedBigInteger('project_id');   // プロジェクトID
+            $table->unsignedBigInteger('task_number');            // タスク番号(プロジェクトごとの採番)
+
             $table->string('title');                                // タイトル
             $table->text('description')->nullable();                // 詳細
-            
-            // 階層構造・WBS
-            $table->string('wbs_number')->nullable();                  // WBS番号
+            $table->unsignedBigInteger('user_id');                 // 作成者
             
             // 時間管理
             $table->datetime('planned_start_date')->nullable();     // 予定開始日時
@@ -44,13 +44,10 @@ return new class extends Migration
             $table->datetime('actual_end_date')->nullable();      // 実際の終了日時
             
             // 進捗・優先度
-            $table->unsignedBigInteger('importance_level_id');
-            $table->unsignedBigInteger('urgency_level_id');
-            
+            $table->unsignedBigInteger('priority_id');
+
             // 分類・所有
             $table->unsignedBigInteger('category_id');             // カテゴリ
-            $table->unsignedBigInteger('project_id')->nullable();   // プロジェクトID
-            $table->unsignedBigInteger('user_id');                 // 作成者
             $table->unsignedBigInteger('status_id')->nullable();   // ステータス
             $table->boolean('is_recurring')->default(false);       // 継続タスクかどうか
             
@@ -58,14 +55,9 @@ return new class extends Migration
             $table->softDeletes();                                // 論理削除
 
             // 外部キー制約
-            $table->foreign('importance_level_id')
+            $table->foreign('priority_id')
                 ->references('id')
-                ->on('importance_levels')
-                ->cascadeOnDelete();
-
-            $table->foreign('urgency_level_id')
-                ->references('id')
-                ->on('urgency_levels')
+                ->on('priorities')
                 ->cascadeOnDelete();
 
             $table->foreign('category_id')
@@ -88,11 +80,16 @@ return new class extends Migration
                 ->on('projects')
                 ->cascadeOnDelete();
 
+            // 主キー設定
+            $table->primary(['project_id', 'task_number']);
+
             // インデックス
-            $table->index('wbs_number');
             $table->index(['planned_start_date', 'planned_end_date']);
-            $table->index('importance_level_id');
-            $table->index('urgency_level_id');
+            $table->index(['actual_start_date', 'actual_end_date']);
+            $table->index('priority_id');
+            $table->index('status_id');
+            $table->index('category_id');
+            $table->index('user_id');
         });
     }
 

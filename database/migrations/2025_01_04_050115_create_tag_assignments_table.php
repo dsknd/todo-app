@@ -14,12 +14,10 @@ return new class extends Migration
         Schema::create('tag_assignments', function (Blueprint $table) {
             // カラム定義
             $table->unsignedBigInteger('tag_id')->comment('タグID');
-            $table->unsignedBigInteger('task_id')->comment('タスクID');
+            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('task_number');
             $table->unsignedBigInteger('user_id')->comment('割り当て者');
             $table->timestamps();
-
-            // 主キーの設定
-            $table->primary(['tag_id', 'task_id']);
 
             // 外部キー設定
             $table->foreign('tag_id')
@@ -27,8 +25,8 @@ return new class extends Migration
                 ->on('tags')
                 ->cascadeOnDelete();
 
-            $table->foreign('task_id')
-                ->references('id')
+            $table->foreign(['project_id', 'task_number'])
+                ->references(['project_id', 'task_number'])
                 ->on('tasks')
                 ->cascadeOnDelete();
 
@@ -37,8 +35,8 @@ return new class extends Migration
                 ->on('users')
                 ->cascadeOnDelete();
 
-            // インデックスの設定
-            $table->index('task_id');
+            // 主キーの設定
+            $table->primary(['tag_id', 'project_id', 'task_number']);
         });
     }
 

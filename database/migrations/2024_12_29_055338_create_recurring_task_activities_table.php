@@ -11,35 +11,26 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('task_comments', function (Blueprint $table) {
-            // カラム
+        Schema::create('recurring_task_activities', function (Blueprint $table) {
+            // カラム定義
             $table->id();
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('task_number');
-            $table->unsignedBigInteger('user_id');
-            $table->text('content');
-            $table->unsignedBigInteger('parent_id')->nullable();
+
+            $table->timestamp('scheduled_at'); // 実行日時
+            $table->unsignedBigInteger('recurring_task_status_id');
             $table->timestamps();
 
-            // 外部キー設定
+            // 外部キー制約
             $table->foreign(['project_id', 'task_number'])
                 ->references(['project_id', 'task_number'])
-                ->on('tasks')
+                ->on('recurring_tasks')
                 ->cascadeOnDelete();
 
-            $table->foreign('user_id')
+            $table->foreign('recurring_task_status_id')
                 ->references('id')
-                ->on('users')
+                ->on('recurring_task_statuses')
                 ->cascadeOnDelete();
-
-            $table->foreign('parent_id')
-                ->references('id')
-                ->on('task_comments')
-                ->cascadeOnDelete();
-
-            // インデックス設定
-            $table->index(['project_id', 'task_number']);
-            $table->index('user_id');
         });
     }
 
@@ -48,6 +39,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('task_comments');
+        Schema::dropIfExists('recurring_task_activities');
     }
 };

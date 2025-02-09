@@ -12,11 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('recurring_tasks', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('setting_id')->constrained('recurring_task_settings', 'task_id')->cascadeOnDelete();
-            $table->timestamp('scheduled_at'); // 実行日時
-            $table->foreignId('status_id')->constrained('recurring_task_statuses')->cascadeOnDelete(); // ステータス
+            // カラム定義
+            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('task_number');
+
+            $table->json('rrule')->notNullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
+
+            $table->primary(['project_id', 'task_number']);
         });
     }
 

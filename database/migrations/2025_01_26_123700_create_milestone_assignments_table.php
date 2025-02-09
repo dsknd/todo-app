@@ -15,13 +15,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('milestone_assignments', function (Blueprint $table) {
-            // 関連ID
+            // カラム定義
             $table->unsignedBigInteger('milestone_id');
-            $table->unsignedBigInteger('task_id');
-            
-            // タスクの位置づけ
-            $table->unsignedInteger('display_order')->default(0);  // 表示順序
-            $table->decimal('weight', 5, 2)->default(1.00);        // タスクの重み（マイルストーンの進捗計算用）
+            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('task_number');
             
             $table->timestamps();
 
@@ -31,16 +28,13 @@ return new class extends Migration
                 ->on('milestones')
                 ->cascadeOnDelete();
             
-            $table->foreign('task_id')
-                ->references('id')
+            $table->foreign(['project_id', 'task_number'])
+                ->references(['project_id', 'task_number'])
                 ->on('tasks')
                 ->cascadeOnDelete();
 
             // 主キー制約
-            $table->primary(['milestone_id', 'task_id']);
-
-            // インデックス
-            $table->index('display_order');
+            $table->primary(['milestone_id', 'project_id', 'task_number']);
         });
     }
 

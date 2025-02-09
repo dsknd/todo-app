@@ -42,8 +42,9 @@ return new class extends Migration
     {
         Schema::create('task_dependencies', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('dependent_task_id');    // 依存する側のタスクID（子）
-            $table->unsignedBigInteger('dependency_task_id');   // 依存される側のタスクID（親）
+            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('task_number'); // タスク番号
+            $table->unsignedBigInteger('depends_on_task_number');   // 依存されるタスク番号
             $table->enum('dependency_type', array_column(DependencyTypes::cases(), 'value'))
                 ->default(DependencyTypes::FINISH_TO_START->value)
                 ->comment('依存関係の種類（FS: 終了後開始, SS: 同時開始, FF: 同時終了, SF: 開始後終了）');
@@ -54,23 +55,21 @@ return new class extends Migration
             $table->timestamps();
 
             // 外部キー制約
-            $table->foreign('dependent_task_id')
-                ->references('id')
+            $table->foreign(['project_id', 'task_number'])
+                ->references(['project_id', 'task_number'])
                 ->on('tasks')
                 ->cascadeOnDelete();
 
-            $table->foreign('dependency_task_id')
-                ->references('id')
+            $table->foreign(['project_id', 'depends_on_task_number'])
+                ->references(['project_id', 'task_number'])
                 ->on('tasks')
                 ->cascadeOnDelete();
 
             // インデックス
             $table->index('dependency_type');
-            $table->index('dependent_task_id');
-            $table->index('dependency_task_id');
 
             // 主キー制約
-            $table->primary(['dependent_task_id', 'dependency_task_id']);
+            $table->primary(['project_id', 'task_number', 'depends_on_task_number']);
         });
     }
 

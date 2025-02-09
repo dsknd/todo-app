@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('milestone_priorities', function (Blueprint $table) {
+        Schema::create('priorities', function (Blueprint $table) {
             // カラム定義
             $table->unsignedBigInteger('id');
             $table->string('key');

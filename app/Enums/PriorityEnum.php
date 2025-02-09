@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum MilestonePriorityEnum: int
+enum PriorityEnum: int
 {
     case NONE = 0;        // 未設定
     case LOW = 25;         // 低

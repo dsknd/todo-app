@@ -36,6 +36,7 @@ return new class extends Migration
             $table->unsignedInteger('task_count')->default(0);       // タスク数
             
             // 分類・作成者
+            $table->boolean('is_personal')->default(false);         // 個人プロジェクトかどうか
             $table->unsignedBigInteger('created_by');                // 作成者
             
             $table->timestamps();                                    // 作成日時、更新日時

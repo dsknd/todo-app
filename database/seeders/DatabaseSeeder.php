@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             LocaleSeeder::class,
             CategorySeeder::class,
+            PrioritySeeder::class,
             ImportanceLevelSeeder::class,
             UrgencyLevelSeeder::class,
             TaskAssignmentTypeSeeder::class,
@@ -35,7 +36,6 @@ class DatabaseSeeder extends Seeder
             TaskStatusSeeder::class,
             TaskStatusTranslationSeeder::class,
             TaskHistoryTypeTranslationSeeder::class,
-            MilestonePrioritySeeder::class,
             MilestoneDependencyTypeSeeder::class,
         ]);
     }

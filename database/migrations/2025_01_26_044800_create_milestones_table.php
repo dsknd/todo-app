@@ -37,7 +37,7 @@ return new class extends Migration
 
             $table->foreign('priority_id')
                 ->references('id')
-                ->on('milestone_priorities')
+                ->on('priorities')
                 ->cascadeOnDelete();
 
             // インデックス

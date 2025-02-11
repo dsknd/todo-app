@@ -134,26 +134,4 @@ class PersonalTag extends Tag
         }
     }
 
-    /**
-     * タグの使用回数をユーザー別に取得
-     */
-    public function getUsageCountByUser(int $userId): int
-    {
-        return TagAssignment::where('tag_id', $this->id)
-            ->where('assigned_by', $userId)
-            ->count();
-    }
-
-    /**
-     * タグの使用履歴をユーザー別に取得
-     */
-    public function getUsageHistoryByUser(int $userId): array
-    {
-        return TagAssignment::where('tag_id', $this->id)
-            ->where('assigned_by', $userId)
-            ->with(['taggable', 'assignedBy'])
-            ->orderByDesc('created_at')
-            ->get()
-            ->all();
-    }
 }

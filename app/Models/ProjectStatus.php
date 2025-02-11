@@ -4,25 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProjectStatus extends Model
 {
+    use HasFactory;
+    
     protected $fillable = [
-        'name',
-        'description',
-        'color',         // ステータスの表示色（例：#FF0000）
-        'display_order', // 表示順序
-        'is_default',    // デフォルトステータスかどうか
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'is_default' => 'boolean',
-        'display_order' => 'integer',
+        'id',
+        'key',
     ];
 
     /**

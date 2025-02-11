@@ -72,11 +72,4 @@ class ProjectRole extends Model
         return $this->hasMany(ProjectRoleAssignment::class, 'project_role_id');
     }
 
-    /**
-     * デフォルトの権限セットを取得
-     */
-    public function getDefaultPermissions(): array
-    {
-        return $this->type->getDefaultPermissions();
-    }
 }

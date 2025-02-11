@@ -84,21 +84,6 @@ class ProjectInvitation extends Model
     }
 
     /**
-     * 招待のステータスを変更
-     * 
-     * @throws \InvalidArgumentException ステータスの遷移が不正な場合
-     */
-    public function updateStatus(ProjectInvitationStatusEnum $newStatus): void
-    {
-        if (!$this->status->canTransitionTo($newStatus)) {
-            throw new \InvalidArgumentException("Cannot transition from {$this->status->value} to {$newStatus->value}");
-        }
-
-        $this->status = $newStatus;
-        $this->save();
-    }
-
-    /**
      * 招待を承諾
      */
     public function accept(): void

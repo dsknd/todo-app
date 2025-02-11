@@ -45,30 +45,7 @@ class TaskDependency extends Pivot
     {
         return $this->belongsTo(Task::class, 'dependency_task_id');
     }
-
-    /**
-     * 依存関係に基づいて開始日時を計算
-     */
-    public function calculateStartDate(): ?Carbon
-    {
-        if (!$this->dependencyTask) {
-            return null;
-        }
-
-        $baseDate = match($this->dependency_type) {
-            DependencyTypes::FINISH_TO_START => $this->dependencyTask->getEndDate(),
-            DependencyTypes::START_TO_START => $this->dependencyTask->getStartDate(),
-            DependencyTypes::FINISH_TO_FINISH => $this->dependencyTask->getEndDate(),
-            DependencyTypes::START_TO_FINISH => $this->dependencyTask->getStartDate(),
-        };
-
-        if (!$baseDate) {
-            return null;
-        }
-
-        return $baseDate->addMinutes($this->lag_minutes);
-    }
-
+    
     /**
      * 依存関係の検証
      * 

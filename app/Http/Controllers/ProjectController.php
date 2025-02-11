@@ -9,7 +9,7 @@ use App\Http\Requests\CreateProjectRequest;
 use App\Enums\ProjectStatusEnum;
 use Throwable;
 use Illuminate\Http\JsonResponse;
-
+use Illuminate\Support\Facades\Auth;
 class ProjectController extends Controller
 {
     /**
@@ -20,9 +20,9 @@ class ProjectController extends Controller
         // バリデーション
         $validated = $request->validated();
 
-        $data = $validated->all();
+        $data = $validated;
         $data['project_status_id'] = ProjectStatusEnum::PLANNING->value;
-        $data['user_id'] = auth()->id();
+        $data['user_id'] = Auth::id();
 
         // トランザクションを使用してプロジェクトを作成
         $project = null;

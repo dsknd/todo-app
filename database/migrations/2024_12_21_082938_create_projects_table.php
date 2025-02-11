@@ -30,7 +30,7 @@ return new class extends Migration
             $table->unsignedBigInteger('project_status_id');         // プロジェクトステータス
             
             // 分類・作成者
-            $table->boolean('is_private')->default(false);         // 個人のプロジェクトでプロジェクトメンバの追加などを行わないプロジェクト
+            $table->boolean('is_private');         // 個人のプロジェクトでプロジェクトメンバの追加などを行わないプロジェクト
             $table->unsignedBigInteger('user_id');                // 作成者
             
             $table->timestamps();                                    // 作成日時、更新日時

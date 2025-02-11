@@ -13,7 +13,7 @@
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -30,7 +30,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $category_id
  * @property int $type_id
@@ -53,7 +53,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -97,7 +97,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name Status name (e.g., pending, accepted)
@@ -118,7 +118,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember newQuery()
@@ -129,7 +129,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMemberRole newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMemberRole newQuery()
@@ -140,7 +140,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -167,7 +167,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $role_id
  * @property int $project_id
@@ -188,7 +188,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleScope newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleScope newQuery()
@@ -199,7 +199,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectScope newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectScope newQuery()
@@ -210,7 +210,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -234,7 +234,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $project_id
  * @property int $task_id
@@ -257,7 +257,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $project_id
  * @property int $status_id
@@ -280,7 +280,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -301,7 +301,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectRole> $roles
  * @property-read int|null $roles_count
@@ -314,7 +314,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ScopeType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ScopeType newQuery()
@@ -325,7 +325,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $title
@@ -361,7 +361,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -390,7 +390,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $task_id
  * @property int $category_id
@@ -409,7 +409,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskClosure newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskClosure newQuery()
@@ -420,7 +420,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $task_id
@@ -443,7 +443,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -466,7 +466,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $parent_task_id
  * @property int $child_task_id
@@ -487,7 +487,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -508,7 +508,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -527,7 +527,7 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name

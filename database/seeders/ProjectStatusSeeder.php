@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\ProjectStatus;
+use Illuminate\Support\Facades\DB;
 use App\Enums\ProjectStatusEnum;
 
 class ProjectStatusSeeder extends Seeder
@@ -14,10 +14,9 @@ class ProjectStatusSeeder extends Seeder
     public function run(): void
     {
         foreach (ProjectStatusEnum::cases() as $status) {
-            ProjectStatus::create([
+            DB::table('project_statuses')->insert([
                 'id' => $status->value,
-                'display_name' => ProjectStatusEnum::getDisplayName($status->value),
-                'description' => ProjectStatusEnum::getDescription($status->value),
+                'key' => ProjectStatusEnum::getKey($status),
             ]);
         }
     }

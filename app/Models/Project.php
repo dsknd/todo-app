@@ -15,16 +15,13 @@ class Project extends Model
     protected $fillable = [
         'name',
         'description',
-        'parent_project_id',
         'planned_start_date',
         'planned_end_date',
         'actual_start_date',
         'actual_end_date',
         'project_status_id',
-        'progress',
-        'member_count',
-        'task_count',
-        'created_by',
+        'is_private',
+        'user_id',
     ];
 
     /**
@@ -37,26 +34,8 @@ class Project extends Model
         'planned_end_date' => 'datetime',
         'actual_start_date' => 'datetime',
         'actual_end_date' => 'datetime',
-        'progress' => 'decimal:2',
-        'member_count' => 'integer',
-        'task_count' => 'integer',
+        'is_private' => 'boolean',
     ];
-
-    /**
-     * 親プロジェクトとの関連
-     */
-    public function parentProject(): BelongsTo
-    {
-        return $this->belongsTo(Project::class, 'parent_project_id');
-    }
-
-    /**
-     * 子プロジェクトとの関連
-     */
-    public function childProjects(): HasMany
-    {
-        return $this->hasMany(Project::class, 'parent_project_id');
-    }
 
     /**
      * プロジェクトステータスとの関連

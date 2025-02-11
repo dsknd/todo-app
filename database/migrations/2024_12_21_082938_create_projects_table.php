@@ -20,9 +20,6 @@ return new class extends Migration
             $table->string('name');                                    // プロジェクト名
             $table->text('description')->nullable();                   // プロジェクトの説明
             
-            // 階層構造
-            $table->unsignedBigInteger('parent_project_id')->nullable();  // 親プロジェクト
-            
             // 時間管理
             $table->datetime('planned_start_date')->nullable();        // 予定開始日時
             $table->datetime('planned_end_date')->nullable();         // 予定終了日時
@@ -31,35 +28,25 @@ return new class extends Migration
             
             // 進捗管理
             $table->unsignedBigInteger('project_status_id');         // プロジェクトステータス
-            $table->decimal('progress', 5, 2)->default(0);           // 進捗率（0-100%）
-            $table->unsignedInteger('member_count')->default(0);     // メンバー数
-            $table->unsignedInteger('task_count')->default(0);       // タスク数
             
             // 分類・作成者
-            $table->boolean('is_personal')->default(false);         // 個人プロジェクトかどうか
-            $table->unsignedBigInteger('created_by');                // 作成者
+            $table->boolean('is_private')->default(false);         // 個人のプロジェクトでプロジェクトメンバの追加などを行わないプロジェクト
+            $table->unsignedBigInteger('user_id');                // 作成者
             
             $table->timestamps();                                    // 作成日時、更新日時
-            $table->softDeletes();                                  // 論理削除
 
             // 外部キー制約
-            $table->foreign('parent_project_id')
-                ->references('id')
-                ->on('projects')
-                ->nullOnDelete();
-            
             $table->foreign('project_status_id')
                 ->references('id')
                 ->on('project_statuses')
                 ->cascadeOnDelete();
             
-            $table->foreign('created_by')
+            $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->cascadeOnDelete();
             
             // インデックス
-            $table->index('parent_project_id');
             $table->index(['planned_start_date', 'planned_end_date']);
         });
     }

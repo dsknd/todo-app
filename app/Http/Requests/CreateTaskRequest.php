@@ -17,6 +17,7 @@ class CreateTaskRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'category_id' => ['required', 'exists:categories,id'],
+            'is_recurring' => ['required', 'boolean'],
             'planned_start_date' => ['nullable', 'date'],
             'planned_end_date' => [
                 'nullable',
@@ -31,12 +32,12 @@ class CreateTaskRequest extends FormRequest
         return [
             'title.required' => 'タイトルは必須です',
             'title.max' => 'タイトルは255文字以内で入力してください',
+            'description.string' => '詳細は文字列で入力してください',
             'category_id.required' => 'カテゴリは必須です',
-            'category_id.exists' => '指定されたカテゴリは存在しません',
-            'importance_id.required' => '重要度は必須です',
-            'importance_id.exists' => '指定された重要度は存在しません',
-            'urgency_id.required' => '緊急度は必須です',
-            'urgency_id.exists' => '指定された緊急度は存在しません',
+            'category_id.integer' => 'カテゴリは整数で入力してください',
+            'is_recurring.boolean' => 'リマインダーはブール値で入力してください',
+            'planned_start_date.date' => '予定開始日は日付で入力してください',
+            'planned_end_date.date' => '予定終了日は日付で入力してください',
             'planned_end_date.after_or_equal' => '予定終了日は予定開始日以降の日付を指定してください',
         ];
     }

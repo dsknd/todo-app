@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\TaskStatusEnum;
 use App\Models\Task;
 use App\Http\Requests\TaskRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-
+use App\Http\Requests\CreateTaskRequest;
+use Illuminate\Support\Facades\Auth;
+use App\Enums\PriorityEnum;
+use App\Enums\CategoryEnum;
+use App\Models\Project;
 class TaskController extends Controller
 {
     /**
@@ -40,48 +45,41 @@ class TaskController extends Controller
     /**
      * タスクを新規作成
      */
-    public function store(TaskRequest $request): JsonResponse
+    public function store(CreateTaskRequest $request, Project $project): JsonResponse
     {
+        // バリデーション
+        try {
+            $request->validated();
+        } catch (\Exception $e) {
+            Log::error('タスクの作成に失敗しました。', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'タスクの作成に失敗しました。'], 500);
+        }
+
         try {
             DB::beginTransaction();
 
             $task = Task::create([
                 'title' => $request->title,
                 'description' => $request->description,
-                'status_id' => $request->status_id,
-                'category_id' => $request->category_id,
-                'importance_id' => $request->importance_id,
-                'urgency_id' => $request->urgency_id,
+                'user_id' => Auth::id(),
+                'project_id' => $project->id,
+                'priority_id' => PriorityEnum::LOW,
+                'status_id' => TaskStatusEnum::NOT_STARTED,
+                'category_id' => CategoryEnum::UNCATEGORIZED,
+                'is_recurring' => $request->is_recurring,
                 'planned_start_date' => $request->planned_start_date,
                 'planned_end_date' => $request->planned_end_date,
                 'actual_start_date' => $request->actual_start_date,
                 'actual_end_date' => $request->actual_end_date,
-                'created_by' => auth()->id(),
-                'updated_by' => auth()->id(),
             ]);
 
-            // 担当者の割り当て
-            if ($request->has('assignee_ids')) {
-                $task->assignees()->attach($request->assignee_ids);
-            }
-
-            // タグの割り当て
-            if ($request->has('tag_ids')) {
-                $task->tags()->attach($request->tag_ids);
+            if ($request->is_recurring) {
+                // TODO: リマインダーの作成
             }
 
             DB::commit();
 
-            return response()->json($task->load([
-                'status',
-                'assignees',
-                'category',
-                'tags',
-                'importance',
-                'urgency',
-                'creator',
-                'updater',
-            ]), 201);
+            return response()->json($task, 201);
 
         } catch (\Exception $e) {
             DB::rollBack();

@@ -6,28 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Task extends Model
 {
-    use SoftDeletes;
-
     protected $fillable = [
         'title',
         'description',
-        'wbs_number',
+        'project_id',
+        'task_number',
+        'user_id',
         'planned_start_date',
         'planned_end_date',
         'actual_start_date',
         'actual_end_date',
-        'estimated_hours',
-        'actual_hours',
-        'progress',
-        'importance_level_id',
-        'urgency_level_id',
-        'ownership_type_id',
+        'priority_id',
         'category_id',
-        'user_id',
         'status_id',
         'is_recurring',
     ];
@@ -42,11 +35,20 @@ class Task extends Model
         'planned_end_date' => 'datetime',
         'actual_start_date' => 'datetime',
         'actual_end_date' => 'datetime',
-        'estimated_hours' => 'decimal:2',
-        'actual_hours' => 'decimal:2',
-        'progress' => 'decimal:2',
         'is_recurring' => 'boolean',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // プロジェクトごとのタスク番号を生成
+        static::creating(function ($task) {
+            $task->task_number = static::where('project_id', $task->project_id)
+                ->lockForUpdate()
+                ->max('task_number') + 1 ?? 1;
+        });
+    }
 
     /**
      * 子タスクとの関連
@@ -62,14 +64,6 @@ class Task extends Model
     public function status(): BelongsTo
     {
         return $this->belongsTo(TaskStatus::class, 'status_id');
-    }
-
-    /**
-     * 所有タイプとの関連
-     */
-    public function ownershipType(): BelongsTo
-    {
-        return $this->belongsTo(OwnershipType::class);
     }
 
     /**

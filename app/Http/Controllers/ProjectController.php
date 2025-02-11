@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Categories;
 use App\Enums\ProjectInvitationStatuses;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -10,10 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Project;
 use Symfony\Component\HttpFoundation\Response;
-use App\Enums\ProjectStatus;
 use Illuminate\Support\Facades\DB;
-use App\Enums\ProjectPermissions;
-use App\Enums\ProjectStatuses;
+use App\Enums\ProjectStatusEnum;
 use App\Enums\ProjectRoleTypes;
 use App\Models\ProjectPermission;
 use App\Models\ProjectRole;
@@ -76,8 +73,8 @@ class ProjectController extends Controller
             'description' => $validated['description'] ?? null,
             'start_date' => $validated['start_date'] ?? null,
             'end_date' => $validated['end_date'] ?? null,
-            'project_status_id' => ProjectStatuses::PENDING,
-            'category_id' => Categories::NA,
+            'project_status_id' => ProjectStatusEnum::PLANNING,
+            'category_id' => CategoryEnum::UNCATEGORIZED,
             'created_by' => Auth::id(),
         ];
 

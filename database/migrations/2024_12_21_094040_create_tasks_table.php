@@ -48,11 +48,10 @@ return new class extends Migration
 
             // 分類・所有
             $table->unsignedBigInteger('category_id');             // カテゴリ
-            $table->unsignedBigInteger('status_id')->nullable();   // ステータス
+            $table->unsignedBigInteger('status_id');   // ステータス
             $table->boolean('is_recurring')->default(false);       // 継続タスクかどうか
             
             $table->timestamps();                                  // 作成日時と更新日時
-            $table->softDeletes();                                // 論理削除
 
             // 外部キー制約
             $table->foreign('priority_id')
@@ -91,6 +90,9 @@ return new class extends Migration
             $table->index('category_id');
             $table->index('user_id');
         });
+
+        // task_numberに降順のインデックスを追加
+        DB::statement('CREATE INDEX idx_project_task_desc ON tasks (project_id ASC, task_number DESC)');
     }
 
     /**

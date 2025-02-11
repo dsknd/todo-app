@@ -10,6 +10,8 @@ use App\Enums\ProjectStatusEnum;
 use Throwable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UpdateProjectRequest;
+
 class ProjectController extends Controller
 {
     /**
@@ -85,5 +87,21 @@ class ProjectController extends Controller
             'message' => 'Project created successfully',
             'project' => $project,
         ], Response::HTTP_CREATED);
+    }
+
+    /**
+     * プロジェクトを更新します。
+     */
+    public function update(UpdateProjectRequest $request, Project $project): JsonResponse
+    {
+        // バリデーション
+        $validated = $request->validated();
+
+        $project->update($validated);
+
+        return response()->json([
+            'message' => 'Project updated successfully',
+            'project' => $project,
+        ], Response::HTTP_OK);
     }
 }

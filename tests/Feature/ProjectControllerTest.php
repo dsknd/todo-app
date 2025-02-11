@@ -15,14 +15,16 @@ class ProjectControllerTest extends TestCase
 
     private Authenticatable $user;
     private ProjectStatus $projectStatus;
-
+    private Project $project;
     protected function setUp(): void
     {
         parent::setUp();
         $this->user = User::factory()->create();
         $this->projectStatus = ProjectStatus::factory()->create();
-        \Log::info('projectStatus: ' . $this->projectStatus->id);
-        \Log::info('user: ' . $this->user->id);
+        $this->project = Project::factory()
+                ->for($this->user)
+                ->for($this->projectStatus)
+                ->create();
 
     }
 
@@ -62,12 +64,6 @@ class ProjectControllerTest extends TestCase
 
     public function test_index_success(): void
     {
-        // データを作成
-        $project = Project::factory()
-            ->for($this->user)
-            ->for($this->projectStatus)
-            ->create();
-
         // GETリクエストを送信
         $response = $this->actingAs($this->user)
                          ->getJson('/api/projects');
@@ -77,4 +73,44 @@ class ProjectControllerTest extends TestCase
 
         // TODO:レスポンスのJSONにプロジェクトが含まれていることを確認
     }
+
+    public function test_update_success(): void
+    {
+        // データを更新
+        $data = [
+            'name' => 'Updated Project',
+            'description' => 'This is an updated project',
+            'is_private' => true,
+        ];
+
+        // PUTリクエストを送信
+        $response = $this->actingAs($this->user)
+                         ->putJson('/api/projects/' . $this->project->id, $data);
+
+        // 200 OK ステータスが返ることを確認
+        $response->assertOk();
+
+        // レスポンスJson構造を確認
+        $response->assertJsonStructure([
+            'message',
+            'project' => [
+                    'id',
+                    'name',
+                    'description',
+                    'project_status_id',
+                    'is_private',
+                    'created_at',
+                    'updated_at'
+                ]
+            ])
+            ->assertJsonPath('project.name', 'Updated Project');
+
+        // データベースに更新されていることを確認
+        $this->assertDatabaseHas('projects', [
+            'id' => $this->project->id,
+            'name' => 'Updated Project',
+        ]);
+    }
 }
+
+

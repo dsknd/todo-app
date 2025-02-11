@@ -59,6 +59,7 @@ class ProjectController extends Controller
         // バリデーション
         $validated = $request->validated();
 
+        // データの作成
         $data = $validated;
         $data['project_status_id'] = ProjectStatusEnum::PLANNING->value;
         $data['user_id'] = Auth::id();

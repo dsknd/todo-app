@@ -104,4 +104,15 @@ class ProjectController extends Controller
             'project' => $project,
         ], Response::HTTP_OK);
     }
+
+    /**
+     * プロジェクトを削除します。
+     */
+    public function destroy(Project $project): JsonResponse
+    {
+        $project->delete();
+        return response()->json([
+            'message' => 'Project deleted successfully',
+        ], Response::HTTP_NO_CONTENT);
+    }
 }

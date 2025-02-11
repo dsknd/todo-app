@@ -111,6 +111,21 @@ class ProjectControllerTest extends TestCase
             'name' => 'Updated Project',
         ]);
     }
+
+    public function test_destroy_success(): void
+    {
+        // DELETEリクエストを送信
+        $response = $this->actingAs($this->user)
+                         ->deleteJson('/api/projects/' . $this->project->id);
+
+        // 200 OK ステータスが返ることを確認
+        $response->assertNoContent();
+
+        // データベースに削除されていることを確認
+        $this->assertDatabaseMissing('projects', [
+            'id' => $this->project->id,
+        ]);
+    }
 }
 
 

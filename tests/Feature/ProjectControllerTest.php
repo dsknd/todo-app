@@ -63,8 +63,6 @@ class ProjectControllerTest extends TestCase
     public function test_index_success(): void
     {
         // データを作成
-        \Log::info('projectStatus: ' . $this->projectStatus->id);
-        \Log::info('user: ' . $this->user->id);
         $project = Project::factory()
             ->for($this->user)
             ->for($this->projectStatus)

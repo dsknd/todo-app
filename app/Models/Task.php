@@ -83,22 +83,6 @@ class Task extends Model
     }
 
     /**
-     * 重要度レベルとの関連
-     */
-    public function importanceLevel(): BelongsTo
-    {
-        return $this->belongsTo(ImportanceLevel::class, 'importance_level_id');
-    }
-
-    /**
-     * 緊急度レベルとの関連
-     */
-    public function urgencyLevel(): BelongsTo
-    {
-        return $this->belongsTo(UrgencyLevel::class, 'urgency_level_id');
-    }
-
-    /**
      * プロジェクトとの関連
      */
     public function projects(): BelongsToMany
@@ -106,17 +90,6 @@ class Task extends Model
         return $this->belongsToMany(Project::class, 'project_tasks')
             ->using(ProjectTask::class)
             ->withPivot(['display_order', 'project_wbs_number', 'weight'])
-            ->withTimestamps();
-    }
-
-    /**
-     * マイルストーンとの関連
-     */
-    public function milestones(): BelongsToMany
-    {
-        return $this->belongsToMany(ProjectMilestone::class, 'milestone_tasks', 'task_id', 'milestone_id')
-            ->using(MilestoneTask::class)
-            ->withPivot(['display_order', 'weight'])
             ->withTimestamps();
     }
 

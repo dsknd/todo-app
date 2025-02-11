@@ -53,8 +53,7 @@ namespace App\Models{
  * 
  *
  * @property int $id
- * @property string $name
- * @property string|null $description
+ * @property string $key
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Category> $childCategories
@@ -62,13 +61,13 @@ namespace App\Models{
  * @property-read Category|null $parentCategory
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Project> $projects
  * @property-read int|null $projects_count
+ * @method static \Database\Factories\CategoryFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUpdatedAt($value)
  */
 	class Category extends \Eloquent {}
@@ -184,6 +183,30 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string $key
+ * @property int $priority_value
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Task> $tasks
+ * @property-read int|null $tasks_count
+ * @method static \Database\Factories\PriorityFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Priority newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Priority newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Priority query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Priority whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Priority whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Priority whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Priority wherePriorityValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Priority whereUpdatedAt($value)
+ */
+	class Priority extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property string $name
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $planned_start_date
@@ -195,21 +218,21 @@ namespace App\Models{
  * @property int $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $creator
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectInvitation> $invitations
  * @property-read int|null $invitations_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $members
  * @property-read int|null $members_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectMilestone> $milestones
  * @property-read int|null $milestones_count
+ * @property-read \App\Models\ProjectStatus $projectStatus
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectRole> $roles
  * @property-read int|null $roles_count
- * @property-read \App\Models\ProjectStatus $status
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Task> $tasks
  * @property-read int|null $tasks_count
+ * @property-read \App\Models\User $user
+ * @method static \Database\Factories\ProjectFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Project onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereActualEndDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereActualStartDate($value)
@@ -223,8 +246,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereProjectStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Project withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Project withoutTrashed()
  */
 	class Project extends \Eloquent {}
 }
@@ -519,6 +540,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Project> $projects
  * @property-read int|null $projects_count
+ * @method static \Database\Factories\ProjectStatusFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectStatus query()
@@ -884,15 +906,18 @@ namespace App\Models{
  * 
  *
  * @property int $id ID
+ * @property string $key ステータス名
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Task> $tasks
  * @property-read int|null $tasks_count
+ * @method static \Database\Factories\TaskStatusFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskStatus newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskStatus newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskStatus query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskStatus whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskStatus whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskStatus whereKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskStatus whereUpdatedAt($value)
  */
 	class TaskStatus extends \Eloquent {}

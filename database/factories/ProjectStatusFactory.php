@@ -19,7 +19,7 @@ class ProjectStatusFactory extends Factory
     {
         return [
             'id' => ProjectStatusEnum::PLANNING->value,
-            'key' => ProjectStatusEnum::PLANNING->value,
+            'key' => ProjectStatusEnum::getKey(ProjectStatusEnum::PLANNING),
         ];
     }
 }

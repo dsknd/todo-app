@@ -9,7 +9,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ProjectStatus extends Model
 {
     use HasFactory;
-    
+
+    protected $table = 'project_statuses';
+
+    protected $primaryKey = 'id';
+
+    // オートインクリメントを無効にする
+    public $incrementing = false;
+
+    // 主キーのデータ型を数値として扱う（もし文字列の場合は 'string' にする）
+    protected $keyType = 'int';
+
     protected $fillable = [
         'id',
         'key',
@@ -21,13 +31,5 @@ class ProjectStatus extends Model
     public function projects(): HasMany
     {
         return $this->hasMany(Project::class, 'project_status_id');
-    }
-
-    /**
-     * デフォルトのプロジェクトステータスを取得
-     */
-    public static function getDefault(): ?self
-    {
-        return static::where('is_default', true)->first();
     }
 }

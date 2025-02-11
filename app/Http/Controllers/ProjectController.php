@@ -13,6 +13,43 @@ use Illuminate\Support\Facades\Auth;
 class ProjectController extends Controller
 {
     /**
+     * プロジェクトの一覧を取得します。
+     * 
+     * URLクエリパラメータ
+     * - filter: (created, participated, all)
+     * 
+     * @return JsonResponse
+     */
+    public function index(): JsonResponse
+    {
+        // URLクエリパラメータ
+        $filter = request()->query('filter', null);
+
+        // クエリビルダ
+        $query = Project::query();
+
+        if ($filter === 'created') {
+            // ユーザ自身が作成したプロジェクトのみ取得する
+            $query->where('user_id', Auth::id());
+        } elseif ($filter === 'participated') {
+            // ユーザ自身がメンバーとなっているプロジェクトのみ取得する
+            $query->with(['members' => function ($query) {
+                $query->where('user_id', Auth::id());
+            }]);
+        } else {
+            // allの場合は参加しているプロジェクトと作成したプロジェクトを取得する
+            $query->with(['members' => function ($query) {
+                $query->where('user_id', Auth::id());
+            }])->orWhere('user_id', Auth::id());
+        }
+        $projects = $query->get();
+        return response()->json([
+            'message' => 'Projects fetched successfully',
+            'projects' => $projects,
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * プロジェクトを作成します。
      */
     public function store(CreateProjectRequest $request): JsonResponse

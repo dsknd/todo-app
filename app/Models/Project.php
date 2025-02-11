@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Project extends Model
 {
-    use SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'name',
@@ -40,7 +40,7 @@ class Project extends Model
     /**
      * プロジェクトステータスとの関連
      */
-    public function status(): BelongsTo
+    public function projectStatus(): BelongsTo
     {
         return $this->belongsTo(ProjectStatus::class, 'project_status_id');
     }
@@ -48,9 +48,9 @@ class Project extends Model
     /**
      * 作成者との関連
      */
-    public function creator(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
@@ -59,8 +59,7 @@ class Project extends Model
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'project_members')
-            ->withPivot(['joined_at'])
-            ->withTimestamps();
+            ->withPivot(['joined_at']);
     }
 
     /**

@@ -10,6 +10,9 @@ class ProjectMember extends Pivot
 {
     protected $table = 'project_members';
 
+    // timestampsを無効にする
+    public $timestamps = false;
+
     /**
      * The attributes that should be cast.
      *

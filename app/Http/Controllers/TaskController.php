@@ -23,17 +23,59 @@ class TaskController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $project_id = $request->query('project_id');
+        $status_id = $request->query('status_id', TaskStatusEnum::NOT_STARTED);
+        $category_id = $request->query('category_id', CategoryEnum::UNCATEGORIZED);
+        $priority_id = $request->query('priority_id', PriorityEnum::NONE);
+        $planned_start_date = $request->query('planned_start_date', now()->format('Y-m-d'));
+        $planned_end_date = $request->query('planned_end_date', now()->format('Y-m-d'));
+        $actual_start_date = $request->query('actual_start_date', now()->format('Y-m-d'));
+        $actual_end_date = $request->query('actual_end_date', now()->format('Y-m-d'));
+        $is_recurring = $request->query('is_recurring', false);
+        $sort_by = $request->query('sort_by', 'created_at');
+        $sort_order = $request->query('sort_order', 'desc');
+        $per_page = $request->query('per_page', 15);
+
         try {
-            $tasks = Task::with([
-                'status',
-                'assignees',
-                'category',
-                'tags',
-                'creator',
-                'updater',
-            ])->filter($request->all())
-              ->orderBy('created_at', 'desc')
-              ->paginate($request->input('per_page', 15));
+            $query = Task::with(['status', 'category', 'creator'])
+                ->where('project_id', $project_id);
+
+            // オプショナルな条件を追加
+            if ($request->has('status_id')) {
+                $query->where('status_id', $status_id);
+            }
+
+            if ($request->has('planned_start_date')) {
+                $query->whereDate('planned_start_date', '>=', $planned_start_date);
+            }
+
+            if ($request->has('planned_end_date')) {
+                $query->whereDate('planned_end_date', '<=', $planned_end_date);
+            }
+
+            if ($request->has('category_id')) {
+                $query->where('category_id', $category_id);
+            }
+
+            if ($request->has('priority_id')) {
+                $query->where('priority_id', $priority_id);
+            }
+
+            if ($request->has('actual_start_date')) {
+                $query->where('actual_start_date', $actual_start_date);
+            }
+
+            if ($request->has('actual_end_date')) {
+                $query->where('actual_end_date', $actual_end_date);
+            }
+
+            if ($request->has('is_recurring')) {
+                $query->where('is_recurring', $is_recurring);
+            }
+
+            $tasks = $query->filter($request->all())
+                ->orderBy($sort_by, $sort_order)
+                ->paginate($per_page);
 
             return response()->json($tasks);
         } catch (\Exception $e) {

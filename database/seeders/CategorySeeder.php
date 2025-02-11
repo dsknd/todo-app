@@ -17,8 +17,7 @@ class CategorySeeder extends Seeder
             foreach (CategoryEnum::cases() as $category) {
                 DB::table('categories')->insert([
                     'id' => $category->value,
-                    'name' => CategoryEnum::getDisplayName($category),
-                    'description' => CategoryEnum::getDescription($category),
+                    'key' => CategoryEnum::getKey($category),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

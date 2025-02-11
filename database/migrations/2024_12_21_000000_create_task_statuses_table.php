@@ -15,6 +15,7 @@ return new class extends Migration
         // タスクのステータス
         Schema::create('task_statuses', function (Blueprint $table) {
             $table->id()->comment('ID');
+            $table->string('key')->comment('ステータス名');
             $table->timestamps();
 
             // 主キー設定

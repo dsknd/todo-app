@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Enums\PriorityEnum;
 use App\Enums\CategoryEnum;
 use App\Models\Project;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 class TaskController extends Controller
 {
     /**
@@ -47,44 +49,51 @@ class TaskController extends Controller
      */
     public function store(CreateTaskRequest $request, Project $project): JsonResponse
     {
-        // バリデーション
         try {
+            // バリデーション
             $request->validated();
-        } catch (\Exception $e) {
-            Log::error('タスクの作成に失敗しました。', ['error' => $e->getMessage()]);
-            return response()->json(['message' => 'タスクの作成に失敗しました。'], 500);
-        }
 
-        try {
-            DB::beginTransaction();
+            // データの作成
+            $data = $request->validated();
+            $data['project_id'] = $project->id;
+            $data['user_id'] = Auth::id();
+            $data['priority_id'] = $request->priority_id ?? PriorityEnum::LOW;
+            $data['status_id'] = $request->status_id ?? TaskStatusEnum::NOT_STARTED;
+            $data['category_id'] = $request->category_id ?? CategoryEnum::UNCATEGORIZED;
 
-            $task = Task::create([
-                'title' => $request->title,
-                'description' => $request->description,
-                'user_id' => Auth::id(),
-                'project_id' => $project->id,
-                'priority_id' => PriorityEnum::LOW,
-                'status_id' => TaskStatusEnum::NOT_STARTED,
-                'category_id' => CategoryEnum::UNCATEGORIZED,
-                'is_recurring' => $request->is_recurring,
-                'planned_start_date' => $request->planned_start_date,
-                'planned_end_date' => $request->planned_end_date,
-                'actual_start_date' => $request->actual_start_date,
-                'actual_end_date' => $request->actual_end_date,
-            ]);
+            $task = null;
+
+            DB::transaction(function () use ($data, &$task) {
+                $task = Task::create($data);
+            });
 
             if ($request->is_recurring) {
                 // TODO: リマインダーの作成
             }
 
-            DB::commit();
+            return response()->json([
+                'message' => 'タスクを作成しました。',
+                'task' => $task,
+            ], Response::HTTP_CREATED);
 
-            return response()->json($task, 201);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
+        } catch (ValidationException $e) {
             Log::error('タスクの作成に失敗しました。', ['error' => $e->getMessage()]);
-            return response()->json(['message' => 'タスクの作成に失敗しました。'], 500);
+            return response()->json(
+                [
+                    'message' => 'タスクの作成に失敗しました。',
+                    'error' => $e->getMessage(),
+                ],
+                Response::HTTP_BAD_REQUEST
+            );
+        } catch (\Exception $e) {
+            Log::error('タスクの作成に失敗しました。', ['error' => $e->getMessage()]);
+            return response()->json(
+                [
+                    'message' => 'タスクの作成に失敗しました。',
+                    'error' => $e->getMessage(),
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -115,54 +124,54 @@ class TaskController extends Controller
     /**
      * タスクを更新
      */
-    public function update(TaskRequest $request, Task $task): JsonResponse
-    {
-        try {
-            DB::beginTransaction();
+    // public function update(TaskRequest $request, Task $task): JsonResponse
+    // {
+    //     try {
+    //         DB::beginTransaction();
 
-            $task->update([
-                'title' => $request->title,
-                'description' => $request->description,
-                'status_id' => $request->status_id,
-                'category_id' => $request->category_id,
-                'importance_id' => $request->importance_id,
-                'urgency_id' => $request->urgency_id,
-                'planned_start_date' => $request->planned_start_date,
-                'planned_end_date' => $request->planned_end_date,
-                'actual_start_date' => $request->actual_start_date,
-                'actual_end_date' => $request->actual_end_date,
-                'updated_by' => auth()->id(),
-            ]);
+    //         $task->update([
+    //             'title' => $request->title,
+    //             'description' => $request->description,
+    //             'status_id' => $request->status_id,
+    //             'category_id' => $request->category_id,
+    //             'importance_id' => $request->importance_id,
+    //             'urgency_id' => $request->urgency_id,
+    //             'planned_start_date' => $request->planned_start_date,
+    //             'planned_end_date' => $request->planned_end_date,
+    //             'actual_start_date' => $request->actual_start_date,
+    //             'actual_end_date' => $request->actual_end_date,
+    //             'updated_by' => auth()->id(),
+    //         ]);
 
-            // 担当者の更新
-            if ($request->has('assignee_ids')) {
-                $task->assignees()->sync($request->assignee_ids);
-            }
+    //         // 担当者の更新
+    //         if ($request->has('assignee_ids')) {
+    //             $task->assignees()->sync($request->assignee_ids);
+    //         }
 
-            // タグの更新
-            if ($request->has('tag_ids')) {
-                $task->tags()->sync($request->tag_ids);
-            }
+    //         // タグの更新
+    //         if ($request->has('tag_ids')) {
+    //             $task->tags()->sync($request->tag_ids);
+    //         }
 
-            DB::commit();
+    //         DB::commit();
 
-            return response()->json($task->load([
-                'status',
-                'assignees',
-                'category',
-                'tags',
-                'importance',
-                'urgency',
-                'creator',
-                'updater',
-            ]));
+    //         return response()->json($task->load([
+    //             'status',
+    //             'assignees',
+    //             'category',
+    //             'tags',
+    //             'importance',
+    //             'urgency',
+    //             'creator',
+    //             'updater',
+    //         ]));
 
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('タスクの更新に失敗しました。', ['error' => $e->getMessage()]);
-            return response()->json(['message' => 'タスクの更新に失敗しました。'], 500);
-        }
-    }
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         Log::error('タスクの更新に失敗しました。', ['error' => $e->getMessage()]);
+    //         return response()->json(['message' => 'タスクの更新に失敗しました。'], 500);
+    //     }
+    // }
 
     /**
      * タスクを削除

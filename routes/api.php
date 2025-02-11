@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectRoleController;
-
+use App\Http\Controllers\TaskController;
 // パブリックルート
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/projects/{project}/milestones', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 
     // タスク
-    Route::apiResource('/tasks', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+    Route::apiResource('/projects/{project}/tasks', TaskController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 
     // タスクタグ
     Route::apiResource('/tasks/{task}/tags', ProjectController::class)->only(['index', 'store', 'destroy']);

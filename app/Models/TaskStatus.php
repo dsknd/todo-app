@@ -4,27 +4,42 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 class TaskStatus extends Model
 {
+    use HasFactory;
+
+    /**
+     * テーブル名
+     */
+    protected $table = 'task_statuses';
+
+    /**
+     * 主キー
+     */
+    protected $primaryKey = 'id';
+
+    /**
+     * インクリメント
+     */
+    public $incrementing = false;
+
+    /**
+     * フィールド
+     */
     protected $fillable = [
-        'name',
-        'description',
-        'color',         // ステータスの表示色（例：#FF0000）
-        'display_order', // 表示順序
-        'is_default',    // デフォルトステータスかどうか
-        'is_completed',  // 完了状態を表すかどうか
+        'id',
+        'key',
     ];
 
     /**
-     * The attributes that should be cast.
+     * キャスト
      *
      * @var array<string, string>
      */
     protected $casts = [
-        'is_default' => 'boolean',
-        'is_completed' => 'boolean',
-        'display_order' => 'integer',
+        'id' => 'integer',
+        'key' => 'string',
     ];
 
     /**

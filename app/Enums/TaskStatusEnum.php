@@ -18,15 +18,15 @@ enum TaskStatusEnum: int
     case ON_HOLD = 4;
     case CANCELLED = 5;
 
-    public static function getStatuses(): array
+    public static function getKey(self $status): string
     {
-        return [
-            self::NOT_STARTED,
-            self::IN_PROGRESS,
-            self::COMPLETED,
-            self::ON_HOLD,
-            self::CANCELLED,
-        ];
+        return match($status) {
+            self::NOT_STARTED => 'not_started',
+            self::IN_PROGRESS => 'in_progress',
+            self::COMPLETED => 'completed',
+            self::ON_HOLD => 'on_hold',
+            self::CANCELLED => 'cancelled',
+        };
     }
 
     public static function getNextStatuses(self $status): array

@@ -29,8 +29,6 @@ class TaskController extends Controller
                 'assignees',
                 'category',
                 'tags',
-                'importance',
-                'urgency',
                 'creator',
                 'updater',
             ])->filter($request->all())

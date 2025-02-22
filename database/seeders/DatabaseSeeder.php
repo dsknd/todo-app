@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             LocaleSeeder::class,
             CategorySeeder::class,
             PrioritySeeder::class,
+            PriorityTranslationSeeder::class,
             TaskAssignmentTypeSeeder::class,
             TagAssignmentTypeSeeder::class,
             PermissionSeeder::class,
@@ -33,9 +34,14 @@ class DatabaseSeeder extends Seeder
             ProjectPermissionSeeder::class,
             TaskStatusSeeder::class,
             TaskStatusTranslationSeeder::class,
+            // タスク履歴
+            ScheduleDateTypeSeeder::class,
             TaskHistoryTypeSeeder::class,
             TaskHistoryTypeTranslationSeeder::class,
+            // マイルストーン
             MilestoneDependencyTypeSeeder::class,
+            // タスク承認
+            TaskApprovalStatusSeeder::class,
         ]);
     }
 }

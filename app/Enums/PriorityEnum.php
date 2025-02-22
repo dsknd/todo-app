@@ -4,11 +4,11 @@ namespace App\Enums;
 
 enum PriorityEnum: int
 {
-    case NONE = 0;        // 未設定
-    case LOW = 25;         // 低
-    case MEDIUM = 50;      // 中
-    case HIGH = 75;        // 高
-    case CRITICAL = 100;    // 最重要
+    case NONE = 1;        // 未設定
+    case LOW = 2;         // 低
+    case MEDIUM = 3;      // 中
+    case HIGH = 4;        // 高
+    case CRITICAL = 5;    // 最重要
 
     public static function getKey(self $type): string
     {
@@ -25,10 +25,10 @@ enum PriorityEnum: int
     {
         return match($type) {
             self::NONE => 0,
-            self::LOW => 25,
-            self::MEDIUM => 50,
-            self::HIGH => 75,
-            self::CRITICAL => 100,
+            self::LOW => 100,
+            self::MEDIUM => 200,
+            self::HIGH => 300,
+            self::CRITICAL => 400,
         };
     }
 }

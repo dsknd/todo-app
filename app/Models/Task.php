@@ -174,11 +174,11 @@ class Task extends Model
     }
 
     /**
-     * 優先度スコアを計算（重要度と緊急度の組み合わせ）
+     * 優先度を取得
      */
-    public function getPriorityScore(): int
+    public function getPriority(): Priority
     {
-        return $this->importance * $this->urgency;
+        return $this->priority;
     }
 
     /**

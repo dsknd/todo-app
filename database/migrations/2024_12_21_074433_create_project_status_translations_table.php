@@ -22,6 +22,11 @@ return new class extends Migration
                 ->on('project_statuses')
                 ->cascadeOnDelete();
 
+            $table->foreign('locale_id')
+                ->references('id')
+                ->on('locales')
+                ->cascadeOnDelete();
+
             // 主キー設定
             $table->primary(['project_status_id', 'locale_id']);
         });

@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             TagAssignmentTypeSeeder::class,
             PermissionSeeder::class,
             ProjectStatusSeeder::class,
+            ProjectStatusTranslationSeeder::class,
             ProjectInvitationStatusSeeder::class,
             ProjectInvitationTypeSeeder::class,
             ProjectPermissionSeeder::class,

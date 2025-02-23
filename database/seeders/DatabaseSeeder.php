@@ -49,12 +49,13 @@ class DatabaseSeeder extends Seeder
 
             // タスク割当タイプ
             TaskAssignmentTypeSeeder::class,
+            TaskAssignmentTypeTranslationSeeder::class,
 
             // タグ割当タイプ
             TagAssignmentTypeSeeder::class,
             TagAssignmentTypeTranslationSeeder::class,
             
-            // パーミッション
+            // 権限
             PermissionSeeder::class,
             ProjectPermissionSeeder::class,
 

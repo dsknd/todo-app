@@ -10,17 +10,15 @@ class TaskAssignmentTypeSeeder extends Seeder
 {
     public function run(): void
     {
-        $types = [];
-        
-        foreach (TaskAssignmentTypeEnum::cases() as $type) {
-            $types[] = [
-                'id' => $type->value,
-                'key' => TaskAssignmentTypeEnum::getKey($type),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }
-
-        DB::table('task_assignment_types')->insert($types);
+        DB::transaction(function () {
+            foreach (TaskAssignmentTypeEnum::cases() as $type) {
+                DB::table('task_assignment_types')->insert([
+                    'id' => $type->value,
+                    'key' => TaskAssignmentTypeEnum::getKey($type),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        });
     }
 } 

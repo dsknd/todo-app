@@ -68,9 +68,6 @@ class DatabaseSeeder extends Seeder
             // タスク履歴
             TaskHistoryTypeSeeder::class,
             TaskHistoryTypeTranslationSeeder::class,
-
-            // マイルストーン
-            MilestoneDependencyTypeSeeder::class,
         ]);
     }
 }

@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Enums\MilestoneDependencyTypeEnum;
 /**
  * マイルストーンの依存関係を管理するマイグレーション
  */
@@ -15,11 +14,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('milestone_dependencies', function (Blueprint $table) {
-            $table->unsignedBigInteger('milestone_id');    // 後続のマイルストーン
-            $table->unsignedBigInteger('depends_on_milestone_id');   // 先行のマイルストーン
-            $table->enum('dependency_type', array_column(MilestoneDependencyTypeEnum::cases(), 'value'))
-                ->default(MilestoneDependencyTypeEnum::REQUIRED->value)
-                ->comment('依存の種類（例: REQUIRED, OPTIONAL）');
+            $table->unsignedBigInteger('milestone_id');            // 後続マイルストーン
+            $table->unsignedBigInteger('depends_on_milestone_id'); // 先行マイルストーン
             $table->timestamps();
 
             // 外部キー制約

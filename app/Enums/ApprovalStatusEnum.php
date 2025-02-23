@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum TaskApprovalStatusEnum: int
+enum ApprovalStatusEnum: int
 {
     case PENDING = 1;
     case APPROVED = 2;

@@ -4,14 +4,14 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Enums\TaskApprovalStatusEnum;
+use App\Enums\ApprovalStatusEnum;
 
-class TaskApprovalStatusSeeder extends Seeder
+class ApprovalStatusSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach (TaskApprovalStatusEnum::cases() as $status) {
-            DB::table('task_approval_statuses')->insert([
+        foreach (ApprovalStatusEnum::cases() as $status) {
+            DB::table('approval_statuses')->insert([
                 'id' => $status->value,
                 'key' => $status->name,
                 'created_at' => now(),

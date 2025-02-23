@@ -39,7 +39,7 @@ return new class extends Migration
 
             $table->foreign('status_id')
                     ->references('id')
-                    ->on('task_approval_statuses')
+                    ->on('approval_statuses')
                     ->cascadeOnDelete();
 
             // 主キー定義

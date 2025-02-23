@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('task_approval_statuses', function (Blueprint $table) {
+        Schema::create('approval_statuses', function (Blueprint $table) {
             // カラム定義
             $table->id();
             $table->string('key');
@@ -25,6 +25,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('task_approval_statuses');
+        Schema::dropIfExists('approval_statuses');
     }
 }; 

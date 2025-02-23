@@ -12,17 +12,19 @@ class InvitationTypeTranslationSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach (InvitationType::cases() as $invitationType) {
-            foreach (LocaleEnum::cases() as $locale) {
-                DB::table('invitation_type_translations')->insert([
+        DB::transaction(function () {
+            foreach (InvitationType::cases() as $invitationType) {
+                foreach (LocaleEnum::cases() as $locale) {
+                    DB::table('invitation_type_translations')->insert([
                     'invitation_type_id' => $invitationType->value,
                     'locale_id' => $locale->value,
                     'name' => InvitationTypeTranslationEnum::getName($invitationType, $locale),
                     'description' => InvitationTypeTranslationEnum::getDescription($invitationType, $locale),
                     'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+                        'updated_at' => now(),
+                    ]);
+                }
             }
-        }
+        });
     }
 }

@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Enums\ProjectInvitationStatusEnum;
+use App\Enums\InvitationStatusEnum;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\InvitationType;
+use App\Models\InvitationStatus;
 
 class ProjectInvitation extends Model
 {
@@ -16,8 +18,8 @@ class ProjectInvitation extends Model
      */
     protected $fillable = [
         'project_id',
-        'project_invitation_type_id',
-        'project_invitation_status_id',
+        'invitation_type_id',
+        'invitation_status_id',
         'expires_at',
     ];
 
@@ -28,8 +30,8 @@ class ProjectInvitation extends Model
      */
     protected $casts = [
         'project_id' => 'integer',
-        'project_invitation_type_id' => 'integer',
-        'project_invitation_status_id' => 'integer',
+        'invitation_type_id' => 'integer',
+        'invitation_status_id' => 'integer',
         'expires_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -48,7 +50,7 @@ class ProjectInvitation extends Model
      */
     public function type(): BelongsTo
     {
-        return $this->belongsTo(ProjectInvitationType::class, 'project_invitation_type_id');
+        return $this->belongsTo(InvitationType::class, 'invitation_type_id');
     }
 
     /**
@@ -56,7 +58,7 @@ class ProjectInvitation extends Model
      */
     public function status(): BelongsTo
     {
-        return $this->belongsTo(ProjectInvitationStatus::class, 'project_invitation_status_id');
+        return $this->belongsTo(InvitationStatus::class, 'invitation_status_id');
     }
 
     /**
@@ -88,7 +90,7 @@ class ProjectInvitation extends Model
      */
     public function accept(): void
     {
-        $this->updateStatus(ProjectInvitationStatusEnum::ACCEPTED);
+        $this->updateStatus(InvitationStatusEnum::ACCEPTED);
     }
 
     /**
@@ -96,7 +98,7 @@ class ProjectInvitation extends Model
      */
     public function decline(): void
     {
-        $this->updateStatus(ProjectInvitationStatusEnum::DECLINED);
+        $this->updateStatus(InvitationStatusEnum::DECLINED);
     }
 
     /**
@@ -104,6 +106,6 @@ class ProjectInvitation extends Model
      */
     public function cancel(): void
     {
-        $this->updateStatus(ProjectInvitationStatusEnum::CANCELED);
+        $this->updateStatus(InvitationStatusEnum::CANCELED);
     }
 }

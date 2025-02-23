@@ -8,10 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('project_invitation_statuses', function (Blueprint $table) {
+        Schema::create('invitation_statuses', function (Blueprint $table) {
             $table->unsignedBigInteger('id');
-            $table->string('display_name');
-            $table->text('description')->nullable();
+            $table->string('key');
             $table->timestamps();
 
             // 主キー
@@ -21,6 +20,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('project_invitation_statuses');
+        Schema::dropIfExists('invitation_statuses');
     }
 }; 

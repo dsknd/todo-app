@@ -4,10 +4,30 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Enums\ProjectInvitationStatusEnum;
+use App\Models\ProjectInvitation;
 
-class ProjectInvitationStatus extends Model
+class InvitationType extends Model
 {
+    /**
+     * テーブル名
+     */
+    protected $table = 'invitation_types';
+
+    /**
+     * 主キー
+     */
+    protected $primaryKey = 'id';
+
+    /**
+     * 主キーの型
+     */
+    protected $keyType = 'integer';
+
+    /**
+     * タイムスタンプ
+     */
+    public $timestamps = true;
+
     /**
      * 複数代入可能な属性
      *
@@ -15,8 +35,7 @@ class ProjectInvitationStatus extends Model
      */
     protected $fillable = [
         'id',
-        'display_name',
-        'description',
+        'key',
     ];
 
     /**
@@ -35,6 +54,6 @@ class ProjectInvitationStatus extends Model
      */
     public function projectInvitations(): HasMany
     {
-        return $this->hasMany(ProjectInvitation::class, 'status_id');
+        return $this->hasMany(ProjectInvitation::class, 'invitation_type_id');
     }
 }

@@ -52,7 +52,8 @@ class DatabaseSeeder extends Seeder
 
             // タグ割当タイプ
             TagAssignmentTypeSeeder::class,
-
+            TagAssignmentTypeTranslationSeeder::class,
+            
             // パーミッション
             PermissionSeeder::class,
             ProjectPermissionSeeder::class,

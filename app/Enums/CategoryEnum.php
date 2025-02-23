@@ -46,22 +46,22 @@ enum CategoryEnum: int
     public static function getKey(self $category): string
     {
         return match ($category) {
-            self::UNCATEGORIZED => 'uncategorized', // 未分類
-            self::MANAGEMENT => 'management',       // 経営
-            self::OPERATION => 'operation',         // 運営
-            self::DEVELOPMENT => 'development',   // 開発
-            self::RESEARCH => 'research',         // 研究
-            self::SALES => 'sales',               // 営業
-            self::SUPPORT => 'support',           // 支援
-            self::ADMINISTRATION => 'administration', // 管理
-            self::LEARNING => 'learning',         // 学習
-            self::LIFE => 'life',                 // 生活
-            self::HEALTH => 'health',             // 健康
-            self::ENTERTAINMENT => 'entertainment', // 遊び
-            self::COMMUNICATION => 'communication', // 交流
-            self::ASSET => 'asset',               // 資産
-            self::COMMUNITY => 'community',       // 地域
-            self::OTHER => 'other',               // その他
+            self::UNCATEGORIZED => 'UNCATEGORIZED', // 未分類
+            self::MANAGEMENT => 'MANAGEMENT',       // 経営
+            self::OPERATION => 'OPERATION',         // 運営
+            self::DEVELOPMENT => 'DEVELOPMENT',   // 開発
+            self::RESEARCH => 'RESEARCH',         // 研究
+            self::SALES => 'SALES',               // 営業
+            self::SUPPORT => 'SUPPORT',           // 支援
+            self::ADMINISTRATION => 'ADMINISTRATION', // 管理
+            self::LEARNING => 'LEARNING',         // 学習
+            self::LIFE => 'LIFE',                 // 生活
+            self::HEALTH => 'HEALTH',             // 健康
+            self::ENTERTAINMENT => 'ENTERTAINMENT', // 遊び
+            self::COMMUNICATION => 'COMMUNICATION', // 交流
+            self::ASSET => 'ASSET',               // 資産
+            self::COMMUNITY => 'COMMUNITY',       // 地域
+            self::OTHER => 'OTHER',               // その他
         };
     }
 }

@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
 
             // カテゴリ
             CategorySeeder::class,
+            CategoryTranslationSeeder::class,
 
             // 優先度
             PrioritySeeder::class,

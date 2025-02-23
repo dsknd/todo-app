@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('project_invitation_types', function (Blueprint $table) {
+        Schema::create('invitation_types', function (Blueprint $table) {
             // カラム定義
             $table->unsignedBigInteger('id');
             $table->string('key')->comment('システム内部キー');
@@ -24,6 +24,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('project_invitation_types');
+        Schema::dropIfExists('invitation_types');
     }
 }; 

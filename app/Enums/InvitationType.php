@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum ProjectInvitationType: int
+enum InvitationType: int
 {
     case EMAIL = 1;          // メールアドレスによる招待
     case USER = 2;         // 既存ユーザーへの直接招待

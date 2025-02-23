@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('project_id')->comment('プロジェクトID'); 
             $table->unsignedBigInteger('inviter_by')->comment('招待作成者（ProjectMember）'); 
             $table->unsignedBigInteger('project_invitation_status_id')->default(ProjectInvitationStatusEnum::PENDING->value);
-            $table->unsignedBigInteger('project_invitation_type_id');
+            $table->unsignedBigInteger('invitation_type_id');
             $table->timestamp('expires_at')->comment('招待の有効期限');
             $table->timestamps();
 
@@ -32,14 +32,14 @@ return new class extends Migration
                 ->on('project_invitation_statuses')
                 ->cascadeOnDelete();
 
-            $table->foreign('project_invitation_type_id')
+            $table->foreign('invitation_type_id')
                 ->references('id')
-                ->on('project_invitation_types')
+                ->on('invitation_types')
                 ->cascadeOnDelete();
 
             // インデックス
             $table->index('project_invitation_status_id');
-            $table->index('project_invitation_type_id');
+            $table->index('invitation_type_id');
         });
     }
 

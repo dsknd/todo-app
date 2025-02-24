@@ -21,8 +21,6 @@ return new class extends Migration
             $table->string('scope');                         // スコープ 例: projects:tasks:admin
             $table->string('resource');                      // リソース 例: projects.tasks
             $table->string('action');                        // アクション 例: admin
-            $table->string('display_name');                  // 表示名
-            $table->text('description')->nullable();       // 説明
             $table->timestamps();                            // 作成日時、更新日時
 
             // ユニーク制約

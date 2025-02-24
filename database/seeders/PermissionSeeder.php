@@ -31,8 +31,6 @@ class PermissionSeeder extends Seeder
                 'scope' => PermissionEnum::getScope($permission->value),
                 'resource' => PermissionEnum::getResource($permission->value),
                 'action' => PermissionEnum::getAction($permission->value),
-                'display_name' => PermissionEnum::getDisplayName($permission->value),
-                'description' => PermissionEnum::getDescription($permission->value),
             ]);
             
             $permissions[$permission->value] = $created;

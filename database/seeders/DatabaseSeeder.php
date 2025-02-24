@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\PermissionTranslationEnum;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -47,7 +48,7 @@ class DatabaseSeeder extends Seeder
             // スケジュール日時タイプ
             ScheduleDateTypeSeeder::class,
             ScheduleDateTypeTranslationSeeder::class,
-            
+
             // タスク割当タイプ
             TaskAssignmentTypeSeeder::class,
             TaskAssignmentTypeTranslationSeeder::class,
@@ -58,6 +59,7 @@ class DatabaseSeeder extends Seeder
             
             // 権限
             PermissionSeeder::class,
+            PermissionTranslationSeeder::class,
             ProjectPermissionSeeder::class,
 
             // プロジェクトステータス

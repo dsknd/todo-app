@@ -12,15 +12,15 @@ class ProjectRole extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type',
         'project_id',
-        'created_by',
+        'role_number',
+        'user_id',
         'name',
         'description',
     ];
 
     /**
-     * The attributes that should be cast.
+     * 複数代入可能な属性
      *
      * @var array<string, string>
      */

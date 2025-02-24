@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamps();
 
             // 外部キー制約
-            $table->foreign('project_role_id')
+            $table->foreign('project_role_id', 'fk_project_role_assignments_role_id')
                 ->references('id')
                 ->on('project_roles')
                 ->cascadeOnDelete();

@@ -17,18 +17,18 @@ return new class extends Migration
             $table->unsignedBigInteger('project_role_id');
             
             // 外部キー制約
-            $table->foreign('project_permission_id')
+            $table->foreign('project_permission_id', 'fk_project_permission_assignments_permission_id')
                 ->references('permission_id')
                 ->on('project_permissions')
-                ->onDelete('cascade');
+                ->cascadeOnDelete();
 
-            $table->foreign('project_role_id')
+            $table->foreign('project_role_id', 'fk_project_permission_assignments_role_id')
                 ->references('id')
                 ->on('project_roles')
-                ->onDelete('cascade');
+                ->cascadeOnDelete();
 
             // 複合主キー
-            $table->primary(['project_permission_id', 'project_role_id']);
+            $table->primary(['project_role_id', 'project_permission_id']);
         });
     }
 

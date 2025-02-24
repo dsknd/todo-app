@@ -46,7 +46,8 @@ class DatabaseSeeder extends Seeder
 
             // スケジュール日時タイプ
             ScheduleDateTypeSeeder::class,
-
+            ScheduleDateTypeTranslationSeeder::class,
+            
             // タスク割当タイプ
             TaskAssignmentTypeSeeder::class,
             TaskAssignmentTypeTranslationSeeder::class,

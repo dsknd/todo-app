@@ -2,7 +2,7 @@
 
 namespace App\ValueObjects;
 
-class LocaleValueObject
+class LocaleCode
 {
     private const ALLOWED_LANGUAGES = ['ja', 'en'];
     private const ALLOWED_REGIONS = ['JP', 'US'];

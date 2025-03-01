@@ -24,8 +24,6 @@ class ProjectRoleController extends Controller
      */
     public function index(Project $project)
     {
-        $this->authorize('viewAny', [ProjectRole::class, $project]);
-
         $roles = ProjectRole::where('project_id', $project->id)
             ->with(['projectPermissions', 'creator'])
             ->get();
@@ -41,8 +39,6 @@ class ProjectRoleController extends Controller
      */
     public function create(Project $project)
     {
-        $this->authorize('create', [ProjectRole::class, $project]);
-
         $permissions = ProjectPermission::with([
             'permission.descendants' => function ($query) {
                 $query->whereColumn('id', '<>', 'ancestor_id')
@@ -63,36 +59,20 @@ class ProjectRoleController extends Controller
      */
     public function store(StoreProjectRoleRequest $request, Project $project)
     {
-        $this->authorize('create', [ProjectRole::class, $project]);
-
-        $projectRole = DB::transaction(function () use ($request, $project) {
-            // プロジェクトロールを作成
+        // プロジェクトロールを作成
+        try {
             $projectRole = ProjectRole::create([
                 'project_id' => $project->id,
+                'user_id' => Auth::id(),
                 'name' => $request->input('name'),
                 'description' => $request->input('description'),
-                'project_role_type_id' => ProjectRoleTypes::CUSTOM,
-                'created_by' => Auth::id(),
             ]);
-
-            // 権限を割り当て
-            if ($request->has('permissions')) {
-                $projectRole->projectPermissions()->attach(
-                    $request->input('permissions')
-                );
-            }
-
-            // ログを記録
-            AppLog::createEntry(
-                'create',
-                $projectRole,
-                Auth::user(),
-                'Created project role',
-                ['role_name' => $projectRole->name]
+        } catch (\Exception $e) {
+            return response()->json(
+                ['message' => 'Failed to create project role: ' . $e->getMessage()],
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
-
-            return $projectRole;
-        });
+        }
 
         return response()->json(
             new ProjectRoleResource($projectRole->load('projectPermissions')),
@@ -105,8 +85,6 @@ class ProjectRoleController extends Controller
      */
     public function show(Project $project, ProjectRole $projectRole)
     {
-        $this->authorize('view', $projectRole);
-
         return response()->json(
             new ProjectRoleResource($projectRole->load(['projectPermissions', 'creator'])),
             Response::HTTP_OK
@@ -118,8 +96,6 @@ class ProjectRoleController extends Controller
      */
     public function update(UpdateProjectRoleRequest $request, Project $project, ProjectRole $projectRole)
     {
-        $this->authorize('update', $projectRole);
-
         // デフォルトロールは編集不可
         if ($projectRole->project_role_type_id === ProjectRoleTypes::DEFAULT) {
             return response()->json(
@@ -166,8 +142,6 @@ class ProjectRoleController extends Controller
      */
     public function destroy(Project $project, ProjectRole $projectRole)
     {
-        $this->authorize('delete', $projectRole);
-
         // デフォルトロールは削除不可
         if ($projectRole->project_role_type_id === ProjectRoleTypes::DEFAULT) {
             return response()->json(
@@ -224,30 +198,5 @@ class ProjectRoleController extends Controller
             new ProjectRoleResource($projectRole->load('projectPermissions')),
             Response::HTTP_OK
         );
-    }
-
-    /**
-     * プロジェクトロールの権限をチェック
-     */
-    public function checkPermission(
-        Request $request,
-        Project $project,
-        ProjectRole $projectRole,
-        CheckProjectRolePermissionUseCase $useCase
-    ) {
-        $this->authorize('view', $projectRole);
-
-        $validated = $request->validate([
-            'permission' => 'required|string|exists:project_permissions,name',
-        ]);
-
-        $hasPermission = $useCase->execute(
-            $projectRole,
-            $validated['permission']
-        );
-
-        return response()->json([
-            'has_permission' => $hasPermission,
-        ], Response::HTTP_OK);
     }
 }

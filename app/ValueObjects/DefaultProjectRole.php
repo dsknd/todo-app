@@ -2,7 +2,7 @@
 
 namespace App\ValueObjects;
 
-final class DefaultProjectRoleValueObject
+final class DefaultProjectRole
 {
     private string $name;
     private string $description;
@@ -26,24 +26,24 @@ final class DefaultProjectRoleValueObject
     /**
      * ロケールに応じた名前を取得
      *
-     * @param LocaleValueObject $locale
+     * @param LocaleCode $localeCode
      * @return string
      */
-    public function getLocalizedName(LocaleValueObject $locale): string
+    public function getLocalizedName(LocaleCode $localeCode): string
     {
-        $languageCode = $locale->getLanguage();
+        $languageCode = $localeCode->getLanguage();
         return $this->localizedNames[$languageCode] ?? $this->name;
     }
 
     /**
      * ロケールに応じた説明を取得
      *
-     * @param LocaleValueObject $locale
+     * @param LocaleCode $localeCode
      * @return string
      */
-    public function getLocalizedDescription(LocaleValueObject $locale): string
+    public function getLocalizedDescription(LocaleCode $localeCode): string
     {
-        $languageCode = $locale->getLanguage();
+        $languageCode = $localeCode->getLanguage();
         return $this->localizedDescriptions[$languageCode] ?? $this->description;
     }
 

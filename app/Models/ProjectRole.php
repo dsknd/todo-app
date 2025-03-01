@@ -25,8 +25,24 @@ class ProjectRole extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'type' => ProjectRoleTypes::class,
+        'role_number' => 'integer',
+        'user_id' => 'integer',
+        'name' => 'string',
+        'description' => 'string',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        // プロジェクトごとのタスク番号を生成
+        static::creating(function ($projectRole) {
+            $projectRole->role_number = static::where('project_id', $projectRole->project_id)
+                ->lockForUpdate()
+                ->max('role_number') + 1 ?? 1;
+        });
+    }
+
 
     /**
      * 関連するプロジェクトを取得

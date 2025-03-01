@@ -15,8 +15,7 @@ class StoreProjectRoleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $project = $this->route('project');
-        return Auth::user()->can('create', [ProjectRole::class, $project]);
+        return true;
     }
 
     /**
@@ -27,29 +26,8 @@ class StoreProjectRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-                // 同じプロジェクト内で重複する名前を禁止
-                'unique:project_roles,name,NULL,id,project_id,' . $this->route('project')->id,
-            ],
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
-            'permissions' => 'array',
-            'permissions.*' => [
-                'integer',
-                'exists:project_permissions,id',
-                function ($attribute, $value, $fail) {
-                    // プロジェクト固有の権限の場合、同じプロジェクトに属していることを確認
-                    $permission = ProjectPermission::find($value);
-                    if ($permission && !$permission->is_custom) {
-                        return;
-                    }
-                    if ($permission && $permission->project_id !== $this->route('project')->id) {
-                        $fail('The selected permission is not available for this project.');
-                    }
-                },
-            ],
         ];
     }
 
@@ -62,8 +40,10 @@ class StoreProjectRoleRequest extends FormRequest
     {
         return [
             'name.required' => 'ロール名は必須です。',
-            'name.unique' => 'このロール名は既に使用されています。',
-            'permissions.*.exists' => '指定された権限は存在しません。',
+            'name.string' => 'ロール名は文字列で入力してください。',
+            'name.max' => 'ロール名は255文字以内で入力してください。',
+            'description.string' => 'ロールの説明は文字列で入力してください。',
+            'description.max' => 'ロールの説明は1000文字以内で入力してください。',
         ];
     }
 }

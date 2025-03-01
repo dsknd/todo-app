@@ -11,6 +11,9 @@ use Throwable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Models\ProjectRole;
+use App\Enums\DefaultProjectRolePresetEnum;
+use App\Models\LocaleEnum;
 
 class ProjectController extends Controller
 {
@@ -68,6 +71,7 @@ class ProjectController extends Controller
         // トランザクションを使用してプロジェクトを作成
         $project = null;
 
+        $requestHeaderLocale = $request->header('Accept-Language');
         try {
             DB::transaction(function () use ($data, &$project) {
                 $project = Project::create($data);

@@ -2,7 +2,7 @@
 
 namespace App\ValueObjects;
 
-class LocaleFormat
+class LocaleFormatValueObject
 {
     private const ALLOWED_FORMATS = [
         'bcp47' => 'bcp47',
@@ -41,7 +41,7 @@ class LocaleFormat
         return new self('posix');
     }
 
-    public function equals(LocaleFormat $other): bool
+    public function equals(LocaleFormatValueObject $other): bool
     {
         return $this->format === $other->value();
     }

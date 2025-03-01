@@ -2,15 +2,15 @@
 
 namespace App\ValueObjects;
 
-class Locale
+class LocaleValueObject
 {
     private const ALLOWED_LANGUAGES = ['ja', 'en'];
-    private const ALLOWED_REGIONS = ['JP', 'US', 'GB', 'AU'];
+    private const ALLOWED_REGIONS = ['JP', 'US'];
     private const ALLOWED_SCRIPTS = ['Latn', 'Jpan'];
 
     private const ALLOWED_LANGUAGE_REGION_PAIRS = [
         'ja' => ['JP'], // 日本語は日本のみ
-        'en' => ['US', 'GB', 'AU'], // 英語はUS, GB, AU
+        'en' => ['US'], // 英語はUS
     ];
 
     private string $language;
@@ -41,7 +41,37 @@ class Locale
         }
     }
 
-    public function format(LocaleFormat $format): string
+    /**
+     * 言語コードを取得
+     *
+     * @return string
+     */
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    /**
+     * 地域コードを取得
+     *
+     * @return string|null
+     */
+    public function getRegion(): ?string
+    {
+        return $this->region;
+    }
+
+    /**
+     * スクリプトコードを取得
+     *
+     * @return string|null
+     */
+    public function getScript(): ?string
+    {
+        return $this->script;
+    }
+
+    public function format(LocaleFormatValueObject $format): string
     {
         return match ($format->value()) {
             'bcp47' => $this->script

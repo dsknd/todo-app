@@ -10,66 +10,66 @@ enum DefaultProjectRolePresetEnum: int
     case VIEWER = 4;
     case GUEST = 5;
 
-    case OWNER_PERMISSIONS = [
-        'projects:*',
-        'projects:tasks:*',
-        'projects:roles:*',
-        'projects:members:*',
-        'projects:invitations:*'
+    private const OWNER_PERMISSIONS = [
+        ProjectPermissionEnum::PROJECT_WILDCARD,
+        ProjectPermissionEnum::PROJECT_TASK_WILDCARD,
+        ProjectPermissionEnum::PROJECT_ROLE_WILDCARD,
+        ProjectPermissionEnum::PROJECT_MEMBER_WILDCARD,
+        ProjectPermissionEnum::PROJECT_INVITATION_WILDCARD,
     ];
 
-    case ADMIN_PERMISSIONS = [
-        'projects:read',
-        'projects:update',
-        'projects:tasks:*',
-        'projects:roles:*',
-        'projects:members:*',
-        'projects:invitations:*'
+    private const ADMIN_PERMISSIONS = [
+        ProjectPermissionEnum::PROJECT_READ,
+        ProjectPermissionEnum::PROJECT_UPDATE,
+        ProjectPermissionEnum::PROJECT_TASK_WILDCARD,
+        ProjectPermissionEnum::PROJECT_ROLE_WILDCARD,
+        ProjectPermissionEnum::PROJECT_MEMBER_WILDCARD,
+        ProjectPermissionEnum::PROJECT_INVITATION_WILDCARD,
     ];
 
-    case MEMBER_PERMISSIONS = [
-        'projects:read',
-        'projects:tasks:read',
-        'projects:tasks:create',
-        'projects:tasks:update',
-        'projects:members:read',
-        'projects:invitations:read'
+    private const MEMBER_PERMISSIONS = [
+        ProjectPermissionEnum::PROJECT_READ,
+        ProjectPermissionEnum::PROJECT_TASK_READ,
+        ProjectPermissionEnum::PROJECT_TASK_CREATE,
+        ProjectPermissionEnum::PROJECT_TASK_UPDATE,
+        ProjectPermissionEnum::PROJECT_MEMBER_READ,
+        ProjectPermissionEnum::PROJECT_INVITATION_READ,
     ];
 
-    case VIEWER_PERMISSIONS = [
-        'projects:read',
-        'projects:tasks:read',
-        'projects:members:read'
+    private const VIEWER_PERMISSIONS = [
+        ProjectPermissionEnum::PROJECT_READ,
+        ProjectPermissionEnum::PROJECT_TASK_READ,
+        ProjectPermissionEnum::PROJECT_MEMBER_READ,
     ];
 
-    case GUEST_PERMISSIONS = [
-        'projects:read',
-        'projects:tasks:read'
+    private const GUEST_PERMISSIONS = [
+        ProjectPermissionEnum::PROJECT_READ,
+        ProjectPermissionEnum::PROJECT_TASK_READ,
     ];
 
-    case OWNER_NAME_JP = 'オーナー';
-    case ADMIN_NAME_JP = '管理者';
-    case MEMBER_NAME_JP = 'メンバー';
-    case VIEWER_NAME_JP = '閲覧者';
-    case GUEST_NAME_JP = 'ゲスト';
+    private const OWNER_NAME_JP = 'オーナー';
+    private const ADMIN_NAME_JP = '管理者';
+    private const MEMBER_NAME_JP = 'メンバー';
+    private const VIEWER_NAME_JP = '閲覧者';
+    private const GUEST_NAME_JP = 'ゲスト';
 
-    case OWNER_NAME_EN = 'Owner';
-    case ADMIN_NAME_EN = 'Admin';
-    case MEMBER_NAME_EN = 'Member';
-    case VIEWER_NAME_EN = 'Viewer';
-    case GUEST_NAME_EN = 'Guest';
+    private const OWNER_NAME_EN = 'Owner';
+    private const ADMIN_NAME_EN = 'Admin';
+    private const MEMBER_NAME_EN = 'Member';
+    private const VIEWER_NAME_EN = 'Viewer';
+    private const GUEST_NAME_EN = 'Guest';
 
-    case OWNER_DESCRIPTION_JP = 'プロジェクトの全ての権限を持つオーナー';
-    case ADMIN_DESCRIPTION_JP = 'プロジェクトの管理権限を持つ管理者';
-    case MEMBER_DESCRIPTION_JP = 'プロジェクトの基本的な操作が可能なメンバー';
-    case VIEWER_DESCRIPTION_JP = 'プロジェクトの閲覧のみ可能な閲覧者';
-    case GUEST_DESCRIPTION_JP = '限定的な閲覧のみ可能なゲスト';
+    private const OWNER_DESCRIPTION_JP = 'プロジェクトの全ての権限を持つオーナー';
+    private const ADMIN_DESCRIPTION_JP = 'プロジェクトの管理権限を持つ管理者';
+    private const MEMBER_DESCRIPTION_JP = 'プロジェクトの基本的な操作が可能なメンバー';
+    private const VIEWER_DESCRIPTION_JP = 'プロジェクトの閲覧のみ可能な閲覧者';
+    private const GUEST_DESCRIPTION_JP = '限定的な閲覧のみ可能なゲスト';
 
-    case OWNER_DESCRIPTION_EN = 'The owner of the project has all permissions';
-    case ADMIN_DESCRIPTION_EN = 'The admin of the project has all permissions';
-    case MEMBER_DESCRIPTION_EN = 'The member of the project has all permissions';
-    case VIEWER_DESCRIPTION_EN = 'The viewer of the project has all permissions';
-    case GUEST_DESCRIPTION_EN = 'The guest of the project has all permissions';
+    private const OWNER_DESCRIPTION_EN = 'The owner of the project has all permissions';
+    private const ADMIN_DESCRIPTION_EN = 'The admin of the project has all permissions';
+    private const MEMBER_DESCRIPTION_EN = 'The member of the project has all permissions';
+    private const VIEWER_DESCRIPTION_EN = 'The viewer of the project has all permissions';
+    private const GUEST_DESCRIPTION_EN = 'The guest of the project has all permissions';
 
     /**
      * デフォルトロールの日本語名を取得
@@ -77,11 +77,11 @@ enum DefaultProjectRolePresetEnum: int
     public static function getJapaneseName(self $role): string
     {
         return match($role) {
-            self::OWNER => self::OWNER_NAME_JP->value,
-            self::ADMIN => self::ADMIN_NAME_JP->value,
-            self::MEMBER => self::MEMBER_NAME_JP->value, 
-            self::VIEWER => self::VIEWER_NAME_JP->value,
-            self::GUEST => self::GUEST_NAME_JP->value,
+            self::OWNER => self::OWNER_NAME_JP,
+            self::ADMIN => self::ADMIN_NAME_JP,
+            self::MEMBER => self::MEMBER_NAME_JP, 
+            self::VIEWER => self::VIEWER_NAME_JP,
+            self::GUEST => self::GUEST_NAME_JP,
         };
     }
 
@@ -91,11 +91,11 @@ enum DefaultProjectRolePresetEnum: int
     public static function getJapaneseDescription(self $role): string
     {
         return match($role) {
-            self::OWNER => self::OWNER_DESCRIPTION_JP->value,
-            self::ADMIN => self::ADMIN_DESCRIPTION_JP->value,
-            self::MEMBER => self::MEMBER_DESCRIPTION_JP->value,
-            self::VIEWER => self::VIEWER_DESCRIPTION_JP->value,
-            self::GUEST => self::GUEST_DESCRIPTION_JP->value,
+            self::OWNER => self::OWNER_DESCRIPTION_JP,
+            self::ADMIN => self::ADMIN_DESCRIPTION_JP,
+            self::MEMBER => self::MEMBER_DESCRIPTION_JP,
+            self::VIEWER => self::VIEWER_DESCRIPTION_JP,
+            self::GUEST => self::GUEST_DESCRIPTION_JP,
         };
     }
 
@@ -105,11 +105,11 @@ enum DefaultProjectRolePresetEnum: int
     public static function getEnglishName(self $role): string
     {
         return match($role) {
-            self::OWNER => self::OWNER_NAME_EN->value,
-            self::ADMIN => self::ADMIN_NAME_EN->value,
-            self::MEMBER => self::MEMBER_NAME_EN->value,
-            self::VIEWER => self::VIEWER_NAME_EN->value,
-            self::GUEST => self::GUEST_NAME_EN->value,
+            self::OWNER => self::OWNER_NAME_EN,
+            self::ADMIN => self::ADMIN_NAME_EN,
+            self::MEMBER => self::MEMBER_NAME_EN,
+            self::VIEWER => self::VIEWER_NAME_EN,
+            self::GUEST => self::GUEST_NAME_EN,
         };
     }
 
@@ -119,11 +119,11 @@ enum DefaultProjectRolePresetEnum: int
     public static function getEnglishDescription(self $role): string
     {
         return match($role) {
-            self::OWNER => self::OWNER_DESCRIPTION_EN->value,
-            self::ADMIN => self::ADMIN_DESCRIPTION_EN->value,
-            self::MEMBER => self::MEMBER_DESCRIPTION_EN->value,
-            self::VIEWER => self::VIEWER_DESCRIPTION_EN->value,
-            self::GUEST => self::GUEST_DESCRIPTION_EN->value,
+            self::OWNER => self::OWNER_DESCRIPTION_EN,
+            self::ADMIN => self::ADMIN_DESCRIPTION_EN,
+            self::MEMBER => self::MEMBER_DESCRIPTION_EN,
+            self::VIEWER => self::VIEWER_DESCRIPTION_EN,
+            self::GUEST => self::GUEST_DESCRIPTION_EN,
         };
     }
 
@@ -143,6 +143,17 @@ enum DefaultProjectRolePresetEnum: int
         return match($locale) {
             LocaleEnum::JAPANESE => self::getJapaneseDescription($role),
             LocaleEnum::ENGLISH => self::getEnglishDescription($role),
+        };
+    }
+
+    public static function getPermissions(self $role): array
+    {
+        return match($role) {
+            self::OWNER => self::OWNER_PERMISSIONS,
+            self::ADMIN => self::ADMIN_PERMISSIONS,
+            self::MEMBER => self::MEMBER_PERMISSIONS,
+            self::VIEWER => self::VIEWER_PERMISSIONS,
+            self::GUEST => self::GUEST_PERMISSIONS,
         };
     }
 } 

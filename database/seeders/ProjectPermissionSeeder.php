@@ -20,10 +20,12 @@ class ProjectPermissionSeeder extends Seeder
     public function run(): void
     {
         DB::transaction(function () {
-            foreach (ProjectPermissionEnum::cases() as $permission) {
-                $projectPermission = new ProjectPermission();
-                $projectPermission->permission_id = $permission->value;
-                $projectPermission->save();
+            foreach (ProjectPermissionEnum::cases() as $projectPermission) {
+                DB::table('project_permissions')->insert([
+                    'permission_id' => $projectPermission->value,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
             }
         });
     }

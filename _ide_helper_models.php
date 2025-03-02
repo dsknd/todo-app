@@ -520,21 +520,21 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $project_role_id
  * @property int $project_id
- * @property int $assigned_user_id
- * @property int $assigner_user_id
+ * @property int $project_role_id
+ * @property int $assignee_id
+ * @property int $assigner_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ProjectMember $assignee
- * @property-read \App\Models\User|null $assigner
+ * @property-read \App\Models\User $assigner
  * @property-read \App\Models\Project $project
  * @property-read \App\Models\ProjectRole $role
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereAssignedUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereAssignerUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereAssigneeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereAssignerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereProjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereProjectRoleId($value)

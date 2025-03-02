@@ -18,7 +18,10 @@ class TaskControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    private Authenticatable $user;
+    /**
+     * @var \App\Models\User&\Illuminate\Contracts\Auth\Authenticatable
+     */
+    private User $user;
     private Project $project;
     private Category $category;
     private Priority $priority;

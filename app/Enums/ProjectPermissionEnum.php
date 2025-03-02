@@ -39,34 +39,34 @@ use App\Enums\PermissionEnum;
  */
 enum ProjectPermissionEnum: int
 {
-    const PROJECT_WILDCARD = 1;
-    const PROJECT_READ = 2;
-    const PROJECT_UPDATE = 3;
-    const PROJECT_DELETE = 4;
+    case PROJECT_WILDCARD = 1;
+    case PROJECT_READ = 2;
+    case PROJECT_UPDATE = 3;
+    case PROJECT_DELETE = 4;
 
-    const PROJECT_TASK_WILDCARD = 5;
-    const PROJECT_TASK_READ = 6;
-    const PROJECT_TASK_CREATE = 7;
-    const PROJECT_TASK_UPDATE = 8;
-    const PROJECT_TASK_DELETE = 9;
+    case PROJECT_TASK_WILDCARD = 5;
+    case PROJECT_TASK_READ = 6;
+    case PROJECT_TASK_CREATE = 7;
+    case PROJECT_TASK_UPDATE = 8;
+    case PROJECT_TASK_DELETE = 9;
 
-    const PROJECT_ROLE_WILDCARD = 10;
-    const PROJECT_ROLE_READ = 11;
-    const PROJECT_ROLE_CREATE = 12;
-    const PROJECT_ROLE_UPDATE = 13;
-    const PROJECT_ROLE_DELETE = 14;
+    case PROJECT_ROLE_WILDCARD = 10;
+    case PROJECT_ROLE_READ = 11;
+    case PROJECT_ROLE_CREATE = 12;
+    case PROJECT_ROLE_UPDATE = 13;
+    case PROJECT_ROLE_DELETE = 14;
 
-    const PROJECT_MEMBER_WILDCARD = 15;
-    const PROJECT_MEMBER_READ = 16;
-    const PROJECT_MEMBER_CREATE = 17;
-    const PROJECT_MEMBER_UPDATE = 18;
-    const PROJECT_MEMBER_DELETE = 19;
+    case PROJECT_MEMBER_WILDCARD = 15;
+    case PROJECT_MEMBER_READ = 16;
+    case PROJECT_MEMBER_CREATE = 17;
+    case PROJECT_MEMBER_UPDATE = 18;
+    case PROJECT_MEMBER_DELETE = 19;
 
-    const PROJECT_INVITATION_WILDCARD = 20;
-    const PROJECT_INVITATION_READ = 21;
-    const PROJECT_INVITATION_CREATE = 22;
-    const PROJECT_INVITATION_UPDATE = 23;
-    const PROJECT_INVITATION_DELETE = 24;
+    case PROJECT_INVITATION_WILDCARD = 20;
+    case PROJECT_INVITATION_READ = 21;
+    case PROJECT_INVITATION_CREATE = 22;
+    case PROJECT_INVITATION_UPDATE = 23;
+    case PROJECT_INVITATION_DELETE = 24;
 
     public static function getScope(mixed $value): string
     {
@@ -81,16 +81,6 @@ enum ProjectPermissionEnum: int
     public static function getAction(mixed $value): string
     {
         return PermissionEnum::getAction($value);
-    }
-
-    public static function getDisplayName(mixed $value): string
-    {
-        return PermissionEnum::getDisplayName($value);
-    }
-
-    public static function getDescription(mixed $value): string
-    {
-        return PermissionEnum::getDescription($value);
     }
 
     public static function getHierarchy(mixed $value): array

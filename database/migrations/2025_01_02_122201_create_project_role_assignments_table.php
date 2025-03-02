@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('project_role_id');    // プロジェクトロールID
             $table->unsignedBigInteger('assignee_id');   // 割当たられたユーザーID
             $table->unsignedBigInteger('assigner_id');   // 割り当てたユーザID
-            $table->timestamps();
+            $table->timestamp('assigned_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
             // 外部キー定義
             $table->foreign('project_role_id', 'fk_project_role_assignments_role_id')

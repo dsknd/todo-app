@@ -2,12 +2,10 @@
 
 namespace App\UseCases;
 
-use App\ValueObjects\ProjectName;
-use App\ValueObjects\ProjectDescription;
 use App\ValueObjects\UserId;
-use App\ValueObjects\LocaleCode;
 use DateTimeImmutable;
 use App\Models\Project;
+use App\Enums\LocaleEnum;
 
 interface CreateProjectUseCase
 {
@@ -20,8 +18,8 @@ interface CreateProjectUseCase
      * @param bool $isPrivate プロジェクトの公開/非公開
      * @param DateTimeImmutable $plannedStartDate 計画開始日
      * @param DateTimeImmutable $plannedEndDate 計画終了日
-     * @param LocaleCode $localeCode ロケール
-     * @return void
+     * @param LocaleEnum $locale ロケール
+     * @return Project 作成されたプロジェクト
      */
     public function execute(
         string $name,
@@ -30,6 +28,6 @@ interface CreateProjectUseCase
         bool $isPrivate,
         DateTimeImmutable $plannedStartDate,
         DateTimeImmutable $plannedEndDate,
-        LocaleCode $localeCode
+        LocaleEnum $locale
     ): Project;
 }

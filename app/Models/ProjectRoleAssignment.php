@@ -9,11 +9,14 @@ class ProjectRoleAssignment extends Pivot
 {
     protected $table = 'project_role_assignments';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'project_id',
         'project_role_id',
-        'assigned_user_id',
-        'assigner_user_id',
+        'assignee_id',
+        'assigner_id',
+        'assigned_at',
     ];
 
     /**
@@ -22,8 +25,7 @@ class ProjectRoleAssignment extends Pivot
      * @var array<string, string>
      */
     protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'assigned_at' => 'datetime',
     ];
 
     /**

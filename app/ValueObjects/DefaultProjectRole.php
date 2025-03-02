@@ -2,6 +2,15 @@
 
 namespace App\ValueObjects;
 
+/**
+ * デフォルトのプロジェクトロール
+ * 
+ * @param string $name ロール名
+ * @param string $description ロールの説明
+ * @param array $permissions ロールの権限
+ * @param array $localizedNames ロールのローカライズされた名前
+ * @param array $localizedDescriptions ロールのローカライズされた説明
+ */
 final class DefaultProjectRole
 {
     private string $name;

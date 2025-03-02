@@ -5,15 +5,43 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Permission extends Model
 {
+    use HasFactory;
+
+    /**
+     * The table associated with the model.
+     * 
+     * @var string
+     */
+    protected $table = 'permissions';
+
+    /**
+     * The primary key associated with the table.
+     * 
+     * @var int
+     */
+    protected $primaryKey = 'id';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     * 
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The attributes that are mass assignable.
+     * 
+     * @var array<string>
+     */
     protected $fillable = [
+        'id',
         'scope',
         'resource',
         'action',
-        'display_name',
-        'description',
     ];
 
     /**

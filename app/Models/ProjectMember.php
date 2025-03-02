@@ -14,6 +14,15 @@ class ProjectMember extends Pivot
     public $timestamps = false;
 
     /**
+     * 複数代入可能な属性
+     */
+    protected $fillable = [
+        'project_id',
+        'user_id',
+        'joined_at',
+    ];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array<string, string>

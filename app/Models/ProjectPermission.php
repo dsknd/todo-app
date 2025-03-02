@@ -5,14 +5,39 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 class ProjectPermission extends Model
 {
+    use HasFactory;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'project_permissions';
+
+    /**
+     * The primary key associated with the table.
+     * 
+     * @var int
+     */
+    protected $primaryKey = 'permission_id';
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     * 
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * The attributes that are mass assignable.
+     * 
+     * @var array<int>
+     */
     protected $fillable = [
         'permission_id',
-        'name',
-        'description',
-        'is_custom',      // カスタム権限かどうか
     ];
 
     /**
@@ -21,7 +46,6 @@ class ProjectPermission extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'is_custom' => 'boolean',
     ];
 
     /**

@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class ProjectPermissionAssignment extends Pivot
 {
     protected $table = 'project_permission_assignments';
+    
+    public $timestamps = false;
 
     protected $fillable = [
         'project_role_id',
         'project_permission_id',
-        'assigned_by',
+        'assigner_id',
+        'assigned_at',
     ];
 
     /**
@@ -21,8 +24,7 @@ class ProjectPermissionAssignment extends Pivot
      * @var array<string, string>
      */
     protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'assigned_at' => 'datetime',
     ];
 
     /**
@@ -46,7 +48,7 @@ class ProjectPermissionAssignment extends Pivot
      */
     public function assigner(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'assigned_by');
+        return $this->belongsTo(User::class, 'assigner_id');
     }
 
     /**

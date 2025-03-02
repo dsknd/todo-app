@@ -11,9 +11,9 @@ class ProjectRoleAssignment extends Pivot
 
     protected $fillable = [
         'project_id',
-        'user_id',
         'project_role_id',
-        'assigned_by',
+        'assigned_user_id',
+        'assigner_user_id',
     ];
 
     /**
@@ -35,14 +35,6 @@ class ProjectRoleAssignment extends Pivot
     }
 
     /**
-     * ユーザーとの関連
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    /**
      * プロジェクトロールとの関連
      */
     public function role(): BelongsTo
@@ -55,14 +47,15 @@ class ProjectRoleAssignment extends Pivot
      */
     public function assigner(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'assigned_by');
+        return $this->belongsTo(User::class, 'assigner_id');
     }
 
     /**
      * プロジェクトメンバーとの関連
      */
-    public function projectMember(): BelongsTo
+    public function assignee(): BelongsTo
     {
-        return $this->belongsTo(ProjectMember::class, ['project_id', 'user_id'], ['project_id', 'user_id']);
+        return $this->belongsTo(ProjectMember::class, 'project_id', 'project_id')
+            ->where('assignee_id', $this->assigned_user_id);
     }
 }

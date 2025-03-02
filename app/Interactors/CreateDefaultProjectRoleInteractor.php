@@ -17,8 +17,8 @@ class CreateDefaultProjectRoleInteractor implements CreateDefaultProjectRoleUseC
      * デフォルトのプロジェクトロールを作成する
      *
      * @param ProjectId $projectId プロジェクトID
-     * @param DefaultProjectRoleValueObject $roleValueObject 作成するロール
-     * @param LocaleValueObject $locale ロケール
+     * @param DefaultProjectRole $defaultProjectRole 作成するロール
+     * @param LocaleCode $localeCode ロケール
      * @return void
      */
     public function execute(

@@ -13,30 +13,33 @@ return new class extends Migration
     {
         Schema::create('project_role_assignments', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('project_role_id');    // プロジェクトロールID
             $table->unsignedBigInteger('project_id');         // プロジェクトID
-            $table->unsignedBigInteger('assigned_user_id');   // 割当たられたユーザーID
-            $table->unsignedBigInteger('assigner_user_id');   // 割当たられたユーザーID
+            $table->unsignedBigInteger('project_role_id');    // プロジェクトロールID
+            $table->unsignedBigInteger('assignee_id');   // 割当たられたユーザーID
+            $table->unsignedBigInteger('assigner_id');   // 割り当てたユーザID
             $table->timestamps();
 
-            // 外部キー制約
+            // 外部キー定義
             $table->foreign('project_role_id', 'fk_project_role_assignments_role_id')
                 ->references('id')
                 ->on('project_roles')
                 ->cascadeOnDelete();
 
-            $table->foreign(['project_id', 'assigned_user_id'])
+            $table->foreign(['project_id', 'assignee_id'])
                 ->references(['project_id', 'user_id'])
                 ->on('project_members')
                 ->cascadeOnDelete();
 
-            $table->foreign('assigner_user_id')
+            $table->foreign('assigner_id')
                 ->references('id')
                 ->on('users')
                 ->cascadeOnDelete();
 
-            // 主キー制約
-            $table->primary(['project_id', 'assigned_user_id', 'project_role_id']);
+            // 主キー定義
+            $table->primary(['project_id', 'assignee_id', 'project_role_id']);
+
+            // インデックス定義
+            $table->index(['project_id', 'project_role_id']);
         });
     }
 

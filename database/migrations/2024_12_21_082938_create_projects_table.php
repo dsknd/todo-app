@@ -45,6 +45,9 @@ return new class extends Migration
                 ->references('id')
                 ->on('users')
                 ->cascadeOnDelete();
+
+            // ユニーク制約
+            $table->unique(['user_id', 'name']);
             
             // インデックス
             $table->index(['planned_start_date', 'planned_end_date']);

@@ -12,7 +12,6 @@ use Tests\TestCase;
 use App\Models\ProjectStatus;
 use App\Enums\LocaleEnum;
 use App\Models\ProjectPermission;
-use Illuminate\Database\Eloquent\Collection;
 use App\Models\Permission;
 
 class CreateProjectInteractorTest extends TestCase
@@ -76,6 +75,13 @@ class CreateProjectInteractorTest extends TestCase
             'user_id' => $userId->getId(),
             'is_private' => $isPrivate,
             'project_status_id' => $this->projectStatus->id,
+            'planned_start_date' => $plannedStartDate,
+            'planned_end_date' => $plannedEndDate,
         ]);
     }
+
+    // TODO: projectsテーブルのレコード挿入に失敗
+    // TODO: project_membersテーブルのレコード挿入に失敗
+    // TODO: project_rolesテーブルのレコード挿入に失敗
+    // TODO: project_permission_assignmentsテーブルのレコード挿入に失敗
 } 

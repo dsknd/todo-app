@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\UseCases\CheckProjectRolePermissionUseCase;
 use App\UseCases\Implementations\CheckProjectRolePermission;
+use App\Interactors\CreateProjectInteractor;
+use  App\UseCases\CreateProjectUseCase;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(CheckProjectRolePermissionUseCase::class, CheckProjectRolePermission::class);
+        $this->app->bind(CreateProjectUseCase::class, CreateProjectInteractor::class);
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases\Project;
+namespace App\UseCases;
 
 use App\ValueObjects\ProjectName;
 use App\ValueObjects\ProjectDescription;

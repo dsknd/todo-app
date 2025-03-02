@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\ProjectStatus;
 use App\Models\Project;
@@ -13,7 +12,10 @@ class ProjectControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    private Authenticatable $user;
+    /**
+    * @var \App\Models\User&\Illuminate\Contracts\Auth\Authenticatable
+    */
+    private User $user;
     private ProjectStatus $projectStatus;
     private Project $project;
     protected function setUp(): void

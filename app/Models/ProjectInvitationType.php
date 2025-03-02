@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Enums\ProjectInvitationTypeEnum;
 
 class ProjectInvitationType extends Model
 {
@@ -18,7 +17,7 @@ class ProjectInvitationType extends Model
     ];
 
     protected $casts = [
-        'id' => ProjectInvitationTypeEnum::class,
+        'id' => 'integer',
     ];
 
     public function projectInvitations(): HasMany

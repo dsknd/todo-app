@@ -78,9 +78,65 @@ namespace App\Models{
  * 
  *
  * @property int $id
- * @property string $code_iso_639_1
- * @property string $code_ietf_bcp_47
- * @property string $name
+ * @property string $key
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectInvitation> $projectInvitations
+ * @property-read int|null $project_invitations_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationStatus newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationStatus newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationStatus query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationStatus whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationStatus whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationStatus whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationStatus whereUpdatedAt($value)
+ */
+	class InvitationStatus extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $key システム内部キー
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectInvitation> $projectInvitations
+ * @property-read int|null $project_invitations_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationType whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvitationType whereUpdatedAt($value)
+ */
+	class InvitationType extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $language_code 言語コード (ISO 639-1, e.g. "ja", "en")
+ * @property string|null $region_code 地域コード (ISO 3166-1, e.g. "JP", "US")
+ * @property string|null $script_code スクリプトコード (ISO 15924, e.g. "Latn", "Jpan")
+ * @property string $format_bcp47 BCP47形式 (e.g. "ja-JP", "en-US")
+ * @property string $format_cldr CLDR形式 (e.g. "ja_JP", "en_US")
+ * @property string $format_posix POSIX形式 (e.g. "ja_JP.UTF-8", "en_US.UTF-8")
+ * @property string $name ロケール名 (e.g. "日本語（日本）", "English (United States)")
+ * @property string $native_name ネイティブ表記のロケール名 (e.g. "日本語（日本）", "English (United States)")
+ * @property string $date_format_short 短い日付形式 (e.g. "Y/m/d", "n/j/Y")
+ * @property string $date_format_medium 中程度の日付形式 (e.g. "Y年n月j日", "M j, Y")
+ * @property string $date_format_long 長い日付形式 (e.g. "Y年n月j日(D)", "l, F j, Y")
+ * @property string $time_format_short 短い時間形式 (e.g. "H:i", "g:i a")
+ * @property string $time_format_medium 中程度の時間形式 (e.g. "H:i:s", "g:i:s a")
+ * @property string $datetime_format_short 短い日時形式 (e.g. "Y/m/d H:i", "n/j/Y, g:i a")
+ * @property string $first_day_of_week 週の最初の曜日 (e.g. "monday", "sunday")
+ * @property int $is_24hour_format 24時間形式を使用するか
+ * @property string $default_timezone デフォルトのタイムゾーン (e.g. "Asia/Tokyo", "America/New_York")
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -90,12 +146,26 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereCodeIetfBcp47($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereCodeIso6391($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereDateFormatLong($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereDateFormatMedium($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereDateFormatShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereDatetimeFormatShort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereDefaultTimezone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereFirstDayOfWeek($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereFormatBcp47($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereFormatCldr($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereFormatPosix($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereIs24hourFormat($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereLanguageCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereNativeName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereRegionCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereScriptCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereTimeFormatMedium($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereTimeFormatShort($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale whereUpdatedAt($value)
  */
 	class Locale extends \Eloquent {}
@@ -109,8 +179,6 @@ namespace App\Models{
  * @property string $scope
  * @property string $resource
  * @property string $action
- * @property string $display_name
- * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Permission> $ancestors
@@ -124,8 +192,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereAction($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereDisplayName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereResource($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereScope($value)
@@ -279,15 +345,15 @@ namespace App\Models{
  * @property int $id ID
  * @property int $project_id プロジェクトID
  * @property int $inviter_by 招待作成者（ProjectMember）
- * @property int $project_invitation_status_id
- * @property int $project_invitation_type_id
+ * @property int $invitation_status_id
+ * @property int $invitation_type_id
  * @property \Illuminate\Support\Carbon $expires_at 招待の有効期限
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\ProjectEmailInvitation|null $emailInvitation
  * @property-read \App\Models\Project $project
- * @property-read \App\Models\ProjectInvitationStatus $status
- * @property-read \App\Models\ProjectInvitationType $type
+ * @property-read \App\Models\InvitationStatus $status
+ * @property-read \App\Models\InvitationType $type
  * @property-read \App\Models\ProjectUserInvitation|null $userInvitation
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation newQuery()
@@ -295,10 +361,10 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation whereExpiresAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation whereInvitationStatusId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation whereInvitationTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation whereInviterBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation whereProjectId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation whereProjectInvitationStatusId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation whereProjectInvitationTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitation whereUpdatedAt($value)
  */
 	class ProjectInvitation extends \Eloquent {}
@@ -308,42 +374,11 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $id
- * @property string $display_name
- * @property string|null $description
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectInvitation> $projectInvitations
- * @property-read int|null $project_invitations_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationStatus newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationStatus newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationStatus query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationStatus whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationStatus whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationStatus whereDisplayName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationStatus whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationStatus whereUpdatedAt($value)
- */
-	class ProjectInvitationStatus extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * 
- *
- * @property \App\Enums\ProjectInvitationTypeEnum $id
- * @property string $key システム内部キー
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectInvitation> $projectInvitations
  * @property-read int|null $project_invitations_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationType newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationType newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationType query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationType whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationType whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationType whereKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectInvitationType whereUpdatedAt($value)
  */
 	class ProjectInvitationType extends \Eloquent {}
 }
@@ -451,15 +486,14 @@ namespace App\Models{
  * 
  *
  * @property int $id
- * @property string $project_role_type
- * @property int|null $project_id
- * @property int|null $created_by
+ * @property int $project_id
+ * @property int $role_number
+ * @property int $user_id
  * @property string $name
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \App\Enums\ProjectRoleTypes $type
- * @property-read \App\Models\Project|null $project
+ * @property-read \App\Models\Project $project
  * @property-read \App\Models\ProjectRoleAssignment|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $projectMembers
  * @property-read int|null $project_members_count
@@ -471,13 +505,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereCreatedBy($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereProjectId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereProjectRoleType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereRoleNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereUserId($value)
  */
 	class ProjectRole extends \Eloquent {}
 }
@@ -488,22 +522,23 @@ namespace App\Models{
  *
  * @property int $project_role_id
  * @property int $project_id
- * @property int $user_id
+ * @property int $assigned_user_id
+ * @property int $assigner_user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ProjectMember $assignee
  * @property-read \App\Models\User|null $assigner
  * @property-read \App\Models\Project $project
- * @property-read \App\Models\ProjectMember $projectMember
  * @property-read \App\Models\ProjectRole $role
- * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereAssignedUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereAssignerUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereProjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereProjectRoleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereUserId($value)
  */
 	class ProjectRoleAssignment extends \Eloquent {}
 }

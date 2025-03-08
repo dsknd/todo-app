@@ -101,13 +101,13 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
         }
         
         // プロジェクトの作成者の場合
-        if ($project->user_id == $userId->getValue()) {
+        if ($project->user_id == $userId) {
             return true;
         }
         
         // プロジェクトのメンバーの場合
         return $project->members()
-            ->where('user_id', $userId->getValue())
+            ->where('user_id', $userId)
             ->exists();
     }
 

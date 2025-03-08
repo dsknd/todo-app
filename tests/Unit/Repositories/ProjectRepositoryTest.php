@@ -287,21 +287,18 @@ class ProjectRepositoryTest extends TestCase
         $this->assertFalse($result);
     }
 
-    // /** @test */
-    // public function it_can_check_if_user_can_access_project_as_owner()
-    // {
-    //     // 準備
-    //     $user = User::factory()->create();
-    //     $userId = new UserId($user->id);
-    //     $project = Project::factory()->create(['user_id' => $user->id]);
-    //     $projectId = new ProjectId($project->id);
+    public function test_it_can_check_if_user_can_access_project_as_owner()
+    {
+        // 準備
+        $user = User::factory()->create();
+        $project = Project::factory()->create(['user_id' => $user->id]);
 
-    //     // 実行
-    //     $result = $this->repository->canUserAccessProject($userId, $projectId);
+        // 実行
+        $result = $this->repository->canUserAccessProject($user->id, $project->id);
 
-    //     // 検証
-    //     $this->assertTrue($result);
-    // }
+        // 検証
+        $this->assertTrue($result);
+    }
 
     // /** @test */
     // public function it_can_check_if_user_can_access_project_as_member()

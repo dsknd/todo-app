@@ -7,10 +7,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Casts\ProjectIdCast;
+use App\Casts\UserIdCast;
 
 class Project extends Model
 {
     use HasFactory;
+
+    protected $table = 'projects';
+
+    protected $primaryKey = 'id';
+
+    protected $keyType = 'int';
+
+    public $incrementing = true;
 
     protected $fillable = [
         'name',
@@ -30,11 +40,13 @@ class Project extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'id' => ProjectIdCast::class,
         'planned_start_date' => 'datetime',
         'planned_end_date' => 'datetime',
         'actual_start_date' => 'datetime',
         'actual_end_date' => 'datetime',
         'is_private' => 'boolean',
+        'user_id' => UserIdCast::class,
     ];
 
     /**

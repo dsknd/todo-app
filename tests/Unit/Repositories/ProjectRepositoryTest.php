@@ -275,18 +275,17 @@ class ProjectRepositoryTest extends TestCase
         ]);
     }
 
-    // /** @test */
-    // public function it_returns_false_when_deleting_non_existent_project()
-    // {
-    //     // 準備
-    //     $nonExistentId = new ProjectId(999);
+    public function test_it_returns_false_when_deleting_non_existent_project()
+    {
+        // 準備
+        $nonExistentId = new ProjectId(999);
 
-    //     // 実行
-    //     $result = $this->repository->delete($nonExistentId);
+        // 実行
+        $result = $this->repository->delete($nonExistentId);
 
-    //     // 検証
-    //     $this->assertFalse($result);
-    // }
+        // 検証
+        $this->assertFalse($result);
+    }
 
     // /** @test */
     // public function it_can_check_if_user_can_access_project_as_owner()

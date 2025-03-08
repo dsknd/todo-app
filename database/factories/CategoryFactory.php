@@ -4,8 +4,10 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Enums\CategoryEnum;
+use App\ValueObjects\CategoryId;
+use App\Models\Category;
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Category>
+ * @extends Factory<Category>
  */
 class CategoryFactory extends Factory
 {
@@ -17,7 +19,7 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => CategoryEnum::UNCATEGORIZED,
+            'id' => new CategoryId(CategoryEnum::UNCATEGORIZED->value),
             'key' => CategoryEnum::getKey(CategoryEnum::UNCATEGORIZED),
         ];
     }

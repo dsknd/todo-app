@@ -4,9 +4,10 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Enums\ProjectStatusEnum;
-
+use App\ValueObjects\ProjectStatusId;
+use App\Models\ProjectStatus;
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProjectStatus>
+ * @extends Factory<ProjectStatus>
  */
 class ProjectStatusFactory extends Factory
 {
@@ -17,9 +18,11 @@ class ProjectStatusFactory extends Factory
      */
     public function definition(): array
     {
+        static $id = 1;
+        
         return [
-            'id' => ProjectStatusEnum::PLANNING->value,
-            'key' => ProjectStatusEnum::getKey(ProjectStatusEnum::PLANNING),
+            'id' => new ProjectStatusId($id++),
+            'key' => 'status_' . uniqid(),
         ];
     }
 }

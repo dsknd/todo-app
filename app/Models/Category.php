@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Casts\CategoryIdCast;
+
 class Category extends Model
 {
     use HasFactory;
@@ -22,6 +24,10 @@ class Category extends Model
         'name',
         'description',
         'parent_category_id',
+    ];
+
+    protected $casts = [
+        'id' => CategoryIdCast::class,
     ];
 
     /**

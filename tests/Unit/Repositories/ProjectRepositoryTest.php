@@ -22,7 +22,6 @@ use PHPUnit\Framework\Attributes\Group;
  * findById: プロジェクトをIDで検索できることを確認
  * findByIds: 複数のIDでプロジェクトを検索できることを確認
  * findByUserId: ユーザーIDでプロジェクトを検索できることを確認
- * findByCategoryId: カテゴリIDでプロジェクトを検索できることを確認
  * findByMemberId: メンバーIDでプロジェクトを検索できることを確認
  * create: プロジェクトを作成できることを確認
  * update: プロジェクトを更新できることを確認
@@ -32,7 +31,6 @@ use PHPUnit\Framework\Attributes\Group;
  * updateProgress: プロジェクトの進捗状況を更新できることを確認
  * addMember: プロジェクトにメンバーを追加できることを確認
  * removeMember: プロジェクトからメンバーを削除できることを確認
- * 
  * 
  * 各テストでは、以下のパターンに従っています
  * 
@@ -127,54 +125,33 @@ class ProjectRepositoryTest extends TestCase
         });
     }
 
-    // /** @test */
-    // public function it_can_find_projects_by_category_id()
-    // {
-    //     // 準備
-    //     $category = Category::factory()->create();
-    //     $categoryId = new CategoryId($category->id);
-    //     Project::factory()->count(3)->create(['category_id' => $category->id]);
-    //     Project::factory()->count(2)->create(); // 他のカテゴリのプロジェクト
-
-    //     // 実行
-    //     $foundProjects = $this->repository->findByCategoryId($categoryId);
-
-    //     // 検証
-    //     $this->assertEquals(3, $foundProjects->total());
-    //     $foundProjects->each(function ($project) use ($category) {
-    //         $this->assertEquals($category->id, $project->category_id);
-    //     });
-    // }
-
-    // /** @test */
-    // public function it_can_find_projects_by_member_id()
-    // {
-    //     // 準備
-    //     $user = User::factory()->create();
-    //     $userId = new UserId($user->id);
+    public function test_it_can_find_projects_by_member_id()
+    {
+        // 準備
+        $user = User::factory()->create();
         
-    //     // ユーザーがメンバーのプロジェクト
-    //     $memberProjects = Project::factory()->count(2)->create();
-    //     foreach ($memberProjects as $project) {
-    //         ProjectMember::factory()->create([
-    //             'project_id' => $project->id,
-    //             'user_id' => $user->id
-    //         ]);
-    //     }
+        // ユーザーがメンバーのプロジェクト
+        $memberProjects = Project::factory()->count(2)->create();
+        foreach ($memberProjects as $project) {
+            ProjectMember::factory()->create([
+                'project_id' => $project->id,
+                'user_id' => $user->id
+            ]);
+        }
         
-    //     // ユーザーがメンバーでないプロジェクト
-    //     Project::factory()->count(3)->create();
+        // ユーザーがメンバーでないプロジェクト
+        Project::factory()->count(3)->create();
 
-    //     // 実行
-    //     $foundProjects = $this->repository->findByMemberId($userId);
+        // 実行
+        $foundProjects = $this->repository->findByMemberId($user->id);
 
-    //     // 検証
-    //     $this->assertEquals(2, $foundProjects->total());
-    //     $this->assertEquals(
-    //         $memberProjects->pluck('id')->sort()->values()->toArray(),
-    //         $foundProjects->pluck('id')->sort()->values()->toArray()
-    //     );
-    // }
+        // 検証
+        $this->assertEquals(2, $foundProjects->total());
+        $this->assertEquals(
+            $memberProjects->pluck('id')->sort()->values()->toArray(),
+            $foundProjects->pluck('id')->sort()->values()->toArray()
+        );
+    }
 
     // /** @test */
     // public function it_can_create_project()

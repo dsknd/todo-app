@@ -5,7 +5,7 @@ namespace App\ValueObjects;
 use InvalidArgumentException;
 use JsonSerializable;
 
-class ProjectId implements JsonSerializable
+class PriorityId implements JsonSerializable
 {
     private int $value;
 
@@ -16,7 +16,7 @@ class ProjectId implements JsonSerializable
     public function __construct(int $value)
     {
         if ($value <= 0) {
-            throw new InvalidArgumentException('プロジェクトIDは正の整数である必要があります');
+            throw new InvalidArgumentException('優先度IDは正の整数である必要があります');
         }
 
         $this->value = $value;
@@ -35,7 +35,7 @@ class ProjectId implements JsonSerializable
     /**
      * 等価性の比較
      *
-     * @param ProjectId $other
+     * @param PriorityId $other
      * @return bool
      */
     public function equals(self $other): bool

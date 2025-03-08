@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Casts\PriorityIdCast;
+
 class Priority extends Model
 {
     use HasFactory;
@@ -21,6 +23,10 @@ class Priority extends Model
         'id',
         'key',
         'priority_value'
+    ];
+
+    protected $casts = [
+        'id' => PriorityIdCast::class,
     ];
 
     /**

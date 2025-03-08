@@ -37,15 +37,6 @@ interface ProjectRepository
     public function findByUserId(UserId $userId, int $perPage = 15): LengthAwarePaginator;
 
     /**
-     * カテゴリIDでプロジェクトを検索
-     *
-     * @param CategoryId $categoryId
-     * @param int $perPage
-     * @return LengthAwarePaginator
-     */
-    public function findByCategoryId(CategoryId $categoryId, int $perPage = 15): LengthAwarePaginator;
-
-    /**
      * ユーザーが参加しているプロジェクトを検索
      *
      * @param UserId $userId

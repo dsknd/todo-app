@@ -5,20 +5,21 @@ namespace Tests\Unit\Interactors;
 use App\Interactors\CreateProjectInteractor;
 use App\Models\Project;
 use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use App\ValueObjects\UserId;
 use DateTimeImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\ProjectStatus;
-use App\Enums\LocaleEnum;
 use App\Models\ProjectPermission;
 use App\Models\Permission;
+use App\ValueObjects\LocaleCode;
 
 class CreateProjectInteractorTest extends TestCase
 {
     use RefreshDatabase;
     /**
-     * @var \App\Models\User&\Illuminate\Contracts\Auth\Authenticatable
+     * @var User&Authenticatable
      */
     private User $user;
     private CreateProjectInteractor $interactor;
@@ -45,7 +46,7 @@ class CreateProjectInteractorTest extends TestCase
         $isPrivate = false;
         $plannedStartDate = new DateTimeImmutable('2023-01-01');
         $plannedEndDate = new DateTimeImmutable('2023-12-31');
-        $locale = LocaleEnum::JAPANESE;
+        $localeCode = new LocaleCode('ja');
         
         // 実行
         $project = $this->interactor->execute(
@@ -55,7 +56,7 @@ class CreateProjectInteractorTest extends TestCase
             $isPrivate,
             $plannedStartDate,
             $plannedEndDate,
-            $locale
+            $localeCode
         );
         
         // 検証

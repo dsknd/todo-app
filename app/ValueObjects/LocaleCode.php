@@ -2,6 +2,8 @@
 
 namespace App\ValueObjects;
 
+use App\Enums\LocaleEnum;
+
 class LocaleCode
 {
     private const ALLOWED_LANGUAGES = ['ja', 'en'];
@@ -82,4 +84,19 @@ class LocaleCode
             default => throw new \InvalidArgumentException("Unsupported format"),
         };
     }
+
+    /**
+     * ロケールコードを文字列にEnumで返す
+     *
+     * @return LocaleEnum
+     */
+    public function toEnum(): LocaleEnum
+    {
+        return match ($this->language) {
+            'ja' => LocaleEnum::JAPANESE,
+            'en' => LocaleEnum::ENGLISH,
+            default => throw new \InvalidArgumentException("Unsupported language code: {$this->language}"),
+        };
+    }
+    
 }

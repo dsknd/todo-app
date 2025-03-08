@@ -11,10 +11,11 @@ use App\Models\ProjectRole;
 use App\Models\ProjectRoleAssignment;
 use App\Enums\ProjectStatusEnum;
 use App\Models\ProjectMember;
-use App\Enums\LocaleEnum;
+use App\ValueObjects\LocaleCode;
 use App\Enums\DefaultProjectRolePresetEnum;
-use App\Enums\ProjectPermissionEnum;
 use App\Models\ProjectPermissionAssignment;
+use App\Enums\LocaleEnum;
+
 class CreateProjectInteractor implements CreateProjectUseCase
 {
     public function execute(
@@ -24,7 +25,7 @@ class CreateProjectInteractor implements CreateProjectUseCase
         bool $isPrivate,
         ?DateTimeImmutable $plannedStartDate,
         ?DateTimeImmutable $plannedEndDate,
-        LocaleEnum $locale
+        ?LocaleCode $localeCode
     ): Project {
         $project = DB::transaction(function () use (
             $name,
@@ -33,10 +34,14 @@ class CreateProjectInteractor implements CreateProjectUseCase
             $isPrivate,
             $plannedStartDate,
             $plannedEndDate,
-            $locale
+            $localeCode
         ) {
             // 現在時間を取得
             $now = now();
+
+            // ロケールコードをEnumに変換
+            $locale = $localeCode ?? LocaleEnum::ENGLISH;
+            $locale = $localeCode->toEnum();
 
             // プロジェクトを作成
             $project = Project::create([

@@ -245,21 +245,20 @@ class ProjectRepositoryTest extends TestCase
         ]);
     }
 
-    // /** @test */
-    // public function it_returns_false_when_updating_non_existent_project()
-    // {
-    //     // 準備
-    //     $nonExistentId = new ProjectId(999);
-    //     $attributes = [
-    //         'name' => '新しいプロジェクト名',
-    //     ];
+    public function test_it_returns_false_when_updating_non_existent_project()
+    {
+        // 準備
+        $nonExistentId = new ProjectId(999);
+        $attributes = [
+            'name' => '新しいプロジェクト名',
+        ];
 
-    //     // 実行
-    //     $result = $this->repository->update($nonExistentId, $attributes);
+        // 実行
+        $result = $this->repository->update($nonExistentId, $attributes);
 
-    //     // 検証
-    //     $this->assertFalse($result);
-    // }
+        // 検証
+        $this->assertFalse($result);
+    }
 
     // /** @test */
     // public function it_can_delete_project()

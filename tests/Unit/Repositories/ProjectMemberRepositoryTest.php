@@ -184,23 +184,23 @@ class ProjectMemberRepositoryTest extends TestCase
     //     $this->assertFalse($result);
     // }
 
-    // public function test_it_can_remove_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-    //     $this->repository->add($project->id, $user->id);
+    public function test_it_can_remove_member()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $user = User::factory()->create();
+        $this->repository->add($project->id, $user->id, new DateTimeImmutable(now()));
         
-    //     // 実行
-    //     $result = $this->repository->remove($project->id, $user->id);
+        // 実行
+        $result = $this->repository->remove($project->id, $user->id);
         
-    //     // 検証
-    //     $this->assertTrue($result);
-    //     $this->assertDatabaseMissing('project_members', [
-    //         'project_id' => $project->id->getValue(),
-    //         'user_id' => $user->id->getValue(),
-    //     ]);
-    // }
+        // 検証
+        $this->assertTrue($result);
+        $this->assertDatabaseMissing('project_members', [
+            'project_id' => $project->id->getValue(),
+            'user_id' => $user->id->getValue(),
+        ]);
+    }
 
     // public function test_it_returns_false_when_removing_non_existent_member()
     // {

@@ -32,15 +32,4 @@ class Locale extends Model
     {
         return self::where('is_active', true)->get();
     }
-
-    /**
-     * 言語コードの規格に基づくコードフィールドを取得するアクセサ
-     */
-    public function getCodeAttribute(LanguageCodeStandardEnum $standard): string
-    {
-        return match ($standard) {
-            LanguageCodeStandardEnum::ISO_639_1 => $this->code_iso_639_1,
-            LanguageCodeStandardEnum::IETF_BCP_47 => $this->code_ietf_bcp_47,
-        };
-    }
 }

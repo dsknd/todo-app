@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\ValueObjects\ProjectStatusId;
+use App\Casts\ProjectStatusIdCast;
 
 class ProjectStatus extends Model
 {
@@ -23,6 +25,10 @@ class ProjectStatus extends Model
     protected $fillable = [
         'id',
         'key',
+    ];
+
+    protected $casts = [
+        'id' => ProjectStatusIdCast::class,
     ];
 
     /**

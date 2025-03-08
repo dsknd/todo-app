@@ -430,29 +430,22 @@ class ProjectRepositoryTest extends TestCase
     //     $this->assertTrue($result);
     // }
 
-    // /** @test */
-    // public function it_can_add_member_to_project()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $projectId = new ProjectId($project->id);
-    //     $user = User::factory()->create();
-    //     $userId = new UserId($user->id);
-    //     $attributes = [
-    //         'role' => 'member',
-    //     ];
+    public function test_it_can_add_member_to_project()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $user = User::factory()->create();
 
-    //     // 実行
-    //     $result = $this->repository->addMember($projectId, $userId, $attributes);
+        // 実行
+        $result = $this->repository->addMember($project->id, $user->id);
 
-    //     // 検証
-    //     $this->assertTrue($result);
-    //     $this->assertDatabaseHas('project_members', [
-    //         'project_id' => $project->id,
-    //         'user_id' => $user->id,
-    //         'role' => 'member',
-    //     ]);
-    // }
+        // 検証
+        $this->assertTrue($result);
+        $this->assertDatabaseHas('project_members', [
+            'project_id' => $project->id,
+            'user_id' => $user->id,
+        ]);
+    }
 
     // /** @test */
     // public function it_can_update_existing_member()

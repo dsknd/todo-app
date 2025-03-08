@@ -151,10 +151,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function addMember(ProjectId $projectId, UserId $userId, array $attributes = []): bool
+    public function addMember(ProjectId $projectId, UserId $userId): bool
     {
         $project = $this->findById($projectId);
         
@@ -166,17 +163,16 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
         $existingMember = $project->members()
             ->where('user_id', $userId->getValue())
             ->first();
-            
+    
         if ($existingMember) {
-            return $existingMember->update($attributes);
+            return false;
         }
         
-        // 新しいメンバーを追加
-        $memberData = array_merge([
-            'user_id' => $userId->getValue(),
-        ], $attributes);
+        // 新しいメンバーを追加（attach メソッドを使用）
+        $project->members()->attach($userId->getValue(), [
+            'joined_at' => now(),
+        ]);
         
-        $project->members()->create($memberData);
         return true;
     }
 
@@ -192,7 +188,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
         }
         
         return $project->members()
-            ->where('user_id', $userId->getValue())
+            ->where('user_id', $userId)
             ->delete();
     }
 }

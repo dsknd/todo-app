@@ -104,7 +104,7 @@ interface ProjectRepository
      * @param array $attributes
      * @return bool
      */
-    public function addMember(ProjectId $projectId, UserId $userId, array $attributes = []): bool;
+    public function addMember(ProjectId $projectId, UserId $userId): bool;
 
     /**
      * プロジェクトからメンバーを削除

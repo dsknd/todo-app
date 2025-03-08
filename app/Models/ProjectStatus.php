@@ -16,10 +16,8 @@ class ProjectStatus extends Model
 
     protected $primaryKey = 'id';
 
-    // オートインクリメントを無効にする
     public $incrementing = false;
 
-    // 主キーのデータ型を数値として扱う（もし文字列の場合は 'string' にする）
     protected $keyType = 'int';
 
     protected $fillable = [

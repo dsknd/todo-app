@@ -16,6 +16,7 @@ use App\Models\ProjectRole;
 use App\Models\ProjectRoleAssignment;
 use App\Models\Permission;
 use App\Models\ProjectPermissionAssignment;
+use App\Casts\UserIdCast;
 
 class User extends Authenticatable
 {
@@ -53,6 +54,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'id' => UserIdCast::class,
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];

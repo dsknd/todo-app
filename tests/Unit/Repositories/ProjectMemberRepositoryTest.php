@@ -118,26 +118,29 @@ class ProjectMemberRepositoryTest extends TestCase
         );
     }
 
-    // public function test_it_can_find_members_by_user_id()
-    // {
-    //     // 準備
-    //     $projects = Project::factory()->count(3)->create();
-    //     $user = User::factory()->create();
+    public function test_it_can_find_members_by_user_id()
+    {
+        // 準備
+        $projects = Project::factory()->count(3)->create();
+        $user = User::factory()->create();
         
-    //     foreach ($projects as $project) {
-    //         $this->repository->add($project->id, $user->id);
-    //     }
+        foreach ($projects as $project) {
+            ProjectMember::factory()->create([
+                'project_id' => $project->id,
+                'user_id' => $user->id,
+            ]);
+        }
         
-    //     // 実行
-    //     $members = $this->repository->findByUserId($user->id);
+        // 実行
+        $members = $this->repository->findByUserId($user->id);
         
-    //     // 検証
-    //     $this->assertCount(3, $members);
-    //     $this->assertEquals(
-    //         $projects->pluck('id')->map->getValue()->sort()->values()->toArray(),
-    //         $members->pluck('project_id')->sort()->values()->toArray()
-    //     );
-    // }
+        // 検証
+        $this->assertCount(3, $members);
+        $this->assertEquals(
+            $projects->pluck('id')->sort()->values()->toArray(),
+            $members->pluck('project_id')->sort()->values()->toArray()
+        );
+    }
 
     // public function test_it_can_update_member()
     // {

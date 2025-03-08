@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Casts\ProjectIdCast;
 use App\Casts\UserIdCast;
-
+use App\Casts\ProjectStatusIdCast;
 class Project extends Model
 {
     use HasFactory;
@@ -46,6 +46,7 @@ class Project extends Model
         'actual_start_date' => 'datetime',
         'actual_end_date' => 'datetime',
         'is_private' => 'boolean',
+        'project_status_id' => ProjectStatusIdCast::class,
         'user_id' => UserIdCast::class,
     ];
 

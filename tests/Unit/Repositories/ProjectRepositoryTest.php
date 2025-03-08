@@ -2,14 +2,12 @@
 
 namespace Tests\Unit\Repositories;
 
-use App\Models\Category;
 use App\Models\Project;
 use App\Models\ProjectMember;
-use App\Models\ProjectRole;
+use App\Models\ProjectStatus;
 use App\Models\User;
 use App\Repositories\EloquentProjectRepository;
 use App\Repositories\Interfaces\ProjectRepository;
-use App\ValueObjects\CategoryId;
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\UserId;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -153,37 +151,49 @@ class ProjectRepositoryTest extends TestCase
         );
     }
 
-    // /** @test */
-    // public function it_can_create_project()
-    // {
-    //     // 準備
-    //     $user = User::factory()->create();
-    //     $category = Category::factory()->create();
-    //     $attributes = [
-    //         'name' => 'テストプロジェクト',
-    //         'description' => 'これはテストプロジェクトです',
-    //         'is_private' => true,
-    //         'planned_start_date' => '2023-01-01',
-    //         'planned_end_date' => '2023-12-31',
-    //         'user_id' => $user->id,
-    //         'category_id' => $category->id,
-    //     ];
+    public function test_it_can_create_project()
+    {
+        // 準備
+        $user = User::factory()->create();
+        $projectStatus = ProjectStatus::factory()->create();
+        $attributes = [
+            'name' => 'テストプロジェクト',
+            'description' => 'これはテストプロジェクトです',
+            'is_private' => true,
+            'user_id' => $user->id,
+            'project_status_id' => $projectStatus->id,
+            'planned_start_date' => '2023-01-01',
+            'planned_end_date' => '2023-12-31',
+            'actual_start_date' => '2023-01-01',
+            'actual_end_date' => '2023-12-31',
+        ];
 
-    //     // 実行
-    //     $project = $this->repository->create($attributes);
+        // 実行
+        $project = $this->repository->create($attributes);
 
-    //     // 検証
-    //     $this->assertDatabaseHas('projects', [
-    //         'id' => $project->id,
-    //         'name' => 'テストプロジェクト',
-    //         'description' => 'これはテストプロジェクトです',
-    //         'is_private' => true,
-    //         'user_id' => $user->id,
-    //         'category_id' => $category->id,
-    //     ]);
-    //     $this->assertEquals('テストプロジェクト', $project->name);
-    //     $this->assertEquals('これはテストプロジェクトです', $project->description);
-    // }
+        // 検証
+        $this->assertDatabaseHas('projects', [
+            'id' => $project->id,
+            'name' => 'テストプロジェクト',
+            'description' => 'これはテストプロジェクトです',
+            'is_private' => true,
+            'user_id' => $user->id,
+            'project_status_id' => $projectStatus->id,
+            'planned_start_date' => '2023-01-01',
+            'planned_end_date' => '2023-12-31',
+            'actual_start_date' => '2023-01-01',
+            'actual_end_date' => '2023-12-31',
+        ]);
+        $this->assertEquals('テストプロジェクト', $project->name);
+        $this->assertEquals('これはテストプロジェクトです', $project->description);
+        $this->assertEquals(true, $project->is_private);
+        $this->assertEquals($projectStatus->id, $project->project_status_id);
+        $this->assertEquals($user->id, $project->user_id);
+        $this->assertEquals('2023-01-01', $project->planned_start_date->format('Y-m-d'));
+        $this->assertEquals('2023-12-31', $project->planned_end_date->format('Y-m-d'));
+        $this->assertEquals('2023-01-01', $project->actual_start_date->format('Y-m-d'));
+        $this->assertEquals('2023-12-31', $project->actual_end_date->format('Y-m-d'));
+    }
 
     // /** @test */
     // public function it_can_update_project()

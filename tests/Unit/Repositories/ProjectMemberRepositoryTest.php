@@ -13,7 +13,7 @@ use App\ValueObjects\UserId;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-
+use DateTimeImmutable;
 #[Group('repository')]
 #[Group('project_member')]
 class ProjectMemberRepositoryTest extends TestCase
@@ -28,39 +28,7 @@ class ProjectMemberRepositoryTest extends TestCase
         $this->repository = new EloquentProjectMemberRepository();
     }
 
-    // public function test_it_can_add_member_to_project()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
 
-    //     // 実行
-    //     $result = $this->repository->add($project->id, $user->id);
-
-    //     // 検証
-    //     $this->assertTrue($result);
-    //     $this->assertDatabaseHas('project_members', [
-    //         'project_id' => $project->id->getValue(),
-    //         'user_id' => $user->id->getValue(),
-    //     ]);
-    // }
-
-    // public function test_it_cannot_add_member_twice()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-        
-    //     // 最初の追加
-    //     $this->repository->add($project->id, $user->id);
-        
-    //     // 2回目の追加（失敗するはず）
-    //     $result = $this->repository->add($project->id, $user->id);
-        
-    //     // 検証
-    //     $this->assertFalse($result);
-    //     $this->assertDatabaseCount('project_members', 1);
-    // }
 
     public function test_it_can_find_member_by_project_id_and_user_id()
     {
@@ -141,6 +109,40 @@ class ProjectMemberRepositoryTest extends TestCase
             $members->pluck('project_id')->sort()->values()->toArray()
         );
     }
+
+    public function test_it_can_add_member_to_project()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $user = User::factory()->create();
+
+        // 実行
+        $result = $this->repository->add($project->id, $user->id, new DateTimeImmutable(now()));
+
+        // 検証
+        $this->assertTrue($result);
+        $this->assertDatabaseHas('project_members', [
+            'project_id' => $project->id->getValue(),
+            'user_id' => $user->id->getValue(),
+        ]);
+    }
+
+    // public function test_it_cannot_add_member_twice()
+    // {
+    //     // 準備
+    //     $project = Project::factory()->create();
+    //     $user = User::factory()->create();
+        
+    //     // 最初の追加
+    //     $this->repository->add($project->id, $user->id);
+        
+    //     // 2回目の追加（失敗するはず）
+    //     $result = $this->repository->add($project->id, $user->id);
+        
+    //     // 検証
+    //     $this->assertFalse($result);
+    //     $this->assertDatabaseCount('project_members', 1);
+    // }
 
     // public function test_it_can_update_member()
     // {

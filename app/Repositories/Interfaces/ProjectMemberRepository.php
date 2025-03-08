@@ -6,7 +6,7 @@ use App\Models\ProjectMember;
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\UserId;
 use Illuminate\Database\Eloquent\Collection;
-
+use DateTimeImmutable;
 interface ProjectMemberRepository
 {
     /**
@@ -39,10 +39,10 @@ interface ProjectMemberRepository
      *
      * @param ProjectId $projectId
      * @param UserId $userId
-     * @param array $attributes
+     * @param DateTimeImmutable|null $joinedAt
      * @return bool
      */
-    public function add(ProjectId $projectId, UserId $userId, array $attributes = []): bool;
+    public function add(ProjectId $projectId, UserId $userId, ?DateTimeImmutable $joinedAt): bool;
 
     /**
      * プロジェクトメンバーを更新

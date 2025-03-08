@@ -10,6 +10,7 @@ use App\ValueObjects\ProjectId;
 use App\ValueObjects\UserId;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use DateTimeImmutable;
 
 class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterface
 {
@@ -42,7 +43,7 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
     /**
      * @inheritDoc
      */
-    public function add(ProjectId $projectId, UserId $userId, array $attributes = []): bool
+    public function add(ProjectId $projectId, UserId $userId, ?DateTimeImmutable $joinedAt): bool
     {
         // すでにメンバーの場合は追加しない
         if ($this->findByProjectIdAndUserId($projectId, $userId)) {
@@ -58,7 +59,7 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
         }
 
         // 属性にjoinedAtを追加
-        $attributes['joined_at'] = $attributes['joined_at'] ?? now();
+        $attributes['joined_at'] = $joinedAt ?? now();
 
         // メンバーを追加
         $project->members()->attach($userId->getValue(), $attributes);

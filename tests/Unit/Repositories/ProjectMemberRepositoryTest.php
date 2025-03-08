@@ -202,18 +202,18 @@ class ProjectMemberRepositoryTest extends TestCase
         ]);
     }
 
-    // public function test_it_returns_false_when_removing_non_existent_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
+    public function test_it_returns_false_when_removing_non_existent_member()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $user = User::factory()->create();
         
-    //     // 実行
-    //     $result = $this->repository->remove($project->id, $user->id);
+        // 実行
+        $result = $this->repository->remove($project->id, $user->id);
         
-    //     // 検証
-    //     $this->assertFalse($result);
-    // }
+        // 検証
+        $this->assertFalse($result);
+    }
 
     // public function test_it_can_assign_roles_to_member()
     // {

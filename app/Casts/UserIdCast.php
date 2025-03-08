@@ -38,7 +38,7 @@ class UserIdCast implements CastsAttributes
     public function set($model, string $key, $value, array $attributes)
     {
         if ($value instanceof UserId) {
-            return [$key => $value->getId()];
+            return [$key => $value->getValue()];
         }
 
         if (is_int($value) || (is_string($value) && ctype_digit($value))) {

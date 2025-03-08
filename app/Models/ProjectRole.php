@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
+use App\Casts\ProjectIdCast;
+use App\Casts\UserIdCast;
+use App\Casts\ProjectRoleNumberCast;
 use App\Enums\ProjectRoleTypes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\ProjectRoleAssignment;
+use App\Models\Project;
+use App\Models\User;
 
 class ProjectRole extends Model
 {
@@ -25,8 +30,9 @@ class ProjectRole extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'role_number' => 'integer',
-        'user_id' => 'integer',
+        'project_id' => ProjectIdCast::class,
+        'role_number' => ProjectRoleNumberCast::class,
+        'user_id' => UserIdCast::class,
         'name' => 'string',
         'description' => 'string',
     ];
@@ -42,7 +48,6 @@ class ProjectRole extends Model
                 ->max('role_number') + 1 ?? 1;
         });
     }
-
 
     /**
      * 関連するプロジェクトを取得
@@ -60,12 +65,6 @@ class ProjectRole extends Model
         return $this->belongsToMany(User::class, 'project_role_assignments', 'project_role_id', 'user_id')
             ->using(ProjectRoleAssignment::class);
     }
-
-    //=========================================================================================
-    // table: ProjectRole
-    //-----------------------------------------------------------------------------------------
-    // relationship: ProjectRole 1 --> * ProjectPermissionAssignment 1 --> * ProjectPermission
-    //=========================================================================================
 
     /**
      * このロールに関連付けられた権限を取得

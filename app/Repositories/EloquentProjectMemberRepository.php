@@ -112,12 +112,12 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
         }
 
         // ロールの割り当て
-        $user = User::find($userId->getValue());
+        $user = User::find($userId);
         
         // 各ロールIDに対してプロジェクトIDを含める
         $syncData = [];
         foreach ($roleIds as $roleId) {
-            $syncData[$roleId] = ['project_id' => $projectId->getValue()];
+            $syncData[$roleId] = ['project_id' => $projectId];
         }
         
         $user->projectRoles()->syncWithoutDetaching($syncData);

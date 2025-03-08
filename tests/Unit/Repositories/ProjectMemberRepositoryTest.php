@@ -220,10 +220,15 @@ class ProjectMemberRepositoryTest extends TestCase
     //     // 準備
     //     $project = Project::factory()->create();
     //     $user = User::factory()->create();
-    //     $this->repository->add($project->id, $user->id);
+    //     // $this->repository->add($project->id, $user->id, new DateTimeImmutable(now()));
+    //     $projectMember = ProjectMember::factory()->create([
+    //         'project_id' => $project->id,
+    //         'user_id' => $user->id,
+    //     ]);
         
     //     $roles = ProjectRole::factory()->count(2)->create([
     //         'project_id' => $project->id,
+    //         'user_id' => $user->id,
     //     ]);
         
     //     $roleIds = $roles->pluck('id')->toArray();
@@ -236,8 +241,8 @@ class ProjectMemberRepositoryTest extends TestCase
         
     //     foreach ($roleIds as $roleId) {
     //         $this->assertDatabaseHas('project_role_assignments', [
-    //             'project_id' => $project->id->getValue(),
-    //             'user_id' => $user->id->getValue(),
+    //             'project_id' => $project->id,
+    //             'user_id' => $user->id,
     //             'project_role_id' => $roleId,
     //         ]);
     //     }

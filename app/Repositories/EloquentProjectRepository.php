@@ -161,7 +161,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
         
         // すでにメンバーの場合は更新
         $existingMember = $project->members()
-            ->where('user_id', $userId->getValue())
+            ->where('user_id', $userId)
             ->first();
     
         if ($existingMember) {
@@ -169,7 +169,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
         }
         
         // 新しいメンバーを追加（attach メソッドを使用）
-        $project->members()->attach($userId->getValue(), [
+        $project->members()->attach($userId, [
             'joined_at' => now(),
         ]);
         
@@ -186,9 +186,17 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
         if (!$project) {
             return false;
         }
-        
-        return $project->members()
+
+        $existingMember = $project->members()
             ->where('user_id', $userId)
-            ->delete();
+            ->first();
+    
+        if (!$existingMember) {
+            return false;
+        }
+        
+        $project->members()->detach($userId);
+
+        return true;
     }
 }

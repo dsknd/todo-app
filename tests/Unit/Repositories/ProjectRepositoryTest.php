@@ -478,28 +478,25 @@ class ProjectRepositoryTest extends TestCase
     //     ]);
     // }
 
-    // /** @test */
-    // public function it_can_remove_member_from_project()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $projectId = new ProjectId($project->id);
-    //     $user = User::factory()->create();
-    //     $userId = new UserId($user->id);
+    public function test_it_can_remove_member_from_project()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $user = User::factory()->create();
         
-    //     ProjectMember::factory()->create([
-    //         'project_id' => $project->id,
-    //         'user_id' => $user->id
-    //     ]);
+        ProjectMember::factory()->create([
+            'project_id' => $project->id,
+            'user_id' => $user->id
+        ]);
 
-    //     // 実行
-    //     $result = $this->repository->removeMember($projectId, $userId);
+        // 実行
+        $result = $this->repository->removeMember($project->id, $user->id);
 
-    //     // 検証
-    //     $this->assertTrue($result);
-    //     $this->assertDatabaseMissing('project_members', [
-    //         'project_id' => $project->id,
-    //         'user_id' => $user->id,
-    //     ]);
-    // }
+        // 検証
+        $this->assertTrue($result);
+        $this->assertDatabaseMissing('project_members', [
+            'project_id' => $project->id,
+            'user_id' => $user->id,
+        ]);
+    }
 }

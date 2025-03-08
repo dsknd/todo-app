@@ -195,31 +195,55 @@ class ProjectRepositoryTest extends TestCase
         $this->assertEquals('2023-12-31', $project->actual_end_date->format('Y-m-d'));
     }
 
-    // /** @test */
-    // public function it_can_update_project()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create([
-    //         'name' => '古いプロジェクト名',
-    //         'description' => '古い説明',
-    //     ]);
-    //     $projectId = new ProjectId($project->id);
-    //     $attributes = [
-    //         'name' => '新しいプロジェクト名',
-    //         'description' => '新しい説明',
-    //     ];
+    public function test_it_can_update_project()
+    {
+        // 準備
+        $user = User::factory()->create();
+        $projectStatus = ProjectStatus::factory()->create();
+        $project = Project::factory()->create([
+            'name' => '古いプロジェクト名',
+            'description' => '古い説明',
+            'is_private' => true,
+            'user_id' => $user->id,
+            'project_status_id' => $projectStatus->id,
+            'planned_start_date' => '2023-01-01',
+            'planned_end_date' => '2023-12-31',
+            'actual_start_date' => '2023-01-01',
+            'actual_end_date' => '2023-12-31',
+        ]);
 
-    //     // 実行
-    //     $result = $this->repository->update($projectId, $attributes);
+        $newProjectStatus = ProjectStatus::factory()->create();
+        $newUser = User::factory()->create();
+        $attributes = [
+            'name' => '新しいプロジェクト名',
+            'description' => '新しい説明',
+            'is_private' => false,
+            'user_id' => $newUser->id,
+            'project_status_id' => $newProjectStatus->id,
+            'planned_start_date' => '2024-01-01',
+            'planned_end_date' => '2024-12-31',
+            'actual_start_date' => '2024-01-01',
+            'actual_end_date' => '2024-12-31',
+        ];
 
-    //     // 検証
-    //     $this->assertTrue($result);
-    //     $this->assertDatabaseHas('projects', [
-    //         'id' => $project->id,
-    //         'name' => '新しいプロジェクト名',
-    //         'description' => '新しい説明',
-    //     ]);
-    // }
+        // 実行
+        $result = $this->repository->update($project->id, $attributes);
+
+        // 検証
+        $this->assertTrue($result);
+        $this->assertDatabaseHas('projects', [
+            'id' => $project->id,
+            'name' => '新しいプロジェクト名',
+            'description' => '新しい説明',
+            'is_private' => false,
+            'user_id' => $newUser->id,
+            'project_status_id' => $newProjectStatus->id,
+            'planned_start_date' => '2024-01-01',
+            'planned_end_date' => '2024-12-31',
+            'actual_start_date' => '2024-01-01',
+            'actual_end_date' => '2024-12-31',
+        ]);
+    }
 
     // /** @test */
     // public function it_returns_false_when_updating_non_existent_project()

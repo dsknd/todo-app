@@ -127,22 +127,22 @@ class ProjectMemberRepositoryTest extends TestCase
         ]);
     }
 
-    // public function test_it_cannot_add_member_twice()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
+    public function test_it_cannot_add_member_twice()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $user = User::factory()->create();
         
-    //     // 最初の追加
-    //     $this->repository->add($project->id, $user->id);
+        // 最初の追加
+        $this->repository->add($project->id, $user->id, new DateTimeImmutable(now()));
         
-    //     // 2回目の追加（失敗するはず）
-    //     $result = $this->repository->add($project->id, $user->id);
+        // 2回目の追加（失敗するはず）
+        $result = $this->repository->add($project->id, $user->id, new DateTimeImmutable(now()));
         
-    //     // 検証
-    //     $this->assertFalse($result);
-    //     $this->assertDatabaseCount('project_members', 1);
-    // }
+        // 検証
+        $this->assertFalse($result);
+        $this->assertDatabaseCount('project_members', 1);
+    }
 
     // public function test_it_can_update_member()
     // {

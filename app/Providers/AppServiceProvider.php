@@ -13,6 +13,8 @@ use App\Interactors\CreateTaskInteractor;
 use App\UseCases\CreateTaskUseCase;
 use App\Repositories\Interfaces\ProjectRepository;
 use App\Repositories\EloquentProjectRepository;
+use App\Repositories\Interfaces\ProjectMemberRepository;
+use App\Repositories\EloquentProjectMemberRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
 
         // リポジトリ
         $this->app->bind(ProjectRepository::class, EloquentProjectRepository::class);
+        $this->app->bind(ProjectMemberRepository::class, EloquentProjectMemberRepository::class);
     }
 
     /**

@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Casts\ProjectIdCast;
+use App\Casts\UserIdCast;
+
 class ProjectMember extends Pivot
 {
     use HasFactory;
+    
     protected $table = 'project_members';
 
     // timestampsを無効にする
@@ -29,6 +33,8 @@ class ProjectMember extends Pivot
      * @var array<string, string>
      */
     protected $casts = [
+        'project_id' => ProjectIdCast::class,
+        'user_id' => UserIdCast::class,
         'joined_at' => 'datetime',
     ];
 

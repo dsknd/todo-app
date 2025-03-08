@@ -260,22 +260,20 @@ class ProjectRepositoryTest extends TestCase
         $this->assertFalse($result);
     }
 
-    // /** @test */
-    // public function it_can_delete_project()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $projectId = new ProjectId($project->id);
+    public function test_it_can_delete_project()
+    {
+        // 準備
+        $project = Project::factory()->create();
 
-    //     // 実行
-    //     $result = $this->repository->delete($projectId);
+        // 実行
+        $result = $this->repository->delete($project->id);
 
-    //     // 検証
-    //     $this->assertTrue($result);
-    //     $this->assertDatabaseMissing('projects', [
-    //         'id' => $project->id,
-    //     ]);
-    // }
+        // 検証
+        $this->assertTrue($result);
+        $this->assertDatabaseMissing('projects', [
+            'id' => $project->id,
+        ]);
+    }
 
     // /** @test */
     // public function it_returns_false_when_deleting_non_existent_project()

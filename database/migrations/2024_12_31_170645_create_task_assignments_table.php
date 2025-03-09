@@ -19,26 +19,24 @@ return new class extends Migration
     {
         Schema::create('task_assignments', function (Blueprint $table){
             // カラム定義
-            $table->unsignedBigInteger('task_id');    // タスク
             $table->unsignedBigInteger('project_id'); // プロジェクト
-            $table->unsignedBigInteger('assigned_user_id');        // 割り当てたユーザ
-            $table->unsignedBigInteger('assigner_user_id');        // 割り当てられたユーザ
+            $table->unsignedBigInteger('task_number'); // タスク番号
+            $table->unsignedBigInteger('user_id');     // 担当者
             $table->timestamps();
 
             // 外部キー制約
-
-            $table->foreign(['project_id', 'assigned_user_id'])
-                ->references(['project_id', 'user_id'])
-                ->on('project_members')
+            $table->foreign(['project_id', 'task_number'])
+                ->references(['project_id', 'task_number'])
+                ->on('tasks')
                 ->cascadeOnDelete();
 
-            $table->foreign(['project_id', 'assigner_user_id'])
+            $table->foreign(['project_id', 'user_id'])
                 ->references(['project_id', 'user_id'])
                 ->on('project_members')
                 ->cascadeOnDelete();
 
             // 主キー制約
-            $table->primary(['task_id', 'project_id', 'assigned_user_id']);
+            $table->primary(['project_id', 'task_number', 'user_id']);
         });
     }
 

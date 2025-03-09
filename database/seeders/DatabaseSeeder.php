@@ -36,6 +36,10 @@ class DatabaseSeeder extends Seeder
             // プロジェクトロールタイプ
             ProjectRoleTypeSeeder::class,
             ProjectRoleTypeTranslationSeeder::class,
+
+            // デフォルトプロジェクトロール
+            DefaultProjectRoleSeeder::class,
+            DefaultProjectRoleTranslationSeeder::class,
             
             // 承認ステータス
             ApprovalStatusSeeder::class,

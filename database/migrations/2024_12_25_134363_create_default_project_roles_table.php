@@ -20,10 +20,8 @@ return new class extends Migration
     {
         Schema::create('default_project_roles', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('project_role_id');                                       // プロジェクトロールID
-            $table->string('name');                                                              // プロジェクトロール名
-            $table->string('description')->nullable();                                           // プロジェクトロールの説明
-            $table->timestamps();                                                                // 作成日時、更新日時
+            $table->unsignedBigInteger('project_role_id'); // プロジェクトロールID
+            $table->string('key');                         // プロジェクトロールキー
 
             // 外部キー定義
             $table->foreign('project_role_id')
@@ -32,7 +30,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             // ユニーク定義
-            $table->unique('name');
+            $table->unique('key');
 
             // 主キー定義
             $table->primary('project_role_id');

@@ -18,13 +18,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('custom_project_roles', function (Blueprint $table) {
+        Schema::create('default_project_role_translations', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('project_role_id');                                       // プロジェクトロールID
-            $table->unsignedBigInteger('project_id');                                            // プロジェクトID
-            $table->unsignedBigInteger('role_number');                                           // ロール連番
-            $table->string('name');                                                              // プロジェクトロール名
-            $table->string('description')->nullable();                                           // プロジェクトロールの説明
+            $table->unsignedBigInteger('project_role_id'); // プロジェクトロールID
+            $table->unsignedBigInteger('locale_id');       // ロケールID
+            $table->string('name');                        // プロジェクトロール名
+            $table->string('description')->nullable();     // プロジェクトロールの説明
+            $table->timestamps();                          // 作成日時、更新日時
 
             // 外部キー定義
             $table->foreign('project_role_id')
@@ -32,17 +32,16 @@ return new class extends Migration
                 ->on('project_roles')
                 ->cascadeOnDelete();
 
-            $table->foreign('project_id')
+            $table->foreign('locale_id')
                 ->references('id')
-                ->on('projects')
+                ->on('locales')
                 ->cascadeOnDelete();
 
-            // ユニーク定義
-            $table->unique(['project_id', 'role_number']);
-            $table->unique(['project_id', 'name']);
-
             // 主キー定義
-            $table->primary('project_role_id');
+            $table->primary(['project_role_id', 'locale_id']);
+
+            // インデックス定義
+            $table->index('locale_id');
         });
     }
 
@@ -51,6 +50,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('custom_project_roles');
+        Schema::dropIfExists('default_project_role_translations');
     }
 };

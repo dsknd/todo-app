@@ -14,14 +14,12 @@ class DefaultProjectRole extends Model
     protected $primaryKey = 'project_role_id';
 
     protected $fillable = [
-        'name',
-        'description',
+        'key',
     ];
 
     protected $casts = [
         'project_role_id' => ProjectRoleIdCast::class,
-        'name' => 'string',
-        'description' => 'string',
+        'key' => 'string',
     ];
 
     /**

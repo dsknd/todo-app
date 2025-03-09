@@ -8,7 +8,7 @@ use App\Models\ProjectRoleType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProjectRole>
+ * @extends Factory<ProjectRole>
  */
 class ProjectRoleFactory extends Factory
 {
@@ -27,10 +27,9 @@ class ProjectRoleFactory extends Factory
     public function definition(): array
     {
         return [
-            'project_id' => Project::factory(),
             'project_role_type_id' => ProjectRoleType::factory(),
-            'name' => $this->faker->unique()->word(),
-            'description' => $this->faker->sentence(),
+            'assignable_limit' => $this->faker->numberBetween(1, 10),
+            'assigned_count' => $this->faker->numberBetween(0, 10),
         ];
     }
 }

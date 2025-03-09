@@ -133,9 +133,7 @@ class ProjectMemberRepositoryTest extends TestCase
         // 準備
         $project = Project::factory()->create();
         $user = User::factory()->create();
-        $role = ProjectRole::factory()->create([
-            'project_id' => $project->id,
-        ]);
+        $role = ProjectRole::factory()->create();
 
         // 実行
         $result = $this->repository->add($project->id, $user->id, $role->id, new DateTimeImmutable(now()));
@@ -157,9 +155,7 @@ class ProjectMemberRepositoryTest extends TestCase
         // 準備
         $project = Project::factory()->create();
         $user = User::factory()->create();
-        $role = ProjectRole::factory()->create([
-            'project_id' => $project->id,
-        ]);
+        $role = ProjectRole::factory()->create();
         
         // 最初の追加
         $this->repository->add(
@@ -190,9 +186,7 @@ class ProjectMemberRepositoryTest extends TestCase
         // 準備
         $project = Project::factory()->create();
         $user = User::factory()->create();
-        $role = ProjectRole::factory()->create([
-            'project_id' => $project->id,
-        ]);
+        $role = ProjectRole::factory()->create();
         $this->repository->add($project->id, $user->id, $role->id, new DateTimeImmutable(now()));
         
         $attributes = [
@@ -239,9 +233,7 @@ class ProjectMemberRepositoryTest extends TestCase
         // 準備
         $project = Project::factory()->create();
         $user = User::factory()->create();
-        $role = ProjectRole::factory()->create([
-            'project_id' => $project->id,
-        ]);
+        $role = ProjectRole::factory()->create();
 
         $this->repository->add(
             $project->id,
@@ -285,9 +277,7 @@ class ProjectMemberRepositoryTest extends TestCase
         // 準備
         $project = Project::factory()->create();
         $user = User::factory()->create();
-        $role = ProjectRole::factory()->create([
-            'project_id' => $project->id,
-        ]);
+        $role = ProjectRole::factory()->create();
         $this->repository->add($project->id, $user->id, $role->id, new DateTimeImmutable(now()));
 
         // 実行

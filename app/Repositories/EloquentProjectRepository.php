@@ -17,18 +17,18 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function findById(ProjectId $id): ?Project
+    public function findById(ProjectId $projectId): ?Project
     {
-        return Project::find($id->getValue());
+        return Project::find($projectId);
     }
 
     /**
      * @inheritDoc
      */
-    public function findByIds(array $ids): Collection
+    public function findByIds(array $projectIds): Collection
     {
-        $idValues = array_map(fn(ProjectId $id) => $id->getValue(), $ids);
-        return Project::whereIn('id', $idValues)->get();
+        $projectIdValues = array_map(fn(ProjectId $projectId) => $projectId, $projectIds);
+        return Project::whereIn('id', $projectIdValues)->get();
     }
 
     /**
@@ -36,7 +36,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
      */
     public function findByUserId(UserId $userId, int $perPage = 15): LengthAwarePaginator
     {
-        return Project::where('user_id', $userId->getValue())
+        return Project::where('user_id', $userId)
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
     }
@@ -47,7 +47,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
     public function findByMemberId(UserId $userId, int $perPage = 15): LengthAwarePaginator
     {
         return Project::whereHas('members', function ($query) use ($userId) {
-                $query->where('user_id', $userId->getValue());
+                $query->where('user_id', $userId);
             })
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
@@ -64,9 +64,9 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function update(ProjectId $id, array $attributes): bool
+    public function update(ProjectId $projectId, array $attributes): bool
     {
-        $project = $this->findById($id);
+        $project = $this->findById($projectId);
         
         if (!$project) {
             return false;
@@ -78,9 +78,9 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function delete(ProjectId $id): bool
+    public function delete(ProjectId $projectId): bool
     {
-        $project = $this->findById($id);
+        $project = $this->findById($projectId);
         
         if (!$project) {
             return false;

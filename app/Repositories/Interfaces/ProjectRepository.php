@@ -14,18 +14,18 @@ interface ProjectRepository
     /**
      * IDでプロジェクトを検索
      *
-     * @param ProjectId $id
+     * @param ProjectId $projectId
      * @return Project|null
      */
-    public function findById(ProjectId $id): ?Project;
+    public function findById(ProjectId $projectId): ?Project;
 
     /**
      * 複数のIDでプロジェクトを検索
      *
-     * @param array<ProjectId> $ids
+     * @param array<ProjectId> $projectIds
      * @return Collection
      */
-    public function findByIds(array $ids): Collection;
+    public function findByIds(array $projectIds): Collection;
 
     /**
      * ユーザーIDでプロジェクトを検索
@@ -56,19 +56,19 @@ interface ProjectRepository
     /**
      * プロジェクトを更新
      *
-     * @param ProjectId $id
+     * @param ProjectId $projectId
      * @param array $attributes
      * @return bool
      */
-    public function update(ProjectId $id, array $attributes): bool;
+    public function update(ProjectId $projectId, array $attributes): bool;
 
     /**
      * プロジェクトを削除
      *
-     * @param ProjectId $id
+     * @param ProjectId $projectId
      * @return bool
      */
-    public function delete(ProjectId $id): bool;
+    public function delete(ProjectId $projectId): bool;
 
     /**
      * ユーザーがプロジェクトにアクセスできるかどうかを確認

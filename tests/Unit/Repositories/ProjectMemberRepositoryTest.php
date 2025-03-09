@@ -8,12 +8,17 @@ use App\Models\ProjectRole;
 use App\Models\User;
 use App\Repositories\EloquentProjectMemberRepository;
 use App\Repositories\Interfaces\ProjectMemberRepository;
-use App\ValueObjects\ProjectId;
-use App\ValueObjects\UserId;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 use DateTimeImmutable;
+use App\ValueObjects\ProjectId;
+use App\ValueObjects\UserId;
+use App\ValueObjects\ProjectRoleId;
+
+/**
+ * プロジェクトメンバーリポジトリのテスト
+ */
 #[Group('repository')]
 #[Group('project_member')]
 class ProjectMemberRepositoryTest extends TestCase
@@ -28,8 +33,9 @@ class ProjectMemberRepositoryTest extends TestCase
         $this->repository = new EloquentProjectMemberRepository();
     }
 
-
-
+    /**
+     * プロジェクトIDとユーザーIDでメンバーを検索できること
+     */
     public function test_it_can_find_member_by_project_id_and_user_id()
     {
         // 準備
@@ -49,6 +55,9 @@ class ProjectMemberRepositoryTest extends TestCase
         $this->assertEquals($user->id, $member->user_id);
     }
 
+    /**
+     * メンバーが見つからない場合はnullを返すこと
+     */
     public function test_it_returns_null_when_member_not_found()
     {
         // 準備
@@ -62,6 +71,9 @@ class ProjectMemberRepositoryTest extends TestCase
         $this->assertNull($member);
     }
 
+    /**
+     * プロジェクトIDでメンバーを検索できること
+     */
     public function test_it_can_find_members_by_project_id()
     {
         // 準備
@@ -86,6 +98,9 @@ class ProjectMemberRepositoryTest extends TestCase
         );
     }
 
+    /**
+     * ユーザーIDでメンバーを検索できること
+     */
     public function test_it_can_find_members_by_user_id()
     {
         // 準備
@@ -110,86 +125,130 @@ class ProjectMemberRepositoryTest extends TestCase
         );
     }
 
+    /**
+     * メンバーをプロジェクトに追加できること
+     */
     public function test_it_can_add_member_to_project()
     {
         // 準備
         $project = Project::factory()->create();
         $user = User::factory()->create();
+        $role = ProjectRole::factory()->create([
+            'project_id' => $project->id,
+        ]);
 
         // 実行
-        $result = $this->repository->add($project->id, $user->id, new DateTimeImmutable(now()));
+        $result = $this->repository->add($project->id, $user->id, $role->id, new DateTimeImmutable(now()));
 
         // 検証
         $this->assertTrue($result);
         $this->assertDatabaseHas('project_members', [
-            'project_id' => $project->id->getValue(),
-            'user_id' => $user->id->getValue(),
+            'project_id' => $project->id,
+            'role_id' => $role->id,
+            'user_id' => $user->id,
         ]);
     }
 
+    /**
+     * メンバーを2回追加できないこと
+     */
     public function test_it_cannot_add_member_twice()
     {
         // 準備
         $project = Project::factory()->create();
         $user = User::factory()->create();
+        $role = ProjectRole::factory()->create([
+            'project_id' => $project->id,
+        ]);
         
         // 最初の追加
-        $this->repository->add($project->id, $user->id, new DateTimeImmutable(now()));
+        $this->repository->add(
+            $project->id,
+            $user->id,
+            $role->id,
+            new DateTimeImmutable(now())
+        );
         
         // 2回目の追加（失敗するはず）
-        $result = $this->repository->add($project->id, $user->id, new DateTimeImmutable(now()));
+        $result = $this->repository->add(
+            $project->id,
+            $user->id,
+            $role->id,
+            new DateTimeImmutable(now())
+        );
         
         // 検証
         $this->assertFalse($result);
         $this->assertDatabaseCount('project_members', 1);
     }
 
-    // public function test_it_can_update_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-    //     $this->repository->add($project->id, $user->id);
+    /**
+     * メンバーを更新できること
+     */
+    public function test_it_can_update_member()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $user = User::factory()->create();
+        $role = ProjectRole::factory()->create([
+            'project_id' => $project->id,
+        ]);
+        $this->repository->add($project->id, $user->id, $role->id, new DateTimeImmutable(now()));
         
-    //     $attributes = [
-    //         'joined_at' => '2023-01-01 12:00:00',
-    //     ];
+        $attributes = [
+            'joined_at' => '2023-01-01 12:00:00',
+        ];
         
-    //     // 実行
-    //     $result = $this->repository->update($project->id, $user->id, $attributes);
+        // 実行
+        $result = $this->repository->update($project->id, $user->id, $role->id, $attributes);
         
-    //     // 検証
-    //     $this->assertTrue($result);
-    //     $this->assertDatabaseHas('project_members', [
-    //         'project_id' => $project->id->getValue(),
-    //         'user_id' => $user->id->getValue(),
-    //         'joined_at' => '2023-01-01 12:00:00',
-    //     ]);
-    // }
+        // 検証
+        $this->assertTrue($result);
+        $this->assertDatabaseHas('project_members', [
+            'project_id' => $project->id,
+            'user_id' => $user->id,
+            'joined_at' => '2023-01-01 12:00:00',
+        ]);
+    }
 
-    // public function test_it_returns_false_when_updating_non_existent_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
+    /**
+     * 存在しないメンバーを更新した場合はfalseを返すこと
+     */
+    public function test_it_returns_false_when_updating_non_existent_member()
+    {
+        // 準備
+        $projectId = new ProjectId(999);
+        $userId = new UserId(999);
+        $projectRoleId = new ProjectRoleId(999);
+        $attributes = [
+            'joined_at' => '2023-01-01 12:00:00',
+        ];
         
-    //     $attributes = [
-    //         'joined_at' => '2023-01-01 12:00:00',
-    //     ];
+        // 実行
+        $result = $this->repository->update($projectId, $userId, $projectRoleId, $attributes);
         
-    //     // 実行
-    //     $result = $this->repository->update($project->id, $user->id, $attributes);
-        
-    //     // 検証
-    //     $this->assertFalse($result);
-    // }
+        // 検証
+        $this->assertFalse($result);
+    }
 
+    /**
+     * メンバーを削除できること
+     */
     public function test_it_can_remove_member()
     {
         // 準備
         $project = Project::factory()->create();
         $user = User::factory()->create();
-        $this->repository->add($project->id, $user->id, new DateTimeImmutable(now()));
+        $role = ProjectRole::factory()->create([
+            'project_id' => $project->id,
+        ]);
+
+        $this->repository->add(
+            $project->id,
+            $user->id,
+            $role->id,
+            new DateTimeImmutable(now())
+        );
         
         // 実行
         $result = $this->repository->remove($project->id, $user->id);
@@ -197,11 +256,14 @@ class ProjectMemberRepositoryTest extends TestCase
         // 検証
         $this->assertTrue($result);
         $this->assertDatabaseMissing('project_members', [
-            'project_id' => $project->id->getValue(),
-            'user_id' => $user->id->getValue(),
+            'project_id' => $project->id,
+            'user_id' => $user->id,
         ]);
     }
 
+    /**
+     * 存在しないメンバーを削除した場合はfalseを返すこと
+     */
     public function test_it_returns_false_when_removing_non_existent_member()
     {
         // 準備
@@ -215,228 +277,23 @@ class ProjectMemberRepositoryTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function test_it_can_assign_roles_to_member()
+    /**
+     * メンバーが特定のロールを持っているか確認できること
+     */
+    public function test_it_can_check_if_member_has_role()
     {
         // 準備
         $project = Project::factory()->create();
-        
-        // ロールを割り当てられるユーザー
-        $assignee = User::factory()->create();
-        ProjectMember::factory()->create([
+        $user = User::factory()->create();
+        $role = ProjectRole::factory()->create([
             'project_id' => $project->id,
-            'user_id' => $assignee->id,
         ]);
-        
-        // ロールを割り当てるユーザー（管理者）
-        $assigner = User::factory()->create();
-        ProjectMember::factory()->create([
-            'project_id' => $project->id,
-            'user_id' => $assigner->id,
-        ]);
-        
-        // プロジェクトロール - 既存のプロジェクトメンバーに関連付ける
-        $roles = [];
-        for ($i = 0; $i < 2; $i++) {
-            $roles[] = ProjectRole::factory()->create([
-                'project_id' => $project->id,
-                'user_id' => $project->user_id, // プロジェクト作成者をロール作成者として使用
-            ]);
-        }
-        
-        $roleIds = collect($roles)->pluck('id')->toArray();
-        
+        $this->repository->add($project->id, $user->id, $role->id, new DateTimeImmutable(now()));
+
         // 実行
-        $result = $this->repository->assignRoles($project->id, $assignee->id, $assigner->id, $roleIds);
+        $result = $this->repository->hasRole($project->id, $user->id, $role->id);
         
         // 検証
         $this->assertTrue($result);
-        
-        foreach ($roleIds as $roleId) {
-            $this->assertDatabaseHas('project_role_assignments', [
-                'project_id' => $project->id->getValue(),
-                'assignee_id' => $assignee->id->getValue(),
-                'project_role_id' => $roleId,
-                'assigner_id' => $assigner->id->getValue(),
-            ]);
-        }
     }
-
-    // public function test_it_returns_false_when_assigning_roles_to_non_existent_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-        
-    //     $roles = ProjectRole::factory()->count(2)->create([
-    //         'project_id' => $project->id,
-    //     ]);
-        
-    //     $roleIds = $roles->pluck('id')->toArray();
-        
-    //     // 実行
-    //     $result = $this->repository->assignRoles($project->id, $user->id, $roleIds);
-        
-    //     // 検証
-    //     $this->assertFalse($result);
-    // }
-
-    // public function test_it_can_remove_roles_from_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-    //     $this->repository->add($project->id, $user->id);
-        
-    //     $roles = ProjectRole::factory()->count(2)->create([
-    //         'project_id' => $project->id,
-    //     ]);
-        
-    //     $roleIds = $roles->pluck('id')->toArray();
-        
-    //     // ロールを割り当て
-    //     $this->repository->assignRoles($project->id, $user->id, $roleIds);
-        
-    //     // 実行
-    //     $result = $this->repository->removeRoles($project->id, $user->id, $roleIds);
-        
-    //     // 検証
-    //     $this->assertTrue($result);
-        
-    //     foreach ($roleIds as $roleId) {
-    //         $this->assertDatabaseMissing('project_role_assignments', [
-    //             'project_id' => $project->id->getValue(),
-    //             'user_id' => $user->id->getValue(),
-    //             'project_role_id' => $roleId,
-    //         ]);
-    //     }
-    // }
-
-    // public function test_it_returns_false_when_removing_roles_from_non_existent_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-        
-    //     $roles = ProjectRole::factory()->count(2)->create([
-    //         'project_id' => $project->id,
-    //     ]);
-        
-    //     $roleIds = $roles->pluck('id')->toArray();
-        
-    //     // 実行
-    //     $result = $this->repository->removeRoles($project->id, $user->id, $roleIds);
-        
-    //     // 検証
-    //     $this->assertFalse($result);
-    // }
-
-    // public function test_it_can_check_if_member_has_permission()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-    //     $this->repository->add($project->id, $user->id);
-        
-    //     // モックを使用して、hasPermissionメソッドが呼ばれることを確認
-    //     $memberMock = $this->createMock(ProjectMember::class);
-    //     $memberMock->expects($this->once())
-    //         ->method('hasPermission')
-    //         ->with('edit_project')
-    //         ->willReturn(true);
-        
-    //     $repositoryMock = $this->createPartialMock(EloquentProjectMemberRepository::class, ['findByProjectIdAndUserId']);
-    //     $repositoryMock->method('findByProjectIdAndUserId')->willReturn($memberMock);
-        
-    //     // 実行
-    //     $result = $repositoryMock->hasPermission($project->id, $user->id, 'edit_project');
-        
-    //     // 検証
-    //     $this->assertTrue($result);
-    // }
-
-    // public function test_it_returns_false_when_checking_permission_for_non_existent_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-        
-    //     // 実行
-    //     $result = $this->repository->hasPermission($project->id, $user->id, 'edit_project');
-        
-    //     // 検証
-    //     $this->assertFalse($result);
-    // }
-
-    // public function test_it_can_check_if_member_has_role()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-    //     $this->repository->add($project->id, $user->id);
-        
-    //     // モックを使用して、hasRoleメソッドが呼ばれることを確認
-    //     $memberMock = $this->createMock(ProjectMember::class);
-    //     $memberMock->expects($this->once())
-    //         ->method('hasRole')
-    //         ->with('admin')
-    //         ->willReturn(true);
-        
-    //     $repositoryMock = $this->createPartialMock(EloquentProjectMemberRepository::class, ['findByProjectIdAndUserId']);
-    //     $repositoryMock->method('findByProjectIdAndUserId')->willReturn($memberMock);
-        
-    //     // 実行
-    //     $result = $repositoryMock->hasRole($project->id, $user->id, 'admin');
-        
-    //     // 検証
-    //     $this->assertTrue($result);
-    // }
-
-    // public function test_it_returns_false_when_checking_role_for_non_existent_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-        
-    //     // 実行
-    //     $result = $this->repository->hasRole($project->id, $user->id, 'admin');
-        
-    //     // 検証
-    //     $this->assertFalse($result);
-    // }
-
-    // public function test_it_can_get_permissions_for_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-    //     $this->repository->add($project->id, $user->id);
-        
-    //     // モックを使用して、getPermissionsメソッドが呼ばれることを確認
-    //     $memberMock = $this->createMock(ProjectMember::class);
-    //     $memberMock->expects($this->once())
-    //         ->method('getPermissions')
-    //         ->willReturn(['view_project', 'edit_project']);
-        
-    //     $repositoryMock = $this->createPartialMock(EloquentProjectMemberRepository::class, ['findByProjectIdAndUserId']);
-    //     $repositoryMock->method('findByProjectIdAndUserId')->willReturn($memberMock);
-        
-    //     // 実行
-    //     $permissions = $repositoryMock->getPermissions($project->id, $user->id);
-        
-    //     // 検証
-    //     $this->assertEquals(['view_project', 'edit_project'], $permissions);
-    // }
-
-    // public function test_it_returns_empty_array_when_getting_permissions_for_non_existent_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-        
-    //     // 実行
-    //     $permissions = $this->repository->getPermissions($project->id, $user->id);
-        
-    //     // 検証
-    //     $this->assertEquals([], $permissions);
-    // }
 }

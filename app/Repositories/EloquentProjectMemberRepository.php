@@ -44,7 +44,7 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
     /**
      * @inheritDoc
      */
-    public function add(ProjectId $projectId, UserId $userId, ?ProjectRoleId $roleId = null, ?DateTimeImmutable $joinedAt = null): bool
+    public function add(ProjectId $projectId, UserId $userId, ProjectRoleId $projectRoleId, ?DateTimeImmutable $joinedAt = null): bool
     {
         // すでにメンバーの場合は追加しない
         if ($this->findByProjectIdAndUserId($projectId, $userId)) {
@@ -52,16 +52,16 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
         }
 
         // プロジェクトとユーザーが存在するか確認
-        $project = Project::find($projectId->getValue());
-        $user = User::find($userId->getValue());
+        $project = Project::find($projectId);
+        $user = User::find($userId);
 
         if (!$project || !$user) {
             return false;
         }
 
         // ロールIDが指定されている場合はロールを取得
-        if ($roleId) {
-            $role = ProjectRole::find($roleId->getValue());
+        if ($projectRoleId) {
+            $role = ProjectRole::find($projectRoleId);
             if (!$role) {
                 return false;
             }
@@ -69,24 +69,19 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
 
         // 属性を設定
         $attributes = [
-            'role_id' => $roleId,
+            'role_id' => $projectRoleId,
             'joined_at' => $joinedAt ?? now(),
         ];
-        
-        // ロールIDが指定されている場合は追加
-        if ($roleId) {
-            $attributes['role_id'] = $roleId->getValue();
-        }
 
         // メンバーを追加
-        $project->members()->attach($userId->getValue(), $attributes);
+        $project->members()->attach($userId, $attributes);
         return true;
     }
 
     /**
      * @inheritDoc
      */
-    public function update(ProjectId $projectId, UserId $userId, array $attributes): bool
+    public function update(ProjectId $projectId, UserId $userId, ProjectRoleId $projectRoleId, array $attributes): bool
     {
         $member = $this->findByProjectIdAndUserId($projectId, $userId);
 
@@ -96,8 +91,9 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
 
         // 中間テーブルの属性を更新
         return DB::table('project_members')
-            ->where('project_id', $projectId->getValue())
-            ->where('user_id', $userId->getValue())
+            ->where('project_id', $projectId)
+            ->where('user_id', $userId)
+            ->where('role_id', $projectRoleId)
             ->update($attributes);
     }
 
@@ -117,54 +113,54 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
         return $affected > 0;
     }
 
+    // /**
+    //  * @inheritDoc
+    //  */
+    // public function setRole(ProjectId $projectId, UserId $userId, ProjectRoleId $roleId): bool
+    // {
+    //     $member = $this->findByProjectIdAndUserId($projectId, $userId);
+
+    //     if (!$member) {
+    //         return false;
+    //     }
+
+    //     // ロールを設定
+    //     return $this->update($projectId, $userId, ['role_id' => $roleId]);
+    // }
+
+    // /**
+    //  * @inheritDoc
+    //  */
+    // public function removeRole(ProjectId $projectId, UserId $userId): bool
+    // {
+    //     $member = $this->findByProjectIdAndUserId($projectId, $userId);
+
+    //     if (!$member) {
+    //         return false;
+    //     }
+
+    //     // ロールを削除（NULLに設定）
+    //     return $this->update($projectId, $userId, ['role_id' => null]);
+    // }
+
+    // /**
+    //  * @inheritDoc
+    //  */
+    // public function hasPermission(ProjectId $projectId, UserId $userId, string $permission): bool
+    // {
+    //     $member = $this->findByProjectIdAndUserId($projectId, $userId);
+
+    //     if (!$member) {
+    //         return false;
+    //     }
+
+    //     return $member->hasPermission($permission);
+    // }
+
     /**
      * @inheritDoc
      */
-    public function setRole(ProjectId $projectId, UserId $userId, ProjectRoleId $roleId): bool
-    {
-        $member = $this->findByProjectIdAndUserId($projectId, $userId);
-
-        if (!$member) {
-            return false;
-        }
-
-        // ロールを設定
-        return $this->update($projectId, $userId, ['role_id' => $roleId]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function removeRole(ProjectId $projectId, UserId $userId): bool
-    {
-        $member = $this->findByProjectIdAndUserId($projectId, $userId);
-
-        if (!$member) {
-            return false;
-        }
-
-        // ロールを削除（NULLに設定）
-        return $this->update($projectId, $userId, ['role_id' => null]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function hasPermission(ProjectId $projectId, UserId $userId, string $permission): bool
-    {
-        $member = $this->findByProjectIdAndUserId($projectId, $userId);
-
-        if (!$member) {
-            return false;
-        }
-
-        return $member->hasPermission($permission);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function hasRole(ProjectId $projectId, UserId $userId, string $roleName): bool
+    public function hasRole(ProjectId $projectId, UserId $userId, ProjectRoleId $projectRoleId): bool
     {
         $member = $this->findByProjectIdAndUserId($projectId, $userId);
 
@@ -178,26 +174,26 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
         }
 
         // ロール名を比較
-        return $member->role->name === $roleName;
+        return $member->role_id->equals($projectRoleId);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getPermissions(ProjectId $projectId, UserId $userId): array
-    {
-        $member = $this->findByProjectIdAndUserId($projectId, $userId);
+    // /**
+    //  * @inheritDoc
+    //  */
+    // public function getPermissions(ProjectId $projectId, UserId $userId): array
+    // {
+    //     $member = $this->findByProjectIdAndUserId($projectId, $userId);
 
-        if (!$member) {
-            return [];
-        }
+    //     if (!$member) {
+    //         return [];
+    //     }
 
-        // ロールが設定されていない場合は空配列
-        if (!$member->role_id) {
-            return [];
-        }
+    //     // ロールが設定されていない場合は空配列
+    //     if (!$member->role_id) {
+    //         return [];
+    //     }
 
-        // ロールに関連する権限を取得
-        return $member->role->projectPermissions->pluck('name')->toArray();
-    }
+    //     // ロールに関連する権限を取得
+    //     return $member->role->projectPermissions->pluck('name')->toArray();
+    // }
 }

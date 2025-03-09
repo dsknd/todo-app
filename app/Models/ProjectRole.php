@@ -18,12 +18,13 @@ class ProjectRole extends Model
 {
     use HasFactory;
 
+    protected $table = 'project_roles';
+    protected $primaryKey = 'id';
+
     protected $fillable = [
-        'project_id',
-        'role_number',
         'project_role_type_id',
-        'name',
-        'description',
+        'assignable_limit',
+        'assigned_count',
     ];
 
     /**
@@ -33,24 +34,10 @@ class ProjectRole extends Model
      */
     protected $casts = [
         'id' => ProjectRoleIdCast::class,
-        'project_id' => ProjectIdCast::class,
-        'role_number' => ProjectRoleNumberCast::class,
         'project_role_type_id' => ProjectRoleTypeIdCast::class,
-        'name' => 'string',
-        'description' => 'string',
+        'assignable_limit' => 'integer',
+        'assigned_count' => 'integer',
     ];
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        // プロジェクトごとのタスク番号を生成
-        static::creating(function ($projectRole) {
-            $projectRole->role_number = static::where('project_id', $projectRole->project_id)
-                ->lockForUpdate()
-                ->max('role_number') + 1 ?? 1;
-        });
-    }
 
     /**
      * 関連するプロジェクトロールタイプを取得
@@ -77,23 +64,6 @@ class ProjectRole extends Model
     }
 
     /**
-     * 関連するプロジェクトを取得
-     */
-    public function project()
-    {
-        return $this->belongsTo(Project::class, 'project_id');
-    }
-
-    /**
-     * このロールに関連付けられたプロジェクトメンバーを取得
-     */
-    public function projectMembers()
-    {
-        return $this->belongsToMany(User::class, 'project_role_assignments', 'project_role_id', 'user_id')
-            ->using(ProjectRoleAssignment::class);
-    }
-
-    /**
      * このロールに関連付けられた権限を取得
      */
     public function projectPermissions()
@@ -105,13 +75,4 @@ class ProjectRole extends Model
             'project_permission_id'
         );
     }
-
-    /**
-     * project_role_assignments テーブルとの1対多リレーションを定義
-     */
-    public function projectRoleAssignments()
-    {
-        return $this->hasMany(ProjectRoleAssignment::class, 'project_role_id');
-    }
-
 }

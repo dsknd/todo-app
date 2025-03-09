@@ -31,11 +31,40 @@ class CustomProjectRole extends Model
         'description' => 'string',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        // プロジェクトごとのタスク番号を生成
+        static::creating(function ($projectRole) {
+            $projectRole->role_number = static::where('project_id', $projectRole->project_id)
+                ->lockForUpdate()
+                ->max('role_number') + 1 ?? 1;
+        });
+    }
+
     /**
      * 関連するプロジェクトロールを取得
      */
     public function projectRole()
     {
         return $this->belongsTo(ProjectRole::class, 'project_role_id');
+    }
+    
+    /**
+     * 関連するプロジェクトを取得
+     */
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
+    }
+
+    /**
+     * このロールに関連付けられたプロジェクトメンバーを取得
+     */
+    public function projectMembers()
+    {
+        return $this->belongsToMany(User::class, 'project_role_assignments', 'project_role_id', 'user_id')
+            ->using(ProjectRoleAssignment::class);
     }
 }

@@ -95,23 +95,4 @@ interface ProjectRepository
      * @return bool
      */
     public function updateProgress(ProjectId $id): bool;
-
-    /**
-     * プロジェクトにメンバーを追加
-     *
-     * @param ProjectId $projectId
-     * @param UserId $userId
-     * @param array $attributes
-     * @return bool
-     */
-    public function addMember(ProjectId $projectId, UserId $userId): bool;
-
-    /**
-     * プロジェクトからメンバーを削除
-     *
-     * @param ProjectId $projectId
-     * @param UserId $userId
-     * @return bool
-     */
-    public function removeMember(ProjectId $projectId, UserId $userId): bool;
 }

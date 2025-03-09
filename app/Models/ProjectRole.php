@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\ProjectRoleAssignment;
 use App\Models\Project;
 use App\Models\User;
-
+use App\Casts\ProjectRoleIdCast;
 class ProjectRole extends Model
 {
     use HasFactory;
@@ -29,9 +29,9 @@ class ProjectRole extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'id' => ProjectRoleIdCast::class,
         'project_id' => ProjectIdCast::class,
         'role_number' => ProjectRoleNumberCast::class,
-        'user_id' => UserIdCast::class,
         'name' => 'string',
         'description' => 'string',
     ];

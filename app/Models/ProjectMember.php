@@ -4,11 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Casts\ProjectIdCast;
 use App\Casts\UserIdCast;
-
+use App\Casts\ProjectRoleIdCast;
 class ProjectMember extends Pivot
 {
     use HasFactory;
@@ -24,6 +23,7 @@ class ProjectMember extends Pivot
     protected $fillable = [
         'project_id',
         'user_id',
+        'role_id',
         'joined_at',
     ];
 
@@ -35,6 +35,7 @@ class ProjectMember extends Pivot
     protected $casts = [
         'project_id' => ProjectIdCast::class,
         'user_id' => UserIdCast::class,
+        'role_id' => ProjectRoleIdCast::class,
         'joined_at' => 'datetime',
     ];
 
@@ -55,25 +56,11 @@ class ProjectMember extends Pivot
     }
 
     /**
-     * プロジェクトロールの割り当てとの関連
-     */
-    public function roleAssignments(): HasMany
-    {
-        return $this->hasMany(ProjectRoleAssignment::class, 'user_id', 'user_id')
-            ->where('project_id', $this->project_id);
-    }
-
-    /**
      * プロジェクトロールとの関連
      */
-    public function roles()
+    public function role(): BelongsTo
     {
-        return $this->belongsToMany(
-            ProjectRole::class,
-            'project_role_assignments',
-            'user_id',
-            'project_role_id'
-        )->where('project_role_assignments.project_id', $this->project_id);
+        return $this->belongsTo(ProjectRole::class, 'role_id');
     }
 
     /**

@@ -13,7 +13,7 @@ use App\ValueObjects\UserId;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-
+use App\Models\ProjectRole;
 /**
  * このテストスイートでは、ProjectRepositoryインターフェースの各メソッドをテストしています
  * 
@@ -130,10 +130,12 @@ class ProjectRepositoryTest extends TestCase
         
         // ユーザーがメンバーのプロジェクト
         $memberProjects = Project::factory()->count(2)->create();
+        $projectRoles = ProjectRole::factory()->count(2)->create();
         foreach ($memberProjects as $project) {
             ProjectMember::factory()->create([
                 'project_id' => $project->id,
-                'user_id' => $user->id
+                'user_id' => $user->id,
+                'role_id' => $projectRoles->first()->id,
             ]);
         }
         
@@ -430,22 +432,7 @@ class ProjectRepositoryTest extends TestCase
     //     $this->assertTrue($result);
     // }
 
-    public function test_it_can_add_member_to_project()
-    {
-        // 準備
-        $project = Project::factory()->create();
-        $user = User::factory()->create();
 
-        // 実行
-        $result = $this->repository->addMember($project->id, $user->id);
-
-        // 検証
-        $this->assertTrue($result);
-        $this->assertDatabaseHas('project_members', [
-            'project_id' => $project->id,
-            'user_id' => $user->id,
-        ]);
-    }
 
     // /** @test */
     // public function it_can_update_existing_member()
@@ -477,26 +464,4 @@ class ProjectRepositoryTest extends TestCase
     //         'role' => 'admin',
     //     ]);
     // }
-
-    public function test_it_can_remove_member_from_project()
-    {
-        // 準備
-        $project = Project::factory()->create();
-        $user = User::factory()->create();
-        
-        ProjectMember::factory()->create([
-            'project_id' => $project->id,
-            'user_id' => $user->id
-        ]);
-
-        // 実行
-        $result = $this->repository->removeMember($project->id, $user->id);
-
-        // 検証
-        $this->assertTrue($result);
-        $this->assertDatabaseMissing('project_members', [
-            'project_id' => $project->id,
-            'user_id' => $user->id,
-        ]);
-    }
 }

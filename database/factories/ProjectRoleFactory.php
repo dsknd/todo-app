@@ -30,7 +30,6 @@ class ProjectRoleFactory extends Factory
             'project_id' => Project::factory(),
             'name' => $this->faker->unique()->word(),
             'description' => $this->faker->sentence(),
-            'user_id' => User::factory(),
         ];
     }
 
@@ -93,18 +92,6 @@ class ProjectRoleFactory extends Factory
         return $this->state(function (array $attributes) use ($project) {
             return [
                 'project_id' => $project->id,
-            ];
-        });
-    }
-
-    /**
-     * 特定のユーザーが作成したロールを作成
-     */
-    public function createdBy(User $user): self
-    {
-        return $this->state(function (array $attributes) use ($user) {
-            return [
-                'user_id' => $user->id,
             ];
         });
     }

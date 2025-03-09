@@ -5,8 +5,10 @@ namespace App\Repositories\Interfaces;
 use App\Models\ProjectMember;
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\UserId;
+use App\ValueObjects\ProjectRoleId;
 use Illuminate\Database\Eloquent\Collection;
 use DateTimeImmutable;
+
 interface ProjectMemberRepository
 {
     /**
@@ -39,10 +41,11 @@ interface ProjectMemberRepository
      *
      * @param ProjectId $projectId
      * @param UserId $userId
+     * @param ProjectRoleId|null $roleId
      * @param DateTimeImmutable|null $joinedAt
      * @return bool
      */
-    public function add(ProjectId $projectId, UserId $userId, ?DateTimeImmutable $joinedAt): bool;
+    public function add(ProjectId $projectId, UserId $userId, ?ProjectRoleId $roleId = null, ?DateTimeImmutable $joinedAt = null): bool;
 
     /**
      * プロジェクトメンバーを更新
@@ -64,24 +67,23 @@ interface ProjectMemberRepository
     public function remove(ProjectId $projectId, UserId $userId): bool;
 
     /**
-     * プロジェクトメンバーにロールを割り当て
+     * プロジェクトメンバーのロールを設定
      *
      * @param ProjectId $projectId
      * @param UserId $userId
-     * @param array $roleIds
+     * @param ProjectRoleId $roleId
      * @return bool
      */
-    public function assignRoles(ProjectId $projectId, UserId $assigneeId, UserId $assignerId, array $roleIds): bool;
+    public function setRole(ProjectId $projectId, UserId $userId, ProjectRoleId $roleId): bool;
 
     /**
-     * プロジェクトメンバーからロールを削除
+     * プロジェクトメンバーのロールを削除
      *
      * @param ProjectId $projectId
      * @param UserId $userId
-     * @param array $roleIds
      * @return bool
      */
-    public function removeRoles(ProjectId $projectId, UserId $assigneeId, array $roleIds): bool;
+    public function removeRole(ProjectId $projectId, UserId $userId): bool;
 
     /**
      * プロジェクトメンバーが特定の権限を持っているか確認

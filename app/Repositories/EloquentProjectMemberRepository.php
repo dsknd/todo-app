@@ -103,44 +103,43 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
     /**
      * @inheritDoc
      */
-    public function assignRoles(ProjectId $projectId, UserId $userId, array $roleIds): bool
+    public function assignRoles(ProjectId $projectId, UserId $assigneeId, UserId $assignerId, array $roleIds): bool
     {
-        $member = $this->findByProjectIdAndUserId($projectId, $userId);
+        $assignee = $this->findByProjectIdAndUserId($projectId, $assigneeId);
+        $assigner = $this->findByProjectIdAndUserId($projectId, $assignerId);
 
-        if (!$member) {
+        if (!$assignee || !$assigner) {
             return false;
         }
 
-        // ロールの割り当て
-        $user = User::find($userId);
-        
         // 各ロールIDに対してプロジェクトIDを含める
         $syncData = [];
         foreach ($roleIds as $roleId) {
-            $syncData[$roleId] = ['project_id' => $projectId];
+            $syncData[$roleId] = [
+                'project_id' => $projectId,
+                'assigner_id' => $assigner->id,
+                'assigned_at' => now(),
+            ];
         }
         
-        $user->projectRoles()->syncWithoutDetaching($syncData);
+        $assignee->projectRoles()->syncWithoutDetaching($syncData);
         return true;
     }
 
     /**
      * @inheritDoc
      */
-    public function removeRoles(ProjectId $projectId, UserId $userId, array $roleIds): bool
+    public function removeRoles(ProjectId $projectId, UserId $assigneeId, array $roleIds): bool
     {
-        $member = $this->findByProjectIdAndUserId($projectId, $userId);
+        $assignee = $this->findByProjectIdAndUserId($projectId, $assigneeId);
 
-        if (!$member) {
+        if (!$assignee) {
             return false;
         }
 
         // ロールの削除
-        $user = User::find($userId->getValue());
-        
-        // 特定のプロジェクトに関連するロールのみを削除
-        $user->projectRoles()
-            ->wherePivot('project_id', $projectId->getValue())
+        $assignee->projectRoles()
+            ->wherePivot('project_id', $projectId)
             ->whereIn('project_role_id', $roleIds)
             ->detach();
             

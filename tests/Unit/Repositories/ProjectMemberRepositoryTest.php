@@ -215,38 +215,51 @@ class ProjectMemberRepositoryTest extends TestCase
         $this->assertFalse($result);
     }
 
-    // public function test_it_can_assign_roles_to_member()
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $user = User::factory()->create();
-    //     // $this->repository->add($project->id, $user->id, new DateTimeImmutable(now()));
-    //     $projectMember = ProjectMember::factory()->create([
-    //         'project_id' => $project->id,
-    //         'user_id' => $user->id,
-    //     ]);
+    public function test_it_can_assign_roles_to_member()
+    {
+        // 準備
+        $project = Project::factory()->create();
         
-    //     $roles = ProjectRole::factory()->count(2)->create([
-    //         'project_id' => $project->id,
-    //         'user_id' => $user->id,
-    //     ]);
+        // ロールを割り当てられるユーザー
+        $assignee = User::factory()->create();
+        ProjectMember::factory()->create([
+            'project_id' => $project->id,
+            'user_id' => $assignee->id,
+        ]);
         
-    //     $roleIds = $roles->pluck('id')->toArray();
+        // ロールを割り当てるユーザー（管理者）
+        $assigner = User::factory()->create();
+        ProjectMember::factory()->create([
+            'project_id' => $project->id,
+            'user_id' => $assigner->id,
+        ]);
         
-    //     // 実行
-    //     $result = $this->repository->assignRoles($project->id, $user->id, $roleIds);
+        // プロジェクトロール - 既存のプロジェクトメンバーに関連付ける
+        $roles = [];
+        for ($i = 0; $i < 2; $i++) {
+            $roles[] = ProjectRole::factory()->create([
+                'project_id' => $project->id,
+                'user_id' => $project->user_id, // プロジェクト作成者をロール作成者として使用
+            ]);
+        }
         
-    //     // 検証
-    //     $this->assertTrue($result);
+        $roleIds = collect($roles)->pluck('id')->toArray();
         
-    //     foreach ($roleIds as $roleId) {
-    //         $this->assertDatabaseHas('project_role_assignments', [
-    //             'project_id' => $project->id,
-    //             'user_id' => $user->id,
-    //             'project_role_id' => $roleId,
-    //         ]);
-    //     }
-    // }
+        // 実行
+        $result = $this->repository->assignRoles($project->id, $assignee->id, $assigner->id, $roleIds);
+        
+        // 検証
+        $this->assertTrue($result);
+        
+        foreach ($roleIds as $roleId) {
+            $this->assertDatabaseHas('project_role_assignments', [
+                'project_id' => $project->id->getValue(),
+                'assignee_id' => $assignee->id->getValue(),
+                'project_role_id' => $roleId,
+                'assigner_id' => $assigner->id->getValue(),
+            ]);
+        }
+    }
 
     // public function test_it_returns_false_when_assigning_roles_to_non_existent_member()
     // {

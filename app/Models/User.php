@@ -97,13 +97,12 @@ class User extends Authenticatable
     public function projectRoles()
     {
         return $this->belongsToMany(
-            ProjectRole::class,
+            ProjectRole::class,         // 関連モデル
             'project_role_assignments', // 中間テーブル
-            'user_id',                  // 中間テーブル上のユーザーID
+            'assignee_id',              // 中間テーブル上のユーザーID
             'project_role_id'           // 中間テーブル上のプロジェクトロールID
         )
-            ->using(ProjectRoleAssignment::class) // Pivot モデルの指定
-            ->withTimestamps(); // タイムスタンプを扱う場合
+            ->using(ProjectRoleAssignment::class); // Pivot モデルの指定
     }
 
 

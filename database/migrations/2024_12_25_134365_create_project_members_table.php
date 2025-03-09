@@ -18,6 +18,7 @@ return new class extends Migration
             // カラム定義
             $table->unsignedBigInteger('project_id');      // プロジェクトID
             $table->unsignedBigInteger('user_id');         // ユーザID
+            $table->unsignedBigInteger('role_id');         // ロールID
             $table->timestamp('joined_at')->useCurrent(); // プロジェクト参画日時
 
             // 外部キー制約
@@ -31,10 +32,16 @@ return new class extends Migration
                 ->on('users')
                 ->cascadeOnDelete();
 
+            $table->foreign('role_id')
+                ->references('id')
+                ->on('project_roles')
+                ->cascadeOnDelete();
+
             // 主キー制約
             $table->primary(['project_id', 'user_id']);
 
             // インデックス
+            $table->index('role_id');
             $table->index('user_id');
             $table->index('joined_at');
         });

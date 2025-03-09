@@ -71,7 +71,7 @@ interface ProjectMemberRepository
      * @param array $roleIds
      * @return bool
      */
-    public function assignRoles(ProjectId $projectId, UserId $userId, array $roleIds): bool;
+    public function assignRoles(ProjectId $projectId, UserId $assigneeId, UserId $assignerId, array $roleIds): bool;
 
     /**
      * プロジェクトメンバーからロールを削除
@@ -81,7 +81,7 @@ interface ProjectMemberRepository
      * @param array $roleIds
      * @return bool
      */
-    public function removeRoles(ProjectId $projectId, UserId $userId, array $roleIds): bool;
+    public function removeRoles(ProjectId $projectId, UserId $assigneeId, array $roleIds): bool;
 
     /**
      * プロジェクトメンバーが特定の権限を持っているか確認

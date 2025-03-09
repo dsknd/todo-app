@@ -12,6 +12,8 @@ use App\Models\ProjectRoleAssignment;
 use App\Models\Project;
 use App\Models\User;
 use App\Casts\ProjectRoleIdCast;
+use App\Casts\ProjectRoleTypeIdCast;
+
 class ProjectRole extends Model
 {
     use HasFactory;
@@ -19,6 +21,7 @@ class ProjectRole extends Model
     protected $fillable = [
         'project_id',
         'role_number',
+        'project_role_type_id',
         'name',
         'description',
     ];
@@ -32,6 +35,7 @@ class ProjectRole extends Model
         'id' => ProjectRoleIdCast::class,
         'project_id' => ProjectIdCast::class,
         'role_number' => ProjectRoleNumberCast::class,
+        'project_role_type_id' => ProjectRoleTypeIdCast::class,
         'name' => 'string',
         'description' => 'string',
     ];
@@ -46,6 +50,30 @@ class ProjectRole extends Model
                 ->lockForUpdate()
                 ->max('role_number') + 1 ?? 1;
         });
+    }
+
+    /**
+     * 関連するプロジェクトロールタイプを取得
+     */
+    public function projectRoleType()
+    {
+        return $this->belongsTo(ProjectRoleType::class, 'project_role_type_id');
+    }
+
+    /**
+     * 関連するデフォルトプロジェクトロールを取得
+     */
+    public function defaultProjectRole()
+    {
+        return $this->belongsTo(DefaultProjectRole::class, 'project_role_id');
+    }
+
+    /**
+     * 関連するカスタムプロジェクトロールを取得
+     */
+    public function customProjectRole()
+    {
+        return $this->belongsTo(CustomProjectRole::class, 'project_role_id');
     }
 
     /**

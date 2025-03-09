@@ -18,33 +18,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_roles', function (Blueprint $table) {
+        Schema::create('default_project_roles', function (Blueprint $table) {
             // カラム定義
-            $table->id();                                                                        // ID
-            $table->unsignedBigInteger('project_id');                                            // プロジェクトID
-            $table->unsignedBigInteger('role_number');                                           // ロール連番
-            $table->unsignedBigInteger('project_role_type_id');                                  // プロジェクトロールタイプID
+            $table->unsignedBigInteger('project_role_id');                                       // プロジェクトロールID
             $table->string('name');                                                              // プロジェクトロール名
             $table->string('description')->nullable();                                           // プロジェクトロールの説明
             $table->timestamps();                                                                // 作成日時、更新日時
 
             // 外部キー定義
-            $table->foreign('project_id')
+            $table->foreign('project_role_id')
                 ->references('id')
-                ->on('projects')
-                ->cascadeOnDelete();
-
-            $table->foreign('project_role_type_id')
-                ->references('id')
-                ->on('project_role_types')
+                ->on('project_roles')
                 ->cascadeOnDelete();
 
             // ユニーク定義
-            $table->unique(['project_id', 'role_number']);
-            $table->unique(['project_id', 'name']);
+            $table->unique('name');
 
-            // インデックス定義
-            $table->index('project_role_type_id');
+            // 主キー定義
+            $table->primary('project_role_id');
         });
     }
 
@@ -53,6 +44,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_roles');
+        Schema::dropIfExists('default_project_roles');
     }
 };

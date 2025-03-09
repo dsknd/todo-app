@@ -33,6 +33,10 @@ class DatabaseSeeder extends Seeder
             PrioritySeeder::class,
             PriorityTranslationSeeder::class,
 
+            // プロジェクトロールタイプ
+            ProjectRoleTypeSeeder::class,
+            ProjectRoleTypeTranslationSeeder::class,
+            
             // 承認ステータス
             ApprovalStatusSeeder::class,
             ApprovalStatusTranslationSeeder::class,

@@ -23,15 +23,14 @@ return new class extends Migration
             $table->id();                                                                        // ID
             $table->unsignedBigInteger('project_id');                                            // プロジェクトID
             $table->unsignedBigInteger('role_number');                                           // ロール連番
-            $table->unsignedBigInteger('user_id');                                               // 作成者ID
             $table->string('name');                                                              // プロジェクトロール名
             $table->string('description')->nullable();                                           // プロジェクトロールの説明
             $table->timestamps();                                                                // 作成日時、更新日時
 
             // 外部キー定義
-            $table->foreign(['project_id', 'user_id'])
-                ->references(['project_id', 'user_id'])
-                ->on('project_members')
+            $table->foreign('project_id')
+                ->references('id')
+                ->on('projects')
                 ->cascadeOnDelete();
 
             // ユニーク定義

@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Project;
 use App\Models\ProjectRole;
-use App\Models\User;
+use App\Models\ProjectRoleType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -28,6 +28,7 @@ class ProjectRoleFactory extends Factory
     {
         return [
             'project_id' => Project::factory(),
+            'project_role_type_id' => ProjectRoleType::factory(),
             'name' => $this->faker->unique()->word(),
             'description' => $this->faker->sentence(),
         ];

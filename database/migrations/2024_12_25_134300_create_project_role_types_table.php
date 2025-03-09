@@ -20,9 +20,12 @@ return new class extends Migration
     {
         Schema::create('project_role_types', function (Blueprint $table) {
             // カラム定義
-            $table->id();
+            $table->unsignedBigInteger('id');
             $table->string('key');
             $table->timestamps();
+
+            // 主キー設定
+            $table->primary('id');
         });
     }
 

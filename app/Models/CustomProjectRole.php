@@ -10,8 +10,10 @@ class CustomProjectRole extends Model
 {
     use HasFactory;
 
+    protected $table = 'custom_project_roles';
+    protected $primaryKey = 'project_role_id';
+
     protected $fillable = [
-        'project_role_id',
         'name',
         'description',
     ];

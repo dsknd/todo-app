@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\UseCases\CheckProjectRolePermissionUseCase;
 use App\UseCases\Implementations\CheckProjectRolePermission;
 use App\Interactors\CreateProjectInteractor;
@@ -15,6 +13,8 @@ use App\Repositories\Interfaces\ProjectRepository;
 use App\Repositories\EloquentProjectRepository;
 use App\Repositories\Interfaces\ProjectMemberRepository;
 use App\Repositories\EloquentProjectMemberRepository;
+use App\Repositories\Interfaces\ProjectRoleRepository;
+use App\Repositories\EloquentProjectRoleRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
         // リポジトリ
         $this->app->bind(ProjectRepository::class, EloquentProjectRepository::class);
         $this->app->bind(ProjectMemberRepository::class, EloquentProjectMemberRepository::class);
+        $this->app->bind(ProjectRoleRepository::class, EloquentProjectRoleRepository::class);
     }
 
     /**

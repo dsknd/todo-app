@@ -3,14 +3,11 @@
 namespace App\Repositories;
 
 use App\Models\Project;
-use App\Models\ProjectMember;
 use App\Repositories\Interfaces\ProjectRepository as ProjectRepositoryInterface;
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\UserId;
-use App\ValueObjects\CategoryId;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 
 class EloquentProjectRepository implements ProjectRepositoryInterface
 {

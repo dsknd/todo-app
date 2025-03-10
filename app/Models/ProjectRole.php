@@ -2,15 +2,8 @@
 
 namespace App\Models;
 
-use App\Casts\ProjectIdCast;
-use App\Casts\UserIdCast;
-use App\Casts\ProjectRoleNumberCast;
-use App\Enums\ProjectRoleTypes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\ProjectRoleAssignment;
-use App\Models\Project;
-use App\Models\User;
 use App\Casts\ProjectRoleIdCast;
 use App\Casts\ProjectRoleTypeIdCast;
 

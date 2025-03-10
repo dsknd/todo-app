@@ -14,6 +14,8 @@ class CustomProjectRole extends Model
 
     protected $table = 'custom_project_roles';
     protected $primaryKey = 'project_role_id';
+    protected $keyType = 'integer';
+    public $incrementing = false;
     public $timestamps = false;
 
     protected $fillable = [

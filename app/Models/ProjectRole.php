@@ -20,6 +20,8 @@ class ProjectRole extends Model
 
     protected $table = 'project_roles';
     protected $primaryKey = 'id';
+    protected $keyType = 'integer';
+    public $incrementing = true;
 
     protected $fillable = [
         'project_role_type_id',

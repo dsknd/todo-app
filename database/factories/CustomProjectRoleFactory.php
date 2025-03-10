@@ -16,7 +16,7 @@ class CustomProjectRoleFactory extends Factory
         return [
             'project_role_id' => ProjectRole::factory(),
             'project_id' => Project::factory(),
-            'name' => $this->faker->word,
+            'name' => $this->faker->unique()->word,
             'description' => $this->faker->sentence,
         ];
     }

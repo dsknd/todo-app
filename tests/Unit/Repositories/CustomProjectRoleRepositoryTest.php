@@ -129,59 +129,38 @@ class CustomProjectRoleRepositoryTest extends TestCase
         $this->assertTrue($project->id->equals($customProjectRole->project_id));
     }
 
-    // public function test_it_can_update_custom_project_role()
-    // {
-    //     // 準備
-    //     $projectRoleType = ProjectRoleType::factory()->create([
-    //         'key' => ProjectRoleTypeEnum::CUSTOM->getKey(),
-    //     ]);
-        
-    //     $project = Project::factory()->create();
-        
-    //     $projectRole = ProjectRole::factory()->create([
-    //         'project_role_type_id' => $projectRoleType->id,
-    //         'name' => 'OldName',
-    //         'description' => 'Old description',
-    //     ]);
-        
-    //     $customProjectRole = new CustomProjectRole();
-    //     $customProjectRole->project_role_id = $projectRole->id;
-    //     $customProjectRole->project_id = $project->id;
-    //     $customProjectRole->role_number = new ProjectRoleNumber(1);
-    //     $customProjectRole->name = 'OldName';
-    //     $customProjectRole->description = 'Old description';
-    //     $customProjectRole->save();
-        
-    //     $attributes = [
-    //         'name' => 'UpdatedName',
-    //         'description' => 'Updated description',
-    //     ];
+    public function test_it_can_update_custom_project_role()
+    {
+        // 準備
+        $customProjectRole = CustomProjectRole::factory()->create();
+        $project = Project::factory()->create();
 
-    //     // 実行
-    //     $result = $this->repository->update($projectRole->id, $attributes);
+        $attributes = [
+            'project_id' => $project->id,
+            'name' => 'UpdatedName',
+            'description' => 'Updated description',
+        ];
+        // 実行
+        $result = $this->repository->update($customProjectRole->project_role_id, $attributes);
 
-    //     // 検証
-    //     $this->assertTrue($result);
+        // 検証
+        $this->assertTrue($result);
         
-    //     $updatedCustomProjectRole = CustomProjectRole::where('project_role_id', $projectRole->id->getValue())->first();
-    //     $this->assertEquals('UpdatedName', $updatedCustomProjectRole->name);
-    //     $this->assertEquals('Updated description', $updatedCustomProjectRole->description);
-        
-    //     $updatedProjectRole = ProjectRole::find($projectRole->id->getValue());
-    //     $this->assertEquals('UpdatedName', $updatedProjectRole->name);
-    //     $this->assertEquals('Updated description', $updatedProjectRole->description);
-    // }
+        $updatedCustomProjectRole = CustomProjectRole::where('project_role_id', $customProjectRole->project_role_id)->first();
+        $this->assertEquals('UpdatedName', $updatedCustomProjectRole->name);
+        $this->assertEquals('Updated description', $updatedCustomProjectRole->description);
+    }
 
-    // public function test_it_returns_false_when_updating_non_existent_custom_project_role()
-    // {
-    //     // 実行
-    //     $result = $this->repository->update(new ProjectRoleId(999), [
-    //         'name' => 'UpdatedName',
-    //     ]);
+    public function test_it_returns_false_when_updating_non_existent_custom_project_role()
+    {
+        // 実行
+        $result = $this->repository->update(new ProjectRoleId(999), [
+            'name' => 'UpdatedName',
+        ]);
 
-    //     // 検証
-    //     $this->assertFalse($result);
-    // }
+        // 検証
+        $this->assertFalse($result);
+    }
 
     // public function test_it_can_delete_custom_project_role()
     // {

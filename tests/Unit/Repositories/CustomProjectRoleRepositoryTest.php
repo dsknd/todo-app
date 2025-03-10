@@ -162,35 +162,18 @@ class CustomProjectRoleRepositoryTest extends TestCase
         $this->assertFalse($result);
     }
 
-    // public function test_it_can_delete_custom_project_role()
-    // {
-    //     // 準備
-    //     $projectRoleType = ProjectRoleType::factory()->create([
-    //         'key' => ProjectRoleTypeEnum::CUSTOM->getKey(),
-    //     ]);
-        
-    //     $project = Project::factory()->create();
-        
-    //     $projectRole = ProjectRole::factory()->create([
-    //         'project_role_type_id' => $projectRoleType->id,
-    //     ]);
-        
-    //     $customProjectRole = new CustomProjectRole();
-    //     $customProjectRole->project_role_id = $projectRole->id;
-    //     $customProjectRole->project_id = $project->id;
-    //     $customProjectRole->role_number = new ProjectRoleNumber(1);
-    //     $customProjectRole->name = 'TestCustomRole';
-    //     $customProjectRole->description = 'Test custom role description';
-    //     $customProjectRole->save();
+    public function test_it_can_delete_custom_project_role()
+    {
+        // 準備
+        $customProjectRole = CustomProjectRole::factory()->create();
 
-    //     // 実行
-    //     $result = $this->repository->delete($projectRole->id);
+        // 実行
+        $result = $this->repository->delete($customProjectRole->project_role_id);
 
-    //     // 検証
-    //     $this->assertTrue($result);
-    //     $this->assertNull(CustomProjectRole::where('project_role_id', $projectRole->id->getValue())->first());
-    //     $this->assertNull(ProjectRole::find($projectRole->id->getValue()));
-    // }
+        // 検証
+        $this->assertTrue($result);
+        $this->assertNull(CustomProjectRole::where('project_role_id', $customProjectRole->project_role_id)->first());
+    }
 
     // public function test_it_returns_false_when_deleting_non_existent_custom_project_role()
     // {

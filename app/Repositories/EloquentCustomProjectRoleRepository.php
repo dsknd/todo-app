@@ -133,21 +133,7 @@ class EloquentCustomProjectRoleRepository implements CustomProjectRoleRepository
             return false;
         }
 
-        // 削除可能かどうかを確認
-        if (!$this->isDeletable($projectRoleId)) {
-            return false;
-        }
-
-        // CustomProjectRoleを削除
-        $result = $customProjectRole->delete();
-
-        // ProjectRoleも削除
-        $projectRole = ProjectRole::find($projectRoleId->getValue());
-        if ($projectRole) {
-            $projectRole->delete();
-        }
-
-        return $result;
+        return $customProjectRole->delete();
     }
 
     /**

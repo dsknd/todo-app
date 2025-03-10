@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class ProjectPermissionAssignment extends Pivot
+class ProjectRolePermission extends Pivot
 {
-    protected $table = 'project_permission_assignments';
+    protected $table = 'project_role_permissions';
     
     public $timestamps = false;
 

@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('project_permission_assignments', function (Blueprint $table) {
+        Schema::create('project_role_permissions', function (Blueprint $table) {
             // カラム定義
             $table->unsignedBigInteger('project_permission_id');
             $table->unsignedBigInteger('project_role_id');
             $table->timestamp('assigned_at')->useCurrent();
 
             // 外部キー制約
-            $table->foreign('project_permission_id', 'fk_project_permission_assignments_permission_id')
+            $table->foreign('project_permission_id', 'fk_project_role_permissions_permission_id')
                 ->references('permission_id')
                 ->on('project_permissions')
                 ->cascadeOnDelete();
 
-            $table->foreign('project_role_id', 'fk_project_permission_assignments_role_id')
+            $table->foreign('project_role_id', 'fk_project_role_permissions_role_id')
                 ->references('id')
                 ->on('project_roles')
                 ->cascadeOnDelete();
@@ -41,6 +41,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('project_permission_assignments');
+        Schema::dropIfExists('project_role_permissions');
     }
 };

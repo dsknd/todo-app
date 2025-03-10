@@ -89,40 +89,23 @@ class CustomProjectRoleRepositoryTest extends TestCase
         $this->assertCount(3, $foundCustomProjectRoles);
     }
 
-    // public function test_it_can_find_custom_project_roles_by_project_id_paginated()
-    // {
-    //     // 準備
-    //     $projectRoleType = ProjectRoleType::factory()->create([
-    //         'key' => ProjectRoleTypeEnum::CUSTOM->getKey(),
-    //     ]);
-        
-    //     $project = Project::factory()->create();
-        
-    //     $customProjectRoles = [];
-        
-    //     for ($i = 1; $i <= 5; $i++) {
-    //         $projectRole = ProjectRole::factory()->create([
-    //             'project_role_type_id' => $projectRoleType->id,
-    //         ]);
-            
-    //         $customProjectRole = new CustomProjectRole();
-    //         $customProjectRole->project_role_id = $projectRole->id;
-    //         $customProjectRole->project_id = $project->id;
-    //         $customProjectRole->role_number = new ProjectRoleNumber($i);
-    //         $customProjectRole->name = "TestCustomRole{$i}";
-    //         $customProjectRole->description = "Test custom role description {$i}";
-    //         $customProjectRole->save();
-            
-    //         $customProjectRoles[] = $customProjectRole;
-    //     }
+    public function test_it_can_find_custom_project_roles_by_project_id_paginated()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        for ($i = 1; $i <= 10; $i++) {
+            CustomProjectRole::factory()->create([
+                'project_id' => $project->id,
+            ]);
+        }
 
-    //     // 実行
-    //     $foundCustomProjectRoles = $this->repository->findByProjectIdPaginated($project->id, 2);
+        // 実行
+        $foundCustomProjectRoles = $this->repository->findByProjectIdPaginated($project->id, 2);
 
-    //     // 検証
-    //     $this->assertEquals(5, $foundCustomProjectRoles->total());
-    //     $this->assertEquals(2, $foundCustomProjectRoles->count());
-    // }
+        // 検証
+        $this->assertEquals(10, $foundCustomProjectRoles->total());
+        $this->assertEquals(2, $foundCustomProjectRoles->count());
+    }
 
     // public function test_it_can_create_custom_project_role()
     // {

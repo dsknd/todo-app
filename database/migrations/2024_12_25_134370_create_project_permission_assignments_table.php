@@ -15,8 +15,7 @@ return new class extends Migration
             // カラム定義
             $table->unsignedBigInteger('project_permission_id');
             $table->unsignedBigInteger('project_role_id');
-            $table->unsignedBigInteger('assigner_id');
-            $table->timestamp('assigned_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('assigned_at')->useCurrent();
 
             // 外部キー制約
             $table->foreign('project_permission_id', 'fk_project_permission_assignments_permission_id')
@@ -29,13 +28,11 @@ return new class extends Migration
                 ->on('project_roles')
                 ->cascadeOnDelete();
 
-            $table->foreign('assigner_id', 'fk_project_permission_assignments_assigner_id')
-                ->references('id')
-                ->on('users')
-                ->cascadeOnDelete();
-
-            // 複合主キー
+            // 主キー定義
             $table->primary(['project_role_id', 'project_permission_id']);
+
+            // インデックス定義
+            $table->index('project_permission_id');
         });
     }
 

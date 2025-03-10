@@ -51,36 +51,18 @@ class CustomProjectRoleRepositoryTest extends TestCase
     }
 
 
-    // public function test_it_can_find_custom_project_role_by_project_id_and_role_number()
-    // {
-    //     // 準備
-    //     $projectRoleType = ProjectRoleType::factory()->create([
-    //         'key' => ProjectRoleTypeEnum::CUSTOM->getKey(),
-    //     ]);
-        
-    //     $project = Project::factory()->create();
-        
-    //     $projectRole = ProjectRole::factory()->create([
-    //         'project_role_type_id' => $projectRoleType->id,
-    //     ]);
-        
-    //     $roleNumber = new ProjectRoleNumber(5);
-        
-    //     $customProjectRole = new CustomProjectRole();
-    //     $customProjectRole->project_role_id = $projectRole->id;
-    //     $customProjectRole->project_id = $project->id;
-    //     $customProjectRole->role_number = $roleNumber;
-    //     $customProjectRole->name = 'TestCustomRole';
-    //     $customProjectRole->description = 'Test custom role description';
-    //     $customProjectRole->save();
+    public function test_it_can_find_custom_project_role_by_project_id_and_role_number()
+    {
+        // 準備
+        $customProjectRole = CustomProjectRole::factory()->create();
 
-    //     // 実行
-    //     $foundCustomProjectRole = $this->repository->findByProjectIdAndRoleNumber($project->id, $roleNumber);
+        // 実行
+        $foundCustomProjectRole = $this->repository->findByProjectIdAndRoleNumber($customProjectRole->project_id, $customProjectRole->role_number);
 
-    //     // 検証
-    //     $this->assertNotNull($foundCustomProjectRole);
-    //     $this->assertTrue($projectRole->id->equals($foundCustomProjectRole->project_role_id));
-    // }
+        // 検証
+        $this->assertNotNull($foundCustomProjectRole);
+        $this->assertTrue($customProjectRole->project_role_id->equals($foundCustomProjectRole->project_role_id));
+    }
 
     // public function test_it_can_find_all_custom_project_roles_by_project_id()
     // {

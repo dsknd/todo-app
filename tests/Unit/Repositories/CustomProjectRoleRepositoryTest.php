@@ -107,36 +107,27 @@ class CustomProjectRoleRepositoryTest extends TestCase
         $this->assertEquals(2, $foundCustomProjectRoles->count());
     }
 
-    // public function test_it_can_create_custom_project_role()
-    // {
-    //     // 準備
-    //     $projectRoleType = ProjectRoleType::factory()->create();
-    //     $projectRole = ProjectRole::factory()->create([
-    //         'project_role_type_id' => $projectRoleType->id,
-    //     ]);
-        
-    //     $project = Project::factory()->create();
-        
-    //     $attributes = [
-    //         'project_id' => $project->id,
-    //         'name' => 'NewCustomRole',
-    //         'description' => 'New custom role description',
-    //     ];
+    public function test_it_can_create_custom_project_role()
+    {
+        // 準備
+        $projectRole = ProjectRole::factory()->create();
+        $project = Project::factory()->create();
 
-    //     // 実行
-    //     $customProjectRole = $this->repository->create($projectRole->id, $attributes);
+        $attributes = [
+            'project_id' => $project->id,
+            'name' => 'NewCustomRole',
+            'description' => 'New custom role description',
+        ];
 
-    //     // 検証
-    //     $this->assertNotNull($customProjectRole);
-    //     $this->assertEquals('NewCustomRole', $customProjectRole->name);
-    //     $this->assertEquals('New custom role description', $customProjectRole->description);
-    //     $this->assertTrue($project->id->equals($customProjectRole->project_id));
-        
-    //     $projectRole = ProjectRole::find($customProjectRole->project_role_id->getValue());
-    //     $this->assertNotNull($projectRole);
-    //     $this->assertEquals('NewCustomRole', $projectRole->name);
-    //     $this->assertEquals('New custom role description', $projectRole->description);
-    // }
+        // 実行
+        $customProjectRole = $this->repository->create($projectRole->id, $attributes);
+
+        // 検証
+        $this->assertNotNull($customProjectRole);
+        $this->assertEquals('NewCustomRole', $customProjectRole->name);
+        $this->assertEquals('New custom role description', $customProjectRole->description);
+        $this->assertTrue($project->id->equals($customProjectRole->project_id));
+    }
 
     // public function test_it_can_update_custom_project_role()
     // {

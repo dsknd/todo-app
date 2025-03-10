@@ -4,12 +4,10 @@ namespace App\Repositories;
 
 use App\Models\CustomProjectRole;
 use App\Models\ProjectRole;
-use App\Models\ProjectRoleType;
 use App\Repositories\Interfaces\CustomProjectRoleRepository;
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\ProjectRoleId;
 use App\ValueObjects\ProjectRoleNumber;
-use App\Enums\ProjectRoleTypeEnum;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -144,7 +142,7 @@ class EloquentCustomProjectRoleRepository implements CustomProjectRoleRepository
      */
     public function exists(ProjectRoleId $projectRoleId): bool
     {
-        return CustomProjectRole::where('project_role_id', $projectRoleId->getValue())->exists();
+        return CustomProjectRole::where('project_role_id', $projectRoleId)->exists();
     }
 
     /**
@@ -156,27 +154,5 @@ class EloquentCustomProjectRoleRepository implements CustomProjectRoleRepository
     public function isCustomRole(ProjectRoleId $projectRoleId): bool
     {
         return $this->exists($projectRoleId);
-    }
-
-    /**
-     * カスタムプロジェクトロールが削除可能かどうかを確認
-     *
-     * @param ProjectRoleId $projectRoleId
-     * @return bool
-     */
-    public function isDeletable(ProjectRoleId $projectRoleId): bool
-    {
-        $customProjectRole = $this->findByProjectRoleId($projectRoleId);
-        
-        if (!$customProjectRole) {
-            return false;
-        }
-        
-        // メンバーが割り当てられているロールは削除不可
-        if ($customProjectRole->projectMembers()->count() > 0) {
-            return false;
-        }
-        
-        return true;
     }
 } 

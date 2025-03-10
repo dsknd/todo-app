@@ -86,12 +86,4 @@ interface CustomProjectRoleRepository
      * @return bool
      */
     public function isCustomRole(ProjectRoleId $projectRoleId): bool;
-
-    /**
-     * カスタムプロジェクトロールが削除可能かどうかを確認
-     *
-     * @param ProjectRoleId $projectRoleId
-     * @return bool
-     */
-    public function isDeletable(ProjectRoleId $projectRoleId): bool;
 } 

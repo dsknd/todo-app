@@ -5,11 +5,8 @@ namespace Tests\Unit\Repositories;
 use App\Models\CustomProjectRole;
 use App\Models\Project;
 use App\Models\ProjectRole;
-use App\Models\ProjectRoleType;
 use App\Repositories\Interfaces\CustomProjectRoleRepository;
 use App\ValueObjects\ProjectRoleId;
-use App\ValueObjects\ProjectRoleNumber;
-use App\Enums\ProjectRoleTypeEnum;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
@@ -184,87 +181,27 @@ class CustomProjectRoleRepositoryTest extends TestCase
         $this->assertFalse($result);
     }
 
-    // public function test_it_can_check_if_custom_project_role_exists()
-    // {
-    //     // 準備
-    //     $projectRoleType = ProjectRoleType::factory()->create([
-    //         'key' => ProjectRoleTypeEnum::CUSTOM->getKey(),
-    //     ]);
-        
-    //     $project = Project::factory()->create();
-        
-    //     $projectRole = ProjectRole::factory()->create([
-    //         'project_role_type_id' => $projectRoleType->id,
-    //     ]);
-        
-    //     $customProjectRole = new CustomProjectRole();
-    //     $customProjectRole->project_role_id = $projectRole->id;
-    //     $customProjectRole->project_id = $project->id;
-    //     $customProjectRole->role_number = new ProjectRoleNumber(1);
-    //     $customProjectRole->name = 'TestCustomRole';
-    //     $customProjectRole->description = 'Test custom role description';
-    //     $customProjectRole->save();
+    public function test_it_can_check_if_custom_project_role_exists()
+    {
+        // 準備
+        $customProjectRole = CustomProjectRole::factory()->create();
 
-    //     // 実行
-    //     $exists = $this->repository->exists($projectRole->id);
+        // 実行
+        $exists = $this->repository->exists($customProjectRole->project_role_id);
 
-    //     // 検証
-    //     $this->assertTrue($exists);
-    // }
+        // 検証
+        $this->assertTrue($exists);
+    }
 
-    // public function test_it_can_check_if_project_role_is_custom_role()
-    // {
-    //     // 準備
-    //     $projectRoleType = ProjectRoleType::factory()->create([
-    //         'key' => ProjectRoleTypeEnum::CUSTOM->getKey(),
-    //     ]);
-        
-    //     $project = Project::factory()->create();
-        
-    //     $projectRole = ProjectRole::factory()->create([
-    //         'project_role_type_id' => $projectRoleType->id,
-    //     ]);
-        
-    //     $customProjectRole = new CustomProjectRole();
-    //     $customProjectRole->project_role_id = $projectRole->id;
-    //     $customProjectRole->project_id = $project->id;
-    //     $customProjectRole->role_number = new ProjectRoleNumber(1);
-    //     $customProjectRole->name = 'TestCustomRole';
-    //     $customProjectRole->description = 'Test custom role description';
-    //     $customProjectRole->save();
+    public function test_it_can_check_if_project_role_is_custom_role()
+    {
+        // 準備
+        $customProjectRole = CustomProjectRole::factory()->create();
 
-    //     // 実行
-    //     $isCustomRole = $this->repository->isCustomRole($projectRole->id);
+        // 実行
+        $isCustomRole = $this->repository->isCustomRole($customProjectRole->project_role_id);
 
-    //     // 検証
-    //     $this->assertTrue($isCustomRole);
-    // }
-
-    // public function test_it_can_check_if_custom_project_role_is_deletable()
-    // {
-    //     // 準備
-    //     $projectRoleType = ProjectRoleType::factory()->create([
-    //         'key' => ProjectRoleTypeEnum::CUSTOM->getKey(),
-    //     ]);
-        
-    //     $project = Project::factory()->create();
-        
-    //     $projectRole = ProjectRole::factory()->create([
-    //         'project_role_type_id' => $projectRoleType->id,
-    //     ]);
-        
-    //     $customProjectRole = new CustomProjectRole();
-    //     $customProjectRole->project_role_id = $projectRole->id;
-    //     $customProjectRole->project_id = $project->id;
-    //     $customProjectRole->role_number = new ProjectRoleNumber(1);
-    //     $customProjectRole->name = 'TestCustomRole';
-    //     $customProjectRole->description = 'Test custom role description';
-    //     $customProjectRole->save();
-
-    //     // 実行
-    //     $isDeletable = $this->repository->isDeletable($projectRole->id);
-
-    //     // 検証
-    //     $this->assertTrue($isDeletable);
-    // }
+        // 検証
+        $this->assertTrue($isCustomRole);
+    }
 } 

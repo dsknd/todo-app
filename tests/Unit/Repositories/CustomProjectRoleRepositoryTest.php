@@ -175,14 +175,14 @@ class CustomProjectRoleRepositoryTest extends TestCase
         $this->assertNull(CustomProjectRole::where('project_role_id', $customProjectRole->project_role_id)->first());
     }
 
-    // public function test_it_returns_false_when_deleting_non_existent_custom_project_role()
-    // {
-    //     // 実行
-    //     $result = $this->repository->delete(new ProjectRoleId(999));
+    public function test_it_returns_false_when_deleting_non_existent_custom_project_role()
+    {
+        // 実行
+        $result = $this->repository->delete(new ProjectRoleId(999));
 
-    //     // 検証
-    //     $this->assertFalse($result);
-    // }
+        // 検証
+        $this->assertFalse($result);
+    }
 
     // public function test_it_can_check_if_custom_project_role_exists()
     // {

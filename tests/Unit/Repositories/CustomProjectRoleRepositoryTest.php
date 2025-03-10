@@ -64,53 +64,30 @@ class CustomProjectRoleRepositoryTest extends TestCase
         $this->assertTrue($customProjectRole->project_role_id->equals($foundCustomProjectRole->project_role_id));
     }
 
-    // public function test_it_can_find_all_custom_project_roles_by_project_id()
-    // {
-    //     // 準備
-    //     $projectRoleType = ProjectRoleType::factory()->create([
-    //         'key' => ProjectRoleTypeEnum::CUSTOM->getKey(),
-    //     ]);
+    public function test_it_can_find_all_custom_project_roles_by_project_id()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        for ($i = 1; $i <= 3; $i++) {
+            CustomProjectRole::factory()->create([
+                'project_id' => $project->id,
+            ]);
+        }
         
-    //     $project = Project::factory()->create();
-        
-    //     $customProjectRoles = [];
-        
-    //     for ($i = 1; $i <= 3; $i++) {
-    //         $projectRole = ProjectRole::factory()->create([
-    //             'project_role_type_id' => $projectRoleType->id,
-    //         ]);
-            
-    //         $customProjectRole = new CustomProjectRole();
-    //         $customProjectRole->project_role_id = $projectRole->id;
-    //         $customProjectRole->project_id = $project->id;
-    //         $customProjectRole->role_number = new ProjectRoleNumber($i);
-    //         $customProjectRole->name = "TestCustomRole{$i}";
-    //         $customProjectRole->description = "Test custom role description {$i}";
-    //         $customProjectRole->save();
-            
-    //         $customProjectRoles[] = $customProjectRole;
-    //     }
-        
-    //     // 他のプロジェクトのカスタムロール
-    //     $otherProject = Project::factory()->create();
-    //     $otherProjectRole = ProjectRole::factory()->create([
-    //         'project_role_type_id' => $projectRoleType->id,
-    //     ]);
-        
-    //     $otherCustomProjectRole = new CustomProjectRole();
-    //     $otherCustomProjectRole->project_role_id = $otherProjectRole->id;
-    //     $otherCustomProjectRole->project_id = $otherProject->id;
-    //     $otherCustomProjectRole->role_number = new ProjectRoleNumber(1);
-    //     $otherCustomProjectRole->name = "OtherCustomRole";
-    //     $otherCustomProjectRole->description = "Other custom role description";
-    //     $otherCustomProjectRole->save();
+        // 他のプロジェクトのカスタムロール
+        $otherProject = Project::factory()->create();
+        for ($i = 1; $i <= 3; $i++) {
+            CustomProjectRole::factory()->create([
+                'project_id' => $otherProject->id,
+            ]);
+        }
 
-    //     // 実行
-    //     $foundCustomProjectRoles = $this->repository->findAllByProjectId($project->id);
+        // 実行
+        $foundCustomProjectRoles = $this->repository->findAllByProjectId($project->id);
 
-    //     // 検証
-    //     $this->assertCount(3, $foundCustomProjectRoles);
-    // }
+        // 検証
+        $this->assertCount(3, $foundCustomProjectRoles);
+    }
 
     // public function test_it_can_find_custom_project_roles_by_project_id_paginated()
     // {

@@ -74,25 +74,21 @@ class ProjectRolePermissionRepositoryTest extends TestCase
         $this->assertCount(3, $foundRolePermissions);
     }
 
-    // public function test_it_can_find_all_by_permission_id()
-    // {
-    //     // 準備
-    //     $projectRoles = ProjectRole::factory()->count(3)->create();
-    //     $projectPermission = ProjectPermission::factory()->create();
-        
-    //     foreach ($projectRoles as $projectRole) {
-    //         $rolePermission = new ProjectRolePermission();
-    //         $rolePermission->project_role_id = $projectRole->id->getValue();
-    //         $rolePermission->project_permission_id = $projectPermission->id->getValue();
-    //         $rolePermission->save();
-    //     }
+    public function test_it_can_find_all_by_permission_id()
+    {
+        // 準備
+        $permissionCount = 10;
+        $projectPermission = ProjectPermission::factory()->create();
+        $projectRolePermission = ProjectRolePermission::factory()->count($permissionCount)->create([
+            'project_permission_id' => $projectPermission->permission_id
+        ]);
 
-    //     // 実行
-    //     $foundRolePermissions = $this->repository->findAllByPermissionId($projectPermission->id);
+        // 実行
+        $foundRolePermissions = $this->repository->findAllByPermissionId($projectPermission->permission_id);
 
-    //     // 検証
-    //     $this->assertCount(3, $foundRolePermissions);
-    // }
+        // 検証
+        $this->assertCount($permissionCount, $foundRolePermissions);
+    }
 
     // public function test_it_can_create_role_permission()
     // {

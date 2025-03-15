@@ -12,8 +12,10 @@ class PermissionFactory extends Factory
 
     public function definition(): array
     {
-        // 単一のレコードを返すように修正
+        static $id = 1;
+
         return [
+            'id' => $id++,
             'scope' => $this->faker->word(),
             'resource' => $this->faker->word(),
             'action' => $this->faker->word(),

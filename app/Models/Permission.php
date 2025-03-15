@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Casts\PermissionIdCast;
 
 class Permission extends Model
 {
@@ -42,6 +43,18 @@ class Permission extends Model
         'scope',
         'resource',
         'action',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'id' => PermissionIdCast::class,
+        'scope' => 'string',
+        'resource' => 'string',
+        'action' => 'string',
     ];
 
     /**

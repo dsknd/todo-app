@@ -151,7 +151,7 @@ class CreateTaskDTOBuilder
             ->withTitle($request->input('title'))
             ->withDescription($request->input('description'))
             ->withProjectId(new ProjectId($request->input('project_id')))
-            ->withUserId(new UserId($request->user()->id))
+            ->withUserId($request->user()->id)
             ->withCategoryId(new CategoryId($request->input('category_id')))
             ->withPriorityId(new PriorityId($request->input('priority_id')))
             ->withIsPrivate($request->boolean('is_private', false))

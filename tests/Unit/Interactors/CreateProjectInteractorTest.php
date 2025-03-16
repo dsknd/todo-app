@@ -3,24 +3,17 @@
 namespace Tests\Unit\Interactors;
 
 use App\Interactors\CreateProjectInteractor;
-use App\Models\Project;
 use App\Models\User;
-use App\Models\ProjectMember;
-use Illuminate\Contracts\Auth\Authenticatable;
-use App\ValueObjects\UserId;
-use DateTimeImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use App\Models\ProjectStatus;
-use App\Models\ProjectPermission;
-use App\Models\Permission;
 use App\Enums\ProjectStatusEnum;
 use App\Enums\DefaultProjectRoleEnum;
 use App\ValueObjects\ProjectRoleId;
-use Illuminate\Support\Facades\DB;
-use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use App\Models\ProjectRole;
+use App\DataTransferObjects\CreateProjectDto;
+use DateTimeImmutable;
 #[Group('interactor')]
 #[Group('create_project')]
 class CreateProjectInteractorTest extends TestCase
@@ -37,46 +30,40 @@ class CreateProjectInteractorTest extends TestCase
 
     public function test_execute_creates_project_successfully(): void
     {
-
         // 準備
         $user = User::factory()->create();
         ProjectStatus::factory()->create(['id' => ProjectStatusEnum::PLANNING->value]);
         ProjectRole::factory()->create(['id' => DefaultProjectRoleEnum::OWNER->value]);
 
-        $name = 'Test Project';
-        $description = 'Test Description';
-        $userId = $user->id;
-        $isPrivate = true;
-        $plannedStartDate = new DateTimeImmutable('2024-01-01');
-        $plannedEndDate = new DateTimeImmutable('2024-12-31');
+        $dto = CreateProjectDto::builder()
+            ->name('Test Project')
+            ->description('Test Description')
+            ->userId($user->id)
+            ->isPrivate(true)
+            ->plannedStartDate(new DateTimeImmutable('2024-01-01 00:00:00'))
+            ->plannedEndDate(new DateTimeImmutable('2024-12-31 23:59:59'))
+            ->build();
 
         // 実行
-        $project = $this->interactor->execute(
-            $name,
-            $description,
-            $userId,
-            $isPrivate,
-            $plannedStartDate,
-            $plannedEndDate
-        );
+        $project = $this->interactor->execute($dto);
 
         // プロジェクトの検証
         $this->assertDatabaseHas('projects', [
             'id' => $project->id,
-            'name' => $name,
-            'description' => $description,
-            'user_id' => $userId->getValue(),
+            'name' => $dto->name,
+            'description' => $dto->description,
+            'user_id' => $dto->userId,
             'project_status_id' => ProjectStatusEnum::PLANNING->value,
-            'is_private' => $isPrivate,
-            'planned_start_date' => $plannedStartDate->format('Y-m-d'),
-            'planned_end_date' => $plannedEndDate->format('Y-m-d'),
+            'is_private' => $dto->isPrivate,
+            'planned_start_date' => $dto->plannedStartDate,
+            'planned_end_date' => $dto->plannedEndDate,
         ]);
 
         // プロジェクトメンバー（オーナー）の検証
         $this->assertDatabaseHas('project_members', [
             'project_id' => $project->id,
-            'user_id' => $userId->getValue(),
-            'role_id' => ProjectRoleId::fromEnum(DefaultProjectRoleEnum::OWNER)->getValue(),
+            'user_id' => $dto->userId,
+            'role_id' => ProjectRoleId::fromEnum(DefaultProjectRoleEnum::OWNER),
         ]);
     }
 

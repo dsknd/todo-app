@@ -78,10 +78,14 @@ class EloquentPermissionRepository implements PermissionRepository
      */
     public function findAncestors(PermissionId $permissionId): Collection
     {
-        return Permission::query()
-            ->join('permission_closures', 'permissions.id', '=', 'permission_closures.ancestor_id')
-            ->where('permission_closures.descendant_id', $permissionId->getValue())
-            ->where('permission_closures.depth', '>', 0)
+        $permission = $this->findById($permissionId);
+        
+        if (!$permission) {
+            return collect();
+        }
+        
+        return $permission->ancestors()
+            ->wherePivot('depth', '>', 0)
             ->get();
     }
 
@@ -93,10 +97,14 @@ class EloquentPermissionRepository implements PermissionRepository
      */
     public function findDescendants(PermissionId $id): Collection
     {
-        return Permission::query()
-            ->join('permission_closures', 'permissions.id', '=', 'permission_closures.descendant_id')
-            ->where('permission_closures.ancestor_id', $id->getValue())
-            ->where('permission_closures.depth', '>', 0)
+        $permission = $this->findById($id);
+        
+        if (!$permission) {
+            return collect();
+        }
+        
+        return $permission->descendants()
+            ->wherePivot('depth', '>', 0)
             ->get();
     }
 

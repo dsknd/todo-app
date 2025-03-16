@@ -189,58 +189,58 @@ class PermissionRepositoryTest extends TestCase
         $this->assertEquals($child->id->getValue(), $descendants->first()->id->getValue());
     }
 
-    // public function test_it_can_check_if_permission_contains_another()
-    // {
-    //     // 準備
-    //     $parent = Permission::factory()->create();
-    //     $child = Permission::factory()->create();
-    //     $unrelated = Permission::factory()->create();
+    public function test_it_can_check_if_permission_contains_another()
+    {
+        // 準備
+        $parent = Permission::factory()->create();
+        $child = Permission::factory()->create();
+        $unrelated = Permission::factory()->create();
         
-    //     // クロージャーテーブルの関係をセットアップ（ヘルパー使用）
-    //     PermissionHierarchySetup::setupParentChild($parent, $child);
+        // クロージャーテーブルの関係をセットアップ（ヘルパー使用）
+        PermissionHierarchySetup::setupParentChild($parent, $child);
         
-    //     // 無関係な権限の自己参照も追加
-    //     \App\Models\PermissionClosure::factory()->selfReference($unrelated)->create();
+        // 無関係な権限の自己参照も追加
+        \App\Models\PermissionClosure::factory()->selfReference($unrelated)->create();
 
-    //     // 実行
-    //     $contains = $this->repository->contains($parent->id, $child->id);
-    //     $notContains = $this->repository->contains($parent->id, $unrelated->id);
+        // 実行
+        $contains = $this->repository->contains($parent->id, $child->id);
+        $notContains = $this->repository->contains($parent->id, $unrelated->id);
 
-    //     // 検証
-    //     $this->assertTrue($contains);
-    //     $this->assertFalse($notContains);
-    // }
+        // 検証
+        $this->assertTrue($contains);
+        $this->assertFalse($notContains);
+    }
     
-    // public function test_it_can_handle_complex_hierarchies()
-    // {
-    //     // 準備
-    //     $root = Permission::factory()->create();
-    //     $parent = Permission::factory()->create();
-    //     $child = Permission::factory()->create();
+    public function test_it_can_handle_complex_hierarchies()
+    {
+        // 準備
+        $root = Permission::factory()->create();
+        $parent = Permission::factory()->create();
+        $child = Permission::factory()->create();
         
-    //     // 3階層の関係をセットアップ
-    //     PermissionHierarchySetup::setupThreeLevelHierarchy($root, $parent, $child);
+        // 3階層の関係をセットアップ
+        PermissionHierarchySetup::setupThreeLevelHierarchy($root, $parent, $child);
 
-    //     // 実行
-    //     $rootDescendants = $this->repository->findDescendants($root->id);
-    //     $childAncestors = $this->repository->findAncestors($child->id);
+        // 実行
+        $rootDescendants = $this->repository->findDescendants($root->id);
+        $childAncestors = $this->repository->findAncestors($child->id);
 
-    //     // 検証
-    //     $this->assertCount(2, $rootDescendants);
-    //     $this->assertCount(2, $childAncestors);
+        // 検証
+        $this->assertCount(2, $rootDescendants);
+        $this->assertCount(2, $childAncestors);
         
-    //     // ルートの子孫に親と子が含まれていることを確認
-    //     $descendantIds = $rootDescendants->pluck('id')->map(function($id) {
-    //         return $id->getValue();
-    //     })->toArray();
-    //     $this->assertContains($parent->id->getValue(), $descendantIds);
-    //     $this->assertContains($child->id->getValue(), $descendantIds);
+        // ルートの子孫に親と子が含まれていることを確認
+        $descendantIds = $rootDescendants->pluck('id')->map(function($id) {
+            return $id->getValue();
+        })->toArray();
+        $this->assertContains($parent->id->getValue(), $descendantIds);
+        $this->assertContains($child->id->getValue(), $descendantIds);
         
-    //     // 子の祖先にルートと親が含まれていることを確認
-    //     $ancestorIds = $childAncestors->pluck('id')->map(function($id) {
-    //         return $id->getValue();
-    //     })->toArray();
-    //     $this->assertContains($root->id->getValue(), $ancestorIds);
-    //     $this->assertContains($parent->id->getValue(), $ancestorIds);
-    // }
+        // 子の祖先にルートと親が含まれていることを確認
+        $ancestorIds = $childAncestors->pluck('id')->map(function($id) {
+            return $id->getValue();
+        })->toArray();
+        $this->assertContains($root->id->getValue(), $ancestorIds);
+        $this->assertContains($parent->id->getValue(), $ancestorIds);
+    }
 } 

@@ -217,26 +217,26 @@ class ProjectRolePermissionRepositoryTest extends TestCase
         ]);
     }
 
-    // public function test_it_can_check_if_role_permission_exists()
-    // {
-    //     // 準備
-    //     $projectRole = ProjectRole::factory()->create();
-    //     $projectPermission = ProjectPermission::factory()->create();
+    public function test_it_can_check_if_role_permission_exists()
+    {
+        // 準備
+        $projectRole = ProjectRole::factory()->create();
+        $projectPermission = ProjectPermission::factory()->create();
         
-    //     $rolePermission = new ProjectRolePermission();
-    //     $rolePermission->project_role_id = $projectRole->id->getValue();
-    //     $rolePermission->project_permission_id = $projectPermission->id->getValue();
-    //     $rolePermission->save();
+        ProjectRolePermission::factory()->create([
+            'project_role_id' => $projectRole->id,
+            'project_permission_id' => $projectPermission->permission_id,
+        ]);
 
-    //     // 実行
-    //     $exists = $this->repository->exists(
-    //         $projectRole->id,
-    //         $projectPermission->id
-    //     );
+        // 実行
+        $exists = $this->repository->exists(
+            $projectRole->id,
+            $projectPermission->permission_id
+        );
 
-    //     // 検証
-    //     $this->assertTrue($exists);
-    // }
+        // 検証
+        $this->assertTrue($exists);
+    }
 
     // public function test_it_returns_false_when_checking_if_non_existent_role_permission_exists()
     // {

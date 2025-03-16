@@ -82,4 +82,19 @@ interface PermissionRepository
      * @return bool
      */
     public function contains(PermissionId $ancestorId, PermissionId $descendantId): bool;
+
+    /**
+     * プロジェクト権限の判定用メソッド
+     *
+     * @param PermissionId $id
+     * @return bool
+     */
+    public function isProjectPermission(PermissionId $id): bool;
+
+    /**
+     * プロジェクトで利用可能な権限の取得
+     *
+     * @return Collection
+     */
+    public function findAvailableProjectPermissions(): Collection;
 } 

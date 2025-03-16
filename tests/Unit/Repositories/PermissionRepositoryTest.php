@@ -3,6 +3,7 @@
 namespace Tests\Unit\Repositories;
 
 use App\Models\Permission;
+use App\Models\ProjectPermission;
 use App\Repositories\Interfaces\PermissionRepository;
 use App\ValueObjects\PermissionId;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -242,5 +243,81 @@ class PermissionRepositoryTest extends TestCase
         })->toArray();
         $this->assertContains($root->id->getValue(), $ancestorIds);
         $this->assertContains($parent->id->getValue(), $ancestorIds);
+    }
+
+    public function test_it_can_check_if_permission_is_project_permission()
+    {
+        // 準備
+        $projectPermission = Permission::factory()->create();
+        $normalPermission = Permission::factory()->create();
+        
+        // project_permissionsテーブルにプロジェクト権限を登録
+        ProjectPermission::factory()->create([
+            'permission_id' => $projectPermission->id->getValue(),
+        ]);
+
+        // 実行
+        $isProjectPermission = $this->repository->isProjectPermission($projectPermission->id);
+        $isNotProjectPermission = $this->repository->isProjectPermission($normalPermission->id);
+
+        // 検証
+        $this->assertTrue($isProjectPermission);
+        $this->assertFalse($isNotProjectPermission);
+    }
+
+    public function test_it_can_find_available_project_permissions()
+    {
+        // 準備
+        $projectPermission1 = Permission::factory()->create([
+            'scope' => 'projects:read',
+            'resource' => 'projects',
+            'action' => 'read'
+        ]);
+        $projectPermission2 = Permission::factory()->create([
+            'scope' => 'projects:write',
+            'resource' => 'projects',
+            'action' => 'write'
+        ]);
+        $normalPermission = Permission::factory()->create([
+            'scope' => 'users:read',
+            'resource' => 'users',
+            'action' => 'read'
+        ]);
+
+        // project_permissionsテーブルにプロジェクト権限を登録
+        ProjectPermission::factory()->create([
+            'permission_id' => $projectPermission1->id->getValue(),
+        ]);
+        ProjectPermission::factory()->create([
+            'permission_id' => $projectPermission2->id->getValue(),
+        ]);
+
+        // 実行
+        $availablePermissions = $this->repository->findAvailableProjectPermissions();
+
+        // 検証
+        $this->assertCount(2, $availablePermissions);
+        
+        // 取得した権限のIDを配列化（getValue()を呼び出さない）
+        $permissionIds = $availablePermissions->pluck('id')->toArray();
+        
+        // プロジェクト権限が含まれていることを確認
+        $this->assertContains($projectPermission1->id->getValue(), $permissionIds);
+        $this->assertContains($projectPermission2->id->getValue(), $permissionIds);
+        
+        // 通常の権限が含まれていないことを確認
+        $this->assertNotContains($normalPermission->id->getValue(), $permissionIds);
+        
+        // 取得した権限の属性を確認
+        $this->assertTrue($availablePermissions->contains(function ($permission) {
+            return $permission->scope === 'projects:read' 
+                && $permission->resource === 'projects' 
+                && $permission->action === 'read';
+        }));
+        $this->assertTrue($availablePermissions->contains(function ($permission) {
+            return $permission->scope === 'projects:write' 
+                && $permission->resource === 'projects' 
+                && $permission->action === 'write';
+        }));
     }
 } 

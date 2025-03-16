@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Permission;
+use App\Models\ProjectPermission;
 use App\Repositories\Interfaces\PermissionRepository;
 use App\ValueObjects\PermissionId;
 use Illuminate\Support\Collection;
@@ -136,5 +137,20 @@ class EloquentPermissionRepository implements PermissionRepository
         }
         
         return $ancestor->contains($descendant);
+    }
+
+    public function isProjectPermission(PermissionId $id): bool
+    {
+        return ProjectPermission::where('permission_id', $id->getValue())->exists();
+    }
+
+    public function findAvailableProjectPermissions(): Collection
+    {
+        // まずproject_permissionsテーブルから許可された権限のIDを取得
+        $permissions = ProjectPermission::query()
+            ->join('permissions', 'project_permissions.permission_id', '=', 'permissions.id')
+            ->get();
+
+        return $permissions;
     }
 } 

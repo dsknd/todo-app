@@ -56,7 +56,7 @@ class ProjectPermission extends Model
      */
     public function permission(): BelongsTo
     {
-        return $this->belongsTo(Permission::class);
+        return $this->belongsTo(Permission::class, 'permission_id');
     }
 
     /**

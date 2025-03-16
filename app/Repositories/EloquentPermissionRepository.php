@@ -7,7 +7,6 @@ use App\Models\ProjectPermission;
 use App\Repositories\Interfaces\PermissionRepository;
 use App\ValueObjects\PermissionId;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class EloquentPermissionRepository implements PermissionRepository
 {

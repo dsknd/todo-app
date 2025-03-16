@@ -66,23 +66,13 @@ class ProjectPermission extends Model
     {
         return $this->belongsToMany(
             ProjectRole::class,
-            'project_permission_assignments',
+            'project_role_permissions',
             'project_permission_id',
             'project_role_id'
-        )->withTimestamps();
-    }
-
-    /**
-     * 権限の割り当てとの関連
-     */
-    public function assignments(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            ProjectRole::class,
-            'project_permission_assignments',
-            'project_permission_id',
-            'project_role_id'
-        )->withTimestamps();
+        )
+        ->using(ProjectRolePermission::class)
+        ->withPivot('assigned_at')
+        ->withTimestamps('assigned_at', null);
     }
 
     /**

@@ -64,10 +64,12 @@ class ProjectRole extends Model
     public function projectPermissions()
     {
         return $this->belongsToMany(
-            ProjectPermission::class,
-            'project_permission_assignments',
-            'project_role_id',
-            'project_permission_id'
-        );
+            ProjectPermission::class, // 関連するモデル
+            'project_role_permissions', // 中間テーブル
+            'project_role_id', // このモデルのID
+            'project_permission_id' // 関連するモデルのID
+        )
+        ->using(ProjectRolePermission::class) // カスタムPivotモデルを使用
+        ->withPivot('assigned_at'); // 中間テーブルから取得する追加のカラム
     }
 }

@@ -254,32 +254,29 @@ class ProjectRolePermissionRepositoryTest extends TestCase
         $this->assertFalse($exists);
     }
 
-    // public function test_it_can_assign_permissions()
-    // {
-    //     // 準備
-    //     $projectRole = ProjectRole::factory()->create();
-    //     $projectPermissions = ProjectPermission::factory()->count(3)->create();
-        
-    //     $permissionIds = $projectPermissions->map(function ($permission) {
-    //         return $permission->id;
-    //     })->toArray();
+    public function test_it_can_assign_permissions()
+    {
+        // 準備
+        $projectRole = ProjectRole::factory()->create();
+        $projectPermissions = ProjectPermission::factory()->count(3)->create();
 
-    //     // 実行
-    //     $result = $this->repository->assignPermissions(
-    //         $projectRole->id,
-    //         $permissionIds
-    //     );
+        // 実行
+        $result = $this->repository->assignPermissions(
+            $projectRole->id,
+            $projectPermissions->pluck('permission_id')->toArray()
+        );
 
-    //     // 検証
-    //     $this->assertTrue($result);
+        // 検証
+        $this->assertTrue($result);
         
-    //     foreach ($projectPermissions as $permission) {
-    //         $this->assertDatabaseHas('project_role_permissions', [
-    //             'project_role_id' => $projectRole->id->getValue(),
-    //             'project_permission_id' => $permission->id->getValue(),
-    //         ]);
-    //     }
-    // }
+        foreach ($projectPermissions as $permission) {
+            $this->assertDatabaseHas('project_role_permissions', [
+                'project_role_id' => $projectRole->id,
+                'project_permission_id' => $permission->permission_id,
+                'assigned_at' => now(),
+            ]);
+        }
+    }
 
     // public function test_it_can_remove_permissions()
     // {

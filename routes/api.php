@@ -1,44 +1,60 @@
 <?php
 
+use App\Http\Controllers\ProjectTaskCategoryController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\TodoController;
-use App\Http\Controllers\ProjectTypeController;
 use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CategoryTodoController;
-use App\Http\Controllers\TodoRelationshipController;
-
-
-// Public routes
+use App\Http\Controllers\ProjectRoleController;
+use App\Http\Controllers\TaskController;
+// パブリックルート
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Protected routes
+// 保護されたルート
 Route::middleware('auth:sanctum')->group(function () {
-    // Project Types CRUD
-    Route::apiResource('project-types', ProjectTypeController::class);
 
-    // Projects CRUD
-    Route::apiResource('projects', ProjectController::class);
+    // プロジェクト
+    Route::apiResource('/projects', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 
-    // Categories CRUD
-    Route::apiResource('categories', CategoryController::class);
+    // プロジェクトメンバ
+    Route::apiResource('/projects/{project}/members', ProjectTaskCategoryController::class)->only(['index', 'create', 'show', 'store', 'update', 'destroy']);
 
-    // todos CRUD
-    Route::apiResource('todos', TodoController::class);
+    // プロジェクトロール
+    Route::apiResource('/projects/{project}/roles', ProjectRoleController::class)->only(['index', 'create', 'show', 'store', 'update', 'destroy']);
 
-    // Attach and detach todos to todos
-    Route::post('/todos/{todoId}/attach-parent', [TodoRelationshipController::class, 'attach']);
-    Route::delete('/todos/{todoId}/detach-parent', [TodoRelationshipController::class, 'detach']);
+    // プロジェクトロール権限割当
+    Route::apiResource('/projects/{project}/roles/{role}/permissions', ProjectRoleController::class)->only(['index', 'store', 'destroy']);
 
-    // Attach and detach categories to todos
-    Route::post('/category-todo/{todoId}/attach', [CategoryTodoController::class, 'attach']);
-    Route::post('/category-todo/{todoId}/detach', [CategoryTodoController::class, 'detach']);
+    // プロジェクト招待
+    Route::apiResource('/projects/{project}/invitations', ProjectController::class)->only(['index', 'store', 'destroy']);
 
-    // Logout
-    Route::post('/logout', [AuthController::class, 'logout']);
+    // プロジェクトタスク割当
+    Route::apiResource('/projects/{project}/tasks/{task}/assignments', ProjectController::class)->only(['index', 'store', 'update', 'destroy']);
 
-    // Route::resource('users', UserController::class);
+    // プロジェクトマイルストーン
+    Route::apiResource('/projects/{project}/milestones', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+
+    // タスク
+    Route::apiResource('/projects/{project}/tasks', TaskController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
+
+    // タスクタグ
+    Route::apiResource('/tasks/{task}/tags', ProjectController::class)->only(['index', 'store', 'destroy']);
+
+    // タスクカテゴリ
+    Route::apiResource('/tasks/{task}/categories', ProjectController::class)->only(['index', 'store', 'destroy']);
+
+    // タスク依存関係
+    Route::apiResource('/tasks/{task}/dependencies', ProjectController::class)->only(['index', 'store', 'update', 'destroy']);
+
+    // タスクコメント
+    Route::apiResource('/tasks/{task}/comments', ProjectController::class)->only(['index', 'store', 'update', 'destroy']);
+
+
+    // 認証済みユーザ
+    Route::prefix('users/me')->group(function () {
+        Route::get('/', [AuthController::class, 'me']);
+        Route::put('/', [AuthController::class, 'update']);
+        Route::delete('/', [AuthController::class, 'destroy']);
+    });
+
 });

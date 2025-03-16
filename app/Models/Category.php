@@ -3,25 +3,72 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\User;
-use App\Models\Todo;
+use App\Casts\CategoryIdCast;
 
 class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'user_id'];
+    protected $table = 'categories';
 
-    // カテゴリが属するユーザー
-    public function user()
+    protected $primaryKey = 'id';
+
+    protected $keyType = 'int';
+
+    public $incrementing = false;
+
+    protected $fillable = [
+        'name',
+        'description',
+        'parent_category_id',
+    ];
+
+    protected $casts = [
+        'id' => CategoryIdCast::class,
+    ];
+
+    /**
+     * 親カテゴリーとの関連
+     */
+    public function parentCategory(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Category::class, 'parent_category_id');
     }
 
-    // カテゴリに紐付くTodo
-    public function todos()
+    /**
+     * 子カテゴリーとの関連
+     */
+    public function childCategories(): HasMany
     {
-        return $this->belongsToMany(Todo::class, 'category_todo');
+        return $this->hasMany(Category::class, 'parent_category_id');
+    }
+
+    /**
+     * このカテゴリーに属するプロジェクトとの関連
+     */
+    public function projects(): HasMany
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    /**
+     * カテゴリーの全階層パスを取得
+     * 
+     * @return array<Category> 親カテゴリーから順に並んだ配列
+     */
+    public function getHierarchyPath(): array
+    {
+        $path = [$this];
+        $current = $this;
+
+        while ($current->parentCategory) {
+            $current = $current->parentCategory;
+            array_unshift($path, $current);
+        }
+
+        return $path;
     }
 }

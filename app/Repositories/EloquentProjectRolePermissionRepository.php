@@ -205,36 +205,4 @@ class EloquentProjectRolePermissionRepository implements ProjectRolePermissionRe
 
         return true;
     }
-
-    /**
-     * プロジェクトロールの権限をすべて置き換え
-     *
-     * @param ProjectRoleId $projectRoleId
-     * @param array<PermissionId> $permissionIds
-     * @return bool
-     */
-    public function syncPermissions(
-        ProjectRoleId $projectRoleId,
-        array $permissionIds
-    ): bool {
-        $projectRole = ProjectRole::find($projectRoleId->getValue());
-        
-        if (!$projectRole) {
-            return false;
-        }
-        
-        $syncData = [];
-        foreach ($permissionIds as $permissionId) {
-            $idValue = $permissionId instanceof PermissionId 
-                ? (int)$permissionId->getValue() 
-                : (int)$permissionId;
-            
-            $syncData[$idValue] = ['assigned_at' => now()];
-        }
-        
-        // 整数値のみの配列を使用してsync
-        $projectRole->projectPermissions()->sync($syncData);
-        
-        return true;
-    }
 } 

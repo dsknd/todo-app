@@ -112,16 +112,4 @@ interface ProjectRolePermissionRepository
         ProjectRoleId $projectRoleId,
         array $permissionIds
     ): bool;
-
-    /**
-     * プロジェクトロールの権限をすべて置き換え
-     *
-     * @param ProjectRoleId $projectRoleId
-     * @param array<PermissionId> $permissionIds
-     * @return bool
-     */
-    public function syncPermissions(
-        ProjectRoleId $projectRoleId,
-        array $permissionIds
-    ): bool;
 } 

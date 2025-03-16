@@ -195,28 +195,27 @@ class ProjectRolePermissionRepositoryTest extends TestCase
         ]);
     }
 
-    // public function test_it_can_delete_all_by_permission_id()
-    // {
-    //     // 準備
-    //     $projectRoles = ProjectRole::factory()->count(3)->create();
-    //     $projectPermission = ProjectPermission::factory()->create();
-        
-    //     foreach ($projectRoles as $projectRole) {
-    //         $rolePermission = new ProjectRolePermission();
-    //         $rolePermission->project_role_id = $projectRole->id->getValue();
-    //         $rolePermission->project_permission_id = $projectPermission->id->getValue();
-    //         $rolePermission->save();
-    //     }
+    public function test_it_can_delete_all_by_permission_id()
+    {
+        // 準備
+        $projectRoles = ProjectRole::factory()->count(3)->create();
+        $projectPermission = ProjectPermission::factory()->create();
+        foreach ($projectRoles as $projectRole) {
+            ProjectRolePermission::factory()->create([
+                'project_role_id' => $projectRole->id,
+                'project_permission_id' => $projectPermission->permission_id,
+            ]);
+        }
 
-    //     // 実行
-    //     $result = $this->repository->deleteAllByPermissionId($projectPermission->id);
+        // 実行
+        $result = $this->repository->deleteAllByPermissionId($projectPermission->permission_id);
 
-    //     // 検証
-    //     $this->assertTrue($result);
-    //     $this->assertDatabaseMissing('project_role_permissions', [
-    //         'project_permission_id' => $projectPermission->id->getValue(),
-    //     ]);
-    // }
+        // 検証
+        $this->assertTrue($result);
+        $this->assertDatabaseMissing('project_role_permissions', [
+            'project_permission_id' => $projectPermission->permission_id,
+        ]);
+    }
 
     // public function test_it_can_check_if_role_permission_exists()
     // {

@@ -73,18 +73,16 @@ class EloquentPermissionRepository implements PermissionRepository
     /**
      * 指定された権限の祖先権限を取得
      *
-     * @param PermissionId $id
+     * @param PermissionId $permissionId
      * @return Collection
      */
-    public function findAncestors(PermissionId $id): Collection
+    public function findAncestors(PermissionId $permissionId): Collection
     {
-        $permission = $this->findById($id);
-        
-        if (!$permission) {
-            return collect();
-        }
-        
-        return $permission->ancestors()->get();
+        return Permission::query()
+            ->join('permission_closures', 'permissions.id', '=', 'permission_closures.ancestor_id')
+            ->where('permission_closures.descendant_id', $permissionId->getValue())
+            ->where('permission_closures.depth', '>', 0)
+            ->get();
     }
 
     /**

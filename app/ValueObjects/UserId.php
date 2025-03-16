@@ -110,7 +110,7 @@ final class UserId implements JsonSerializable
             throw new \RuntimeException('認証されていません');
         }
         
-        return new self($user->id);
+        return new self((int) $user->id);
     }
 
     /**

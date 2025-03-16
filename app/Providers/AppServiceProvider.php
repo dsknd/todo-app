@@ -37,6 +37,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CreateProjectUseCase::class, CreateProjectInteractor::class);
         $this->app->bind(CreateTaskUseCase::class, CreateTaskInteractor::class);
 
+        // createProjectInteractorで使用するリポジトリ
+        $this->app->bind(ProjectRepository::class, EloquentProjectRepository::class);
+        $this->app->bind(ProjectMemberRepository::class, EloquentProjectMemberRepository::class);
+        
         // リポジトリ
         $this->app->bind(ProjectRepository::class, EloquentProjectRepository::class);
         $this->app->bind(ProjectMemberRepository::class, EloquentProjectMemberRepository::class);

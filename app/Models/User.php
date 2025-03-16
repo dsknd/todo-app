@@ -23,7 +23,10 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
-    public mixed $participatedProjects;
+    protected $table = 'users';
+    protected $primaryKey = 'id';
+    public $incrementing = true;
+    protected $keyType = 'int';
 
     /**
      * The attributes that are mass assignable.
@@ -90,21 +93,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(ProjectMember::class, 'user_id');
     }
-
-    /**
-     * ユーザーが割り当てられているプロジェクトロール
-     */
-    public function projectRoles()
-    {
-        return $this->belongsToMany(
-            ProjectRole::class,         // 関連モデル
-            'project_role_assignments', // 中間テーブル
-            'assignee_id',              // 中間テーブル上のユーザーID
-            'project_role_id'           // 中間テーブル上のプロジェクトロールID
-        )
-            ->using(ProjectRoleAssignment::class); // Pivot モデルの指定
-    }
-
 
     /**
      * ユーザーが特定のプロジェクトに割り当てられているロールを取得します。

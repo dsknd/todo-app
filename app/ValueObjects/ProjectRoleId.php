@@ -4,7 +4,7 @@ namespace App\ValueObjects;
 
 use InvalidArgumentException;
 use JsonSerializable;
-
+use App\Enums\DefaultProjectRoleEnum;
 class ProjectRoleId implements JsonSerializable
 {
     private int $value;
@@ -86,5 +86,10 @@ class ProjectRoleId implements JsonSerializable
     public function __toInt(): int
     {
         return $this->getValue();
+    }
+
+    public static function fromEnum(DefaultProjectRoleEnum $enum): self
+    {
+        return new self($enum->value);
     }
 }

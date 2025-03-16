@@ -18,7 +18,6 @@ interface CreateProjectUseCase
      * @param bool $isPrivate プロジェクトの公開/非公開
      * @param DateTimeImmutable $plannedStartDate 計画開始日
      * @param DateTimeImmutable $plannedEndDate 計画終了日
-     * @param LocaleCode $localeCode ロケールコード
      * @return Project 作成されたプロジェクト
      */
     public function execute(
@@ -28,6 +27,5 @@ interface CreateProjectUseCase
         bool $isPrivate,
         ?DateTimeImmutable $plannedStartDate,
         ?DateTimeImmutable $plannedEndDate,
-        ?LocaleCode $localeCode
     ): Project;
 }

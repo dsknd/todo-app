@@ -142,32 +142,4 @@ class CreateProjectInteractorTest extends TestCase
             throw $e;
         }
     }
-
-    // public function test_execute_sets_correct_project_status(): void
-    // {
-    //     // 準備
-    //     $name = 'Test Project';
-    //     $userId = new UserId((int) $this->user->id);
-
-    //     // 実行
-    //     $project = $this->interactor->execute(
-    //         $name,
-    //         null,
-    //         $userId,
-    //         false,
-    //         null,
-    //         null
-    //     );
-
-    //     // 検証
-    //     $this->assertEquals(
-    //         ProjectStatusEnum::PLANNING->value,
-    //         $project->project_status_id
-    //     );
-    // }
-
-    // TODO: projectsテーブルのレコード挿入に失敗
-    // TODO: project_membersテーブルのレコード挿入に失敗
-    // TODO: project_rolesテーブルのレコード挿入に失敗
-    // TODO: project_permission_assignmentsテーブルのレコード挿入に失敗
 } 

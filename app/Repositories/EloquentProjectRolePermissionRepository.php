@@ -167,7 +167,7 @@ class EloquentProjectRolePermissionRepository implements ProjectRolePermissionRe
         foreach ($newPermissionIds as $permissionId) {
             $attachData[$permissionId->getValue()] = ['assigned_at' => now()];
         }
-        
+
         $projectRole->projectPermissions()->attach($attachData);
         
         return true;
@@ -184,19 +184,20 @@ class EloquentProjectRolePermissionRepository implements ProjectRolePermissionRe
         ProjectRoleId $projectRoleId,
         array $permissionIds
     ): bool {
-        $projectRole = ProjectRole::find($projectRoleId->getValue());
+        $projectRole = ProjectRole::find($projectRoleId);
         
         if (!$projectRole) {
             return false;
         }
         
         // 権限IDの配列を整数値の配列に変換
-        $permissionIds = array_map(function (PermissionId $permissionId) {
-            return $permissionId->getValue();
-        }, $permissionIds);
-        
+        $detachData = [];
+        foreach ($permissionIds as $permissionId) {
+            $detachData[$permissionId->getValue()] = null;
+        }
+
         // 権限を削除
-        $projectRole->projectPermissions()->detach($permissionIds);
+        $projectRole->projectPermissions()->detach($detachData);
         
         return true;
     }

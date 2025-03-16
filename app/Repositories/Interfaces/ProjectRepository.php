@@ -12,12 +12,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 interface ProjectRepository
 {
     /**
-     * IDでプロジェクトを検索
+     * IDによってプロジェクトを検索します
      *
-     * @param ProjectId $projectId
+     * @param ProjectId $id
      * @return Project|null
      */
-    public function findById(ProjectId $projectId): ?Project;
+    public function findById(ProjectId $id): ?Project;
 
     /**
      * 複数のIDでプロジェクトを検索

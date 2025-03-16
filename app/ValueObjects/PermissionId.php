@@ -4,7 +4,6 @@ namespace App\ValueObjects;
 
 use InvalidArgumentException;
 use JsonSerializable;
-
 class PermissionId implements JsonSerializable
 {
     private int $value;
@@ -54,6 +53,16 @@ class PermissionId implements JsonSerializable
     {
         return (string) $this->value;
     }
+
+    /**
+     * 整数値を取得
+     *
+     * @return int
+     */
+    public function toInt(): int
+    {
+        return $this->value;
+    }    
 
     /**
      * JSON シリアライズ時の挙動を定義

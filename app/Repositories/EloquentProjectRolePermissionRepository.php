@@ -217,23 +217,22 @@ class EloquentProjectRolePermissionRepository implements ProjectRolePermissionRe
         ProjectRoleId $projectRoleId,
         array $permissionIds
     ): bool {
-        $roleIdValue = $projectRoleId->getValue();
-        
-        $projectRole = ProjectRole::find($roleIdValue);
+        $projectRole = ProjectRole::find($projectRoleId->getValue());
         
         if (!$projectRole) {
             return false;
         }
-
-        $permissionIds = array_map(fn($permissionId) => $permissionId->getValue(), $permissionIds);
         
-        // 権限IDの配列を整数値の配列に変換
         $syncData = [];
         foreach ($permissionIds as $permissionId) {
-            $syncData[$permissionId] = ['assigned_at' => now()];
+            $idValue = $permissionId instanceof PermissionId 
+                ? (int)$permissionId->getValue() 
+                : (int)$permissionId;
+            
+            $syncData[$idValue] = ['assigned_at' => now()];
         }
         
-        // 権限を同期
+        // 整数値のみの配列を使用してsync
         $projectRole->projectPermissions()->sync($syncData);
         
         return true;

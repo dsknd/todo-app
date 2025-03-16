@@ -21,6 +21,8 @@ use App\Repositories\Interfaces\CustomProjectRoleRepository;
 use App\Repositories\EloquentCustomProjectRoleRepository;
 use App\Repositories\Interfaces\ProjectRolePermissionRepository;
 use App\Repositories\EloquentProjectRolePermissionRepository;
+use App\Repositories\Interfaces\PermissionRepository;
+use App\Repositories\EloquentPermissionRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DefaultProjectRoleRepository::class, EloquentDefaultProjectRoleRepository::class);
         $this->app->bind(CustomProjectRoleRepository::class, EloquentCustomProjectRoleRepository::class);
         $this->app->bind(ProjectRolePermissionRepository::class, EloquentProjectRolePermissionRepository::class);
+        $this->app->bind(PermissionRepository::class, EloquentPermissionRepository::class);
     }
 
     /**

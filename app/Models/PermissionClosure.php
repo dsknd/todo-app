@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PermissionClosure extends Pivot
 {
+    use HasFactory;
+
     protected $table = 'permission_closures';
+    public $timestamps = false;
 
     protected $fillable = [
         'ancestor_id',

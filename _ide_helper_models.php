@@ -52,7 +52,7 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $id
+ * @property $id
  * @property string $key
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -71,6 +71,22 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUpdatedAt($value)
  */
 	class Category extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property \App\ValueObjects\ProjectRoleId $project_role_id
+ * @property string $key
+ * @property-read \App\Models\ProjectRole $projectRole
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultProjectRole newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultProjectRole newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultProjectRole query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultProjectRole whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultProjectRole whereProjectRoleId($value)
+ */
+	class DefaultProjectRole extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -119,7 +135,7 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $id
+ * @property \App\ValueObjects\LocaleId $id
  * @property string $language_code 言語コード (ISO 639-1, e.g. "ja", "en")
  * @property string|null $region_code 地域コード (ISO 3166-1, e.g. "JP", "US")
  * @property string|null $script_code スクリプトコード (ISO 15924, e.g. "Latn", "Jpan")
@@ -140,7 +156,6 @@ namespace App\Models{
  * @property bool $is_active
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read string $code
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\TaskStatus> $taskStatuses
  * @property-read int|null $task_statuses_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Locale newModelQuery()
@@ -175,7 +190,7 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $id
+ * @property \App\ValueObjects\PermissionId $id
  * @property string $scope
  * @property string $resource
  * @property string $action
@@ -187,6 +202,7 @@ namespace App\Models{
  * @property-read int|null $descendants_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectPermission> $projectPermissions
  * @property-read int|null $project_permissions_count
+ * @method static \Database\Factories\PermissionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission query()
@@ -248,7 +264,7 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $id
+ * @property \App\ValueObjects\PriorityId $id
  * @property string $key
  * @property int $priority_value
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -272,16 +288,16 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $id
+ * @property \App\ValueObjects\ProjectId $id
  * @property string $name
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $planned_start_date
  * @property \Illuminate\Support\Carbon|null $planned_end_date
  * @property \Illuminate\Support\Carbon|null $actual_start_date
  * @property \Illuminate\Support\Carbon|null $actual_end_date
- * @property int $project_status_id
+ * @property \App\ValueObjects\ProjectStatusId $project_status_id
  * @property bool $is_private
- * @property int $user_id
+ * @property \App\ValueObjects\UserId $user_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectInvitation> $invitations
@@ -387,34 +403,23 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $project_id
- * @property int $user_id
+ * @property \App\ValueObjects\ProjectId $project_id
+ * @property \App\ValueObjects\UserId $user_id
+ * @property \App\ValueObjects\ProjectRoleId $role_id
  * @property \Illuminate\Support\Carbon $joined_at
  * @property-read \App\Models\Project $project
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectRoleAssignment> $roleAssignments
- * @property-read int|null $role_assignments_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectRole> $roles
- * @property-read int|null $roles_count
+ * @property-read \App\Models\ProjectRole $role
  * @property-read \App\Models\User $user
+ * @method static \Database\Factories\ProjectMemberFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember whereJoinedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember whereProjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember whereRoleId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember whereUserId($value)
  */
 	class ProjectMember extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * 
- *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMemberRole newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMemberRole newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMemberRole query()
- */
-	class ProjectMemberRole extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -445,14 +450,14 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $permission_id
+ * @property \App\ValueObjects\PermissionId $permission_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectRole> $assignments
- * @property-read int|null $assignments_count
  * @property-read \App\Models\Permission $permission
+ * @property-read \App\Models\ProjectRolePermission|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectRole> $projectRoles
  * @property-read int|null $project_roles_count
+ * @method static \Database\Factories\ProjectPermissionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectPermission newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectPermission newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectPermission query()
@@ -467,51 +472,28 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $project_permission_id
- * @property int $project_role_id
- * @property-read \App\Models\User|null $assigner
- * @property-read \App\Models\ProjectPermission $projectPermission
- * @property-read \App\Models\ProjectRole $projectRole
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectPermissionAssignment newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectPermissionAssignment newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectPermissionAssignment query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectPermissionAssignment whereProjectPermissionId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectPermissionAssignment whereProjectRoleId($value)
- */
-	class ProjectPermissionAssignment extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * 
- *
- * @property int $id
- * @property int $project_id
- * @property int $role_number
- * @property int $user_id
- * @property string $name
- * @property string|null $description
+ * @property \App\ValueObjects\ProjectRoleId $id
+ * @property \App\ValueObjects\ProjectRoleTypeId $project_role_type_id
+ * @property int|null $assignable_limit
+ * @property int $assigned_count
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Project $project
- * @property-read \App\Models\ProjectRoleAssignment|null $pivot
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $projectMembers
- * @property-read int|null $project_members_count
+ * @property-read \App\Models\CustomProjectRole|null $customProjectRole
+ * @property-read \App\Models\DefaultProjectRole|null $defaultProjectRole
+ * @property-read \App\Models\ProjectRolePermission|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectPermission> $projectPermissions
  * @property-read int|null $project_permissions_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectRoleAssignment> $projectRoleAssignments
- * @property-read int|null $project_role_assignments_count
+ * @property-read \App\Models\ProjectRoleType $projectRoleType
+ * @method static \Database\Factories\ProjectRoleFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereAssignableLimit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereAssignedCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereProjectId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereRoleNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereProjectRoleTypeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRole whereUserId($value)
  */
 	class ProjectRole extends \Eloquent {}
 }
@@ -520,38 +502,63 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $project_id
- * @property int $project_role_id
- * @property int $assignee_id
- * @property int $assigner_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\ProjectMember $assignee
- * @property-read \App\Models\User $assigner
- * @property-read \App\Models\Project $project
- * @property-read \App\Models\ProjectRole $role
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereAssigneeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereAssignerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereProjectId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereProjectRoleId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleAssignment whereUpdatedAt($value)
+ * @property \App\ValueObjects\PermissionId $project_permission_id
+ * @property \App\ValueObjects\ProjectRoleId $project_role_id
+ * @property \Illuminate\Support\Carbon $assigned_at
+ * @property-read \App\Models\ProjectPermission|null $projectPermission
+ * @property-read \App\Models\ProjectRole $projectRole
+ * @method static \Database\Factories\ProjectRolePermissionFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRolePermission newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRolePermission newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRolePermission query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRolePermission whereAssignedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRolePermission whereProjectPermissionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRolePermission whereProjectRoleId($value)
  */
-	class ProjectRoleAssignment extends \Eloquent {}
+	class ProjectRolePermission extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
  * 
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleScope newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleScope newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleScope query()
+ * @property \App\ValueObjects\ProjectRoleTypeId $id
+ * @property string $key
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Database\Factories\ProjectRoleTypeFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleType whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleType whereUpdatedAt($value)
  */
-	class ProjectRoleScope extends \Eloquent {}
+	class ProjectRoleType extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property \App\ValueObjects\ProjectRoleTypeId $project_role_type_id
+ * @property \App\ValueObjects\LocaleId $locale_id
+ * @property string $name
+ * @property string $description
+ * @property string|null $created_at
+ * @property string|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleTypeTranslation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleTypeTranslation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleTypeTranslation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleTypeTranslation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleTypeTranslation whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleTypeTranslation whereLocaleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleTypeTranslation whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleTypeTranslation whereProjectRoleTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectRoleTypeTranslation whereUpdatedAt($value)
+ */
+	class ProjectRoleTypeTranslation extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -569,7 +576,7 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $id
+ * @property \App\ValueObjects\ProjectStatusId $id
  * @property string $key
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -981,46 +988,5 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|TaskStatusTranslation whereUpdatedAt($value)
  */
 	class TaskStatusTranslation extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * 
- *
- * @property int $id
- * @property string $name
- * @property string $email
- * @property \Illuminate\Support\Carbon|null $email_verified_at
- * @property string $password
- * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Project> $participatedProjects
- * @property-read int|null $participated_projects_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectMember> $projectMembers
- * @property-read int|null $project_members_count
- * @property-read \App\Models\ProjectRoleAssignment|null $pivot
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectRole> $projectRoles
- * @property-read int|null $project_roles_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Project> $projects
- * @property-read int|null $projects_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
- * @property-read int|null $tokens_count
- * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
- */
-	class User extends \Eloquent {}
 }
 

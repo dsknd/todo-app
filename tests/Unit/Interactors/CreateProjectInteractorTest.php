@@ -67,34 +67,34 @@ class CreateProjectInteractorTest extends TestCase
         ]);
     }
 
-    // public function test_execute_creates_project_with_minimal_parameters(): void
-    // {
-    //     // 準備
-    //     $name = 'Test Project';
-    //     $userId = new UserId((int) $this->user->id);
+    public function test_execute_creates_project_with_minimal_parameters(): void
+    {
+        // 準備
+        $user = User::factory()->create();
+        ProjectStatus::factory()->create(['id' => ProjectStatusEnum::PLANNING->value]);
+        ProjectRole::factory()->create(['id' => DefaultProjectRoleEnum::OWNER->value]);
 
-    //     // 実行
-    //     $project = $this->interactor->execute(
-    //         $name,
-    //         null,  // description
-    //         $userId,
-    //         false, // isPrivate
-    //         null,  // plannedStartDate
-    //         null   // plannedEndDate
-    //     );
+        // 実行
+        $dto = CreateProjectDto::builder()
+            ->name('Test Project')
+            ->userId($user->id)
+            ->isPrivate(false)
+            ->build();
 
-    //     // 検証
-    //     $this->assertDatabaseHas('projects', [
-    //         'id' => $project->id,
-    //         'name' => $name,
-    //         'description' => null,
-    //         'user_id' => $userId->getValue(),
-    //         'project_status_id' => ProjectStatusEnum::PLANNING->value,
-    //         'is_private' => false,
-    //         'planned_start_date' => null,
-    //         'planned_end_date' => null,
-    //     ]);
-    // }
+        $project = $this->interactor->execute($dto);
+
+        // 検証
+        $this->assertDatabaseHas('projects', [
+            'id' => $project->id,
+            'name' => $dto->name,
+            'description' => $dto->description,
+            'user_id' => $dto->userId,
+            'project_status_id' => ProjectStatusEnum::PLANNING->value,
+            'is_private' => $dto->isPrivate,
+            'planned_start_date' => null,
+            'planned_end_date' => null,
+        ]);
+    }
 
     // public function test_execute_rolls_back_transaction_on_failure(): void
     // {

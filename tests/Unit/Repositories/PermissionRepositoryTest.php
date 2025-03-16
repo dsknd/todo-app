@@ -172,22 +172,22 @@ class PermissionRepositoryTest extends TestCase
         $this->assertEquals($parent->id->getValue(), $ancestors->first()->id->getValue());
     }
 
-    // public function test_it_can_find_descendants()
-    // {
-    //     // 準備
-    //     $parent = Permission::factory()->create();
-    //     $child = Permission::factory()->create();
+    public function test_it_can_find_descendants()
+    {
+        // 準備
+        $parent = Permission::factory()->create();
+        $child = Permission::factory()->create();
         
-    //     // クロージャーテーブルの関係をセットアップ（ヘルパー使用）
-    //     PermissionHierarchySetup::setupParentChild($parent, $child);
+        // クロージャーテーブルの関係をセットアップ（ヘルパー使用）
+        PermissionHierarchySetup::setupParentChild($parent, $child);
 
-    //     // 実行
-    //     $descendants = $this->repository->findDescendants($parent->id);
+        // 実行
+        $descendants = $this->repository->findDescendants($parent->id);
 
-    //     // 検証
-    //     $this->assertCount(1, $descendants);
-    //     $this->assertEquals($child->id->getValue(), $descendants->first()->id->getValue());
-    // }
+        // 検証
+        $this->assertCount(1, $descendants);
+        $this->assertEquals($child->id->getValue(), $descendants->first()->id->getValue());
+    }
 
     // public function test_it_can_check_if_permission_contains_another()
     // {

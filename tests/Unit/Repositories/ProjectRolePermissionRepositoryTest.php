@@ -6,13 +6,10 @@ use App\Models\ProjectPermission;
 use App\Models\ProjectRole;
 use App\Models\ProjectRolePermission;
 use App\Repositories\Interfaces\ProjectRolePermissionRepository;
-use App\ValueObjects\ProjectPermissionId;
-use App\ValueObjects\ProjectRoleId;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\TestCase;
-use Database\Factories\ProjectRolePermissionFactory;
-use App\Models\Permission;
+
 #[Group('repository')]
 #[Group('project_role_permission')]
 class ProjectRolePermissionRepositoryTest extends TestCase

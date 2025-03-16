@@ -238,21 +238,21 @@ class ProjectRolePermissionRepositoryTest extends TestCase
         $this->assertTrue($exists);
     }
 
-    // public function test_it_returns_false_when_checking_if_non_existent_role_permission_exists()
-    // {
-    //     // 準備
-    //     $projectRole = ProjectRole::factory()->create();
-    //     $projectPermission = ProjectPermission::factory()->create();
+    public function test_it_returns_false_when_checking_if_non_existent_role_permission_exists()
+    {
+        // 準備
+        $projectRole = ProjectRole::factory()->create();
+        $projectPermission = ProjectPermission::factory()->create();
 
-    //     // 実行
-    //     $exists = $this->repository->exists(
-    //         $projectRole->id,
-    //         $projectPermission->id
-    //     );
+        // 実行
+        $exists = $this->repository->exists(
+            $projectRole->id,
+            $projectPermission->permission_id
+        );
 
-    //     // 検証
-    //     $this->assertFalse($exists);
-    // }
+        // 検証
+        $this->assertFalse($exists);
+    }
 
     // public function test_it_can_assign_permissions()
     // {

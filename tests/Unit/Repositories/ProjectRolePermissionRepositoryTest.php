@@ -90,28 +90,30 @@ class ProjectRolePermissionRepositoryTest extends TestCase
         $this->assertCount($permissionCount, $foundRolePermissions);
     }
 
-    // public function test_it_can_create_role_permission()
-    // {
-    //     // 準備
-    //     $projectRole = ProjectRole::factory()->create();
-    //     $projectPermission = ProjectPermission::factory()->create();
+    public function test_it_can_create_role_permission()
+    {
+        // 準備
+        $projectRole = ProjectRole::factory()->create();
+        $projectPermission = ProjectPermission::factory()->create();
 
-    //     // 実行
-    //     $rolePermission = $this->repository->create(
-    //         $projectRole->id,
-    //         $projectPermission->id
-    //     );
+        // 実行
+        $rolePermission = $this->repository->create(
+            $projectRole->id,
+            $projectPermission->permission_id
+        );
 
-    //     // 検証
-    //     $this->assertNotNull($rolePermission);
-    //     $this->assertEquals($projectRole->id->getValue(), $rolePermission->project_role_id);
-    //     $this->assertEquals($projectPermission->id->getValue(), $rolePermission->project_permission_id);
+        $foundRolePermission = $this->repository->findByRoleIdAndPermissionId($projectRole->id, $projectPermission->permission_id);
+
+        // 検証
+        $this->assertNotNull($rolePermission);
+        $this->assertEquals($projectRole->id, $rolePermission->project_role_id);
+        $this->assertEquals($projectPermission->permission_id, $rolePermission->project_permission_id);
         
-    //     $this->assertDatabaseHas('project_role_permissions', [
-    //         'project_role_id' => $projectRole->id->getValue(),
-    //         'project_permission_id' => $projectPermission->id->getValue(),
-    //     ]);
-    // }
+        $this->assertDatabaseHas('project_role_permissions', [
+            'project_role_id' => $projectRole->id,
+            'project_permission_id' => $projectPermission->permission_id,
+        ]);
+    }
 
     // public function test_it_returns_existing_role_permission_when_creating_duplicate()
     // {

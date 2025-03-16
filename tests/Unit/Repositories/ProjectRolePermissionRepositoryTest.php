@@ -115,34 +115,28 @@ class ProjectRolePermissionRepositoryTest extends TestCase
         ]);
     }
 
-    // public function test_it_returns_existing_role_permission_when_creating_duplicate()
-    // {
-    //     // 準備
-    //     $projectRole = ProjectRole::factory()->create();
-    //     $projectPermission = ProjectPermission::factory()->create();
-        
-    //     $rolePermission = new ProjectRolePermission();
-    //     $rolePermission->project_role_id = $projectRole->id->getValue();
-    //     $rolePermission->project_permission_id = $projectPermission->id->getValue();
-    //     $rolePermission->save();
+    public function test_it_returns_existing_role_permission_when_creating_duplicate()
+    {
+        // 準備
+        $projectRolePermission = ProjectRolePermission::factory()->create();
 
-    //     // 実行
-    //     $createdRolePermission = $this->repository->create(
-    //         $projectRole->id,
-    //         $projectPermission->id
-    //     );
+        // 実行
+        $createdRolePermission = $this->repository->create(
+            $projectRolePermission->project_role_id,
+            $projectRolePermission->project_permission_id
+        );
 
-    //     // 検証
-    //     $this->assertNotNull($createdRolePermission);
-    //     $this->assertEquals($projectRole->id->getValue(), $createdRolePermission->project_role_id);
-    //     $this->assertEquals($projectPermission->id->getValue(), $createdRolePermission->project_permission_id);
+        // 検証
+        $this->assertNotNull($createdRolePermission);
+        $this->assertEquals($projectRolePermission->project_role_id, $createdRolePermission->project_role_id);
+        $this->assertEquals($projectRolePermission->project_permission_id, $createdRolePermission->project_permission_id);
         
-    //     // 重複して作成されていないことを確認
-    //     $count = ProjectRolePermission::where('project_role_id', $projectRole->id->getValue())
-    //         ->where('project_permission_id', $projectPermission->id->getValue())
-    //         ->count();
-    //     $this->assertEquals(1, $count);
-    // }
+        // 重複して作成されていないことを確認
+        $count = ProjectRolePermission::where('project_role_id', $projectRolePermission->project_role_id)
+            ->where('project_permission_id', $projectRolePermission->project_permission_id)
+            ->count();
+        $this->assertEquals(1, $count);
+    }
 
     // public function test_it_can_delete_role_permission()
     // {

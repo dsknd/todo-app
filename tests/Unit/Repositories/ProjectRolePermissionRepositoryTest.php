@@ -157,21 +157,21 @@ class ProjectRolePermissionRepositoryTest extends TestCase
         ]);
     }
 
-    // public function test_it_returns_false_when_deleting_non_existent_role_permission()
-    // {
-    //     // 準備
-    //     $projectRole = ProjectRole::factory()->create();
-    //     $projectPermission = ProjectPermission::factory()->create();
+    public function test_it_returns_false_when_deleting_non_existent_role_permission()
+    {
+        // 準備
+        $projectRole = ProjectRole::factory()->create();
+        $projectPermission = ProjectPermission::factory()->create();
 
-    //     // 実行
-    //     $result = $this->repository->delete(
-    //         $projectRole->id,
-    //         $projectPermission->id
-    //     );
+        // 実行
+        $result = $this->repository->delete(
+            $projectRole->id,
+            $projectPermission->permission_id
+        );
 
-    //     // 検証
-    //     $this->assertFalse($result);
-    // }
+        // 検証
+        $this->assertFalse($result);
+    }
 
     // public function test_it_can_delete_all_by_role_id()
     // {

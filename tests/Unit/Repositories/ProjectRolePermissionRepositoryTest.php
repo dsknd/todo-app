@@ -327,15 +327,15 @@ class ProjectRolePermissionRepositoryTest extends TestCase
         
     //     // 最初に3つの権限を割り当て
     //     foreach ($allPermissions->take(3) as $permission) {
-    //         $rolePermission = new ProjectRolePermission();
-    //         $rolePermission->project_role_id = $projectRole->id->getValue();
-    //         $rolePermission->project_permission_id = $permission->id->getValue();
-    //         $rolePermission->save();
+    //         ProjectRolePermission::factory()->create([
+    //             'project_role_id' => $projectRole->id,
+    //             'project_permission_id' => $permission->permission_id,
+    //         ]);
     //     }
         
     //     // 新しい権限セット（最後の3つ）
     //     $newPermissionIds = $allPermissions->slice(2, 3)->map(function ($permission) {
-    //         return $permission->id;
+    //         return $permission->permission_id;
     //     })->toArray();
 
     //     // 実行

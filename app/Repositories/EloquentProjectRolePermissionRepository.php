@@ -189,16 +189,20 @@ class EloquentProjectRolePermissionRepository implements ProjectRolePermissionRe
         if (!$projectRole) {
             return false;
         }
-        
+
         // 権限IDの配列を整数値の配列に変換
-        $detachData = [];
+        $permissionIdValues = [];
         foreach ($permissionIds as $permissionId) {
-            $detachData[$permissionId->getValue()] = null;
+            if ($permissionId instanceof PermissionId) {
+                $permissionIdValues[] = $permissionId->getValue();
+            } else {
+                $permissionIdValues[] = $permissionId;
+            }
         }
 
-        // 権限を削除
-        $projectRole->projectPermissions()->detach($detachData);
-        
+        // 指定された権限のみを削除
+        $projectRole->projectPermissions()->detach($permissionIdValues);
+
         return true;
     }
 
@@ -213,23 +217,23 @@ class EloquentProjectRolePermissionRepository implements ProjectRolePermissionRe
         ProjectRoleId $projectRoleId,
         array $permissionIds
     ): bool {
-        $projectRole = ProjectRole::find($projectRoleId->getValue());
+        $roleIdValue = $projectRoleId->getValue();
+        
+        $projectRole = ProjectRole::find($roleIdValue);
         
         if (!$projectRole) {
             return false;
         }
+
+        $permissionIds = array_map(fn($permissionId) => $permissionId->getValue(), $permissionIds);
         
         // 権限IDの配列を整数値の配列に変換
-        $permissionIds = array_map(function (PermissionId $permissionId) {
-            return $permissionId->getValue();
-        }, $permissionIds);
-        
-        // 権限を同期（既存の権限をすべて削除し、指定された権限を追加）
         $syncData = [];
         foreach ($permissionIds as $permissionId) {
             $syncData[$permissionId] = ['assigned_at' => now()];
         }
         
+        // 権限を同期
         $projectRole->projectPermissions()->sync($syncData);
         
         return true;

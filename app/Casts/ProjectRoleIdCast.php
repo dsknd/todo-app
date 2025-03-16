@@ -22,6 +22,11 @@ class ProjectRoleIdCast implements CastsAttributes
         if ($value === null) {
             return null;
         }
+
+        // 既にProjectRoleIdのインスタンスの場合はそのまま返す
+        if ($value instanceof ProjectRoleId) {
+            return $value;
+        }
         
         return new ProjectRoleId((int) $value);
     }

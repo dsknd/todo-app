@@ -5,12 +5,11 @@ namespace App\Casts;
 use App\ValueObjects\PermissionId;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
-use InvalidArgumentException;
 
 class PermissionIdCast implements CastsAttributes
 {
     /**
-     * 値をキャスト
+     * データベースの値をPermissionIdオブジェクトに変換
      *
      * @param Model $model
      * @param string $key
@@ -18,38 +17,39 @@ class PermissionIdCast implements CastsAttributes
      * @param array $attributes
      * @return PermissionId|null
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): ?PermissionId
+    public function get($model, string $key, $value, array $attributes)
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return null;
         }
-
+        
+        // 既にPermissionIdのインスタンスの場合はそのまま返す
+        if ($value instanceof PermissionId) {
+            return $value;
+        }
+        
         return new PermissionId((int) $value);
     }
 
     /**
-     * 値を保存用にキャスト
+     * PermissionIdオブジェクトをデータベースの値に変換
      *
      * @param Model $model
      * @param string $key
      * @param mixed $value
      * @param array $attributes
-     * @return int|null
+     * @return mixed
      */
-    public function set(Model $model, string $key, mixed $value, array $attributes): ?int
+    public function set($model, string $key, $value, array $attributes)
     {
-        if (is_null($value)) {
-            return null;
-        }
-
         if ($value instanceof PermissionId) {
-            return $value->getValue();
+            return [$key => $value->getValue()];
         }
-
-        if (is_int($value) || (is_string($value) && is_numeric($value))) {
-            return (int) $value;
+        
+        if (is_int($value) || (is_string($value) && ctype_digit($value))) {
+            return [$key => (int) $value];
         }
-
-        throw new InvalidArgumentException('権限IDは整数またはPermissionIdオブジェクトである必要があります。');
+        
+        return [$key => null];
     }
-} 
+}

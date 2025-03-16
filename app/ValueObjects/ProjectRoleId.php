@@ -77,4 +77,14 @@ class ProjectRoleId implements JsonSerializable
         
         return new self((int) $id);
     }
+
+    /**
+     * オブジェクトを整数に変換する際に呼び出されるマジックメソッド
+     *
+     * @return int
+     */
+    public function __toInt(): int
+    {
+        return $this->getValue();
+    }
 }

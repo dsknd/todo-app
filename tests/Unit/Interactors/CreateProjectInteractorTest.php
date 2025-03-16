@@ -14,6 +14,9 @@ use PHPUnit\Framework\Attributes\Group;
 use App\Models\ProjectRole;
 use App\DataTransferObjects\CreateProjectDto;
 use DateTimeImmutable;
+use Exception;
+use App\Repositories\Interfaces\ProjectMemberRepository;
+
 #[Group('interactor')]
 #[Group('create_project')]
 class CreateProjectInteractorTest extends TestCase
@@ -96,40 +99,49 @@ class CreateProjectInteractorTest extends TestCase
         ]);
     }
 
-    // public function test_execute_rolls_back_transaction_on_failure(): void
-    // {
-    //     // 準備
-    //     $name = 'Test Project';
-    //     $userId = new UserId((int) $this->user->id);
+    public function test_execute_rolls_back_transaction_on_failure(): void
+    {
+        // 準備
+        $user = User::factory()->create();
+        ProjectStatus::factory()->create(['id' => ProjectStatusEnum::PLANNING->value]);
+        ProjectRole::factory()->create(['id' => DefaultProjectRoleEnum::OWNER->value]);
 
-    //     // プロジェクトメンバー作成時にエラーを発生させる
-    //     $mockProjectMemberRepository = $this->mock('App\Repositories\Interfaces\ProjectMemberRepository');
-    //     $mockProjectMemberRepository->shouldReceive('add')
-    //         ->once()
-    //         ->andThrow(new Exception('Failed to create project member'));
+        // ProjectMemberRepositoryのモックを作成し、インターフェースにバインド
+        $mockProjectMemberRepository = $this->mock(ProjectMemberRepository::class);
+        $mockProjectMemberRepository->shouldReceive('add')
+            ->once()
+            ->andThrow(new Exception('Failed to create project member'));
 
-    //     // 実行と検証
-    //     $this->expectException(Exception::class);
-    //     $this->expectExceptionMessage('Failed to create project member');
+        // インターフェースにモックをバインド
+        $this->app->instance(
+            ProjectMemberRepository::class,
+            $mockProjectMemberRepository
+        );
 
-    //     try {
-    //         $this->interactor->execute(
-    //             $name,
-    //             null,
-    //             $userId,
-    //             false,
-    //             null,
-    //             null
-    //         );
-    //     } catch (Exception $e) {
-    //         // プロジェクトが作成されていないことを確認
-    //         $this->assertDatabaseCount('projects', 0);
-    //         // プロジェクトメンバーが作成されていないことを確認
-    //         $this->assertDatabaseCount('project_members', 0);
+        // インタラクターを再生成（新しいモックを使用するため）
+        $this->interactor = app(CreateProjectInteractor::class);
+
+        $dto = CreateProjectDto::builder()
+            ->name('Test Project')
+            ->userId($user->id)
+            ->isPrivate(false)
+            ->build();
+
+        // 実行と検証
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Failed to create project member');
+
+        try {
+            $this->interactor->execute($dto);
+        } catch (Exception $e) {
+            // プロジェクトが作成されていないことを確認
+            $this->assertDatabaseCount('projects', 0);
+            // プロジェクトメンバーが作成されていないことを確認
+            $this->assertDatabaseCount('project_members', 0);
             
-    //         throw $e;
-    //     }
-    // }
+            throw $e;
+        }
+    }
 
     // public function test_execute_sets_correct_project_status(): void
     // {

@@ -7,6 +7,9 @@ use App\ValueObjects\UserId;
 use DateTimeImmutable;
 use App\Http\Requests\CreateProjectRequest;
 
+/**
+ * プロジェクト作成DTOビルダー
+ */
 class CreateProjectDtoBuilder
 {
     private string $name;
@@ -20,13 +23,22 @@ class CreateProjectDtoBuilder
     {
     }
 
+    /**
+     * プロジェクト作成DTOビルダーを取得
+     * 
+     * @return self プロジェクト作成DTOビルダー
+     */
     public static function builder(): self
     {
         return new self();
     }
 
     /**
-     * リクエストからDTOを構築
+     * リクエストからプロジェクト作成DTOを構築
+     * 
+     * @param CreateProjectRequest $request リクエスト
+     * @param UserId $userId ユーザーID
+     * @return CreateProjectDto プロジェクト作成DTO
      * @internal このメソッドは CreateProjectDto::fromRequest() を通じて呼び出されることを意図しています
      */
     public static function fromRequest(CreateProjectRequest $request, UserId $userId): CreateProjectDto
@@ -51,36 +63,72 @@ class CreateProjectDtoBuilder
             ->build();
     }
 
+    /**
+     * プロジェクト名を設定
+     * 
+     * @param string $name プロジェクト名
+     * @return self プロジェクト作成DTOビルダー
+     */
     public function name(string $name): self
     {
         $this->name = $name;
         return $this;
     }
 
+    /**
+     * プロジェクト説明を設定
+     * 
+     * @param ?string $description プロジェクト説明
+     * @return self プロジェクト作成DTOビルダー
+     */
     public function description(?string $description): self
     {
         $this->description = $description;
         return $this;
     }
 
+    /**
+     * ユーザーIDを設定
+     * 
+     * @param UserId $userId ユーザーID
+     * @return self プロジェクト作成DTOビルダー
+     */
     public function userId(UserId $userId): self
     {
         $this->userId = $userId;
         return $this;
     }
 
+    /**
+     * プライベートフラグを設定
+     * 
+     * @param bool $isPrivate プライベートフラグ
+     * @return self プロジェクト作成DTOビルダー
+     */
     public function isPrivate(bool $isPrivate): self
     {
         $this->isPrivate = $isPrivate;
         return $this;
     }
 
+    /**
+     * 計画開始日を設定
+     * 
+     * @param ?DateTimeImmutable $plannedStartDate 計画開始日
+     * @return self プロジェクト作成DTOビルダー
+     */
     public function plannedStartDate(?DateTimeImmutable $plannedStartDate): self
     {
         $this->plannedStartDate = $plannedStartDate;
         return $this;
     }
 
+    /**
+     * 計画終了日を設定
+     * 
+     * @param ?DateTimeImmutable $plannedEndDate 計画終了日
+     * @return self プロジェクト作成DTOビルダー
+     */
     public function plannedEndDate(?DateTimeImmutable $plannedEndDate): self
     {
         $this->plannedEndDate = $plannedEndDate;
@@ -88,9 +136,10 @@ class CreateProjectDtoBuilder
     }
 
     /**
-     * DTOを構築
+     * プロジェクト作成DTOを構築
      * 
      * @throws \InvalidArgumentException 必須パラメータが設定されていない場合
+     * @return CreateProjectDto プロジェクト作成DTO
      */
     public function build(): CreateProjectDto
     {

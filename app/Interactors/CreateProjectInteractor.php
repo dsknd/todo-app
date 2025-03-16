@@ -16,7 +16,7 @@ class CreateProjectInteractor implements CreateProjectUseCase
 {
     private ProjectRepository $projectRepository;
     private ProjectMemberRepository $projectMemberRepository;
-    
+
     public function __construct(
         ProjectRepository $projectRepository,
         ProjectMemberRepository $projectMemberRepository
@@ -26,6 +26,9 @@ class CreateProjectInteractor implements CreateProjectUseCase
         $this->projectMemberRepository = $projectMemberRepository;
     }
 
+    /**
+     * inherit-doc
+     */
     public function execute(CreateProjectDto $dto): Project {
         return DB::transaction(function () use (
             $dto,

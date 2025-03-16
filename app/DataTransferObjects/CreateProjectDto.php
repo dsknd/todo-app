@@ -7,6 +7,9 @@ use DateTimeImmutable;
 use App\DataTransferObjects\Builders\CreateProjectDtoBuilder;
 use App\Http\Requests\CreateProjectRequest;
 
+/**
+ * プロジェクト作成DTO
+ */
 class CreateProjectDto
 {
     public function __construct(
@@ -19,7 +22,15 @@ class CreateProjectDto
     ) {}
 
     /**
-     * DTOを作成
+     * プロジェクト作成DTOを作成
+     * 
+     * @param string $name プロジェクト名
+     * @param ?string $description プロジェクト説明
+     * @param UserId $userId ユーザーID
+     * @param bool $isPrivate プライベートフラグ
+     * @param ?DateTimeImmutable $plannedStartDate 計画開始日
+     * @param ?DateTimeImmutable $plannedEndDate 計画終了日
+     * @return self プロジェクト作成DTO
      */
     public static function create(
         string $name,
@@ -40,7 +51,9 @@ class CreateProjectDto
     }
 
     /**
-     * ビルダーを取得
+     * プロジェクト作成DTOビルダーを取得
+     * 
+     * @return CreateProjectDtoBuilder プロジェクト作成DTOビルダー
      */
     public static function builder(): CreateProjectDtoBuilder
     {
@@ -48,7 +61,11 @@ class CreateProjectDto
     }
 
     /**
-     * リクエストからDTOを構築
+     * リクエストからプロジェクト作成DTOを構築
+     * 
+     * @param CreateProjectRequest $request リクエスト
+     * @param UserId $userId ユーザーID
+     * @return self プロジェクト作成DTO
      */
     public static function fromRequest(CreateProjectRequest $request, UserId $userId): self
     {

@@ -8,6 +8,7 @@ use App\ValueObjects\ProjectId;
 use App\ValueObjects\UserId;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection as SupportCollection;
 
 class EloquentProjectRepository implements ProjectRepositoryInterface
 {
@@ -16,7 +17,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
      */
     public function findById(ProjectId $projectId): ?Project
     {
-        return Project::find($projectId);
+        return Project::query()->find($projectId->getValue());
     }
 
     /**
@@ -146,5 +147,21 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
         
         $project->updateProgress();
         return true;
+    }
+
+    /**
+     * 参加者IDによってプロジェクトを検索します
+     *
+     * @param UserId $userId
+     * @return Collection<int, Project>
+     */
+    public function findByParticipantId(UserId $userId): SupportCollection
+    {
+        return Project::query()
+            ->whereHas('members', function ($query) use ($userId) {
+                $query->where('user_id', $userId->getValue());
+            })
+            ->orWhere('user_id', $userId->getValue()) // プロジェクト作成者も含める
+            ->get();
     }
 }

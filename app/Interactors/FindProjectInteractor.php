@@ -9,16 +9,13 @@ use App\ValueObjects\ProjectId;
 
 final class FindProjectInteractor implements FindProjectUseCase
 {
-    private ProjectRepository $projectRepository;
-
     public function __construct(
-        ProjectRepository $projectRepository,
+        private readonly ProjectRepository $projectRepository,
     ) {
-        $this->projectRepository = $projectRepository;
     }
 
     /**
-     * プロジェクトをIDで検索します
+     * IDによってプロジェクトを検索します
      *
      * @param ProjectId $projectId
      * @return Project|null

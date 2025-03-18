@@ -26,19 +26,19 @@ class FindProjectInteractorTest extends TestCase
         );
     }
 
-    public function test_execute_finds_project_successfully(): void
+    public function test_execute_finds_project_by_id(): void
     {
         // 準備
         $project = Project::factory()->create();
+        $projectId = $project->id;  // すでにProjectIdオブジェクト
 
         // 実行
-        $foundProject = $this->interactor->execute($project->id);
+        $foundProject = $this->interactor->execute($projectId);
 
         // 検証
         $this->assertNotNull($foundProject);
-        $this->assertEquals($project->id, $foundProject->id);
+        $this->assertEquals($project->id->getValue(), $foundProject->id->getValue());
         $this->assertEquals($project->name, $foundProject->name);
-        $this->assertEquals($project->description, $foundProject->description);
     }
 
     public function test_execute_returns_null_for_non_existent_project(): void

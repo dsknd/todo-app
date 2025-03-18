@@ -8,6 +8,7 @@ use App\ValueObjects\UserId;
 use App\ValueObjects\CategoryId;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection as SupportCollection;
 
 interface ProjectRepository
 {
@@ -95,4 +96,12 @@ interface ProjectRepository
      * @return bool
      */
     public function updateProgress(ProjectId $id): bool;
+
+    /**
+     * 参加者IDによってプロジェクトを検索します
+     *
+     * @param UserId $userId
+     * @return SupportCollection<int, Project>
+     */
+    public function findByParticipantId(UserId $userId): SupportCollection;
 }

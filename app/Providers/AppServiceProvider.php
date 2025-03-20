@@ -25,6 +25,10 @@ use App\Repositories\Interfaces\PermissionRepository;
 use App\Repositories\EloquentPermissionRepository;
 use App\UseCases\FindProjectUseCase;
 use App\Interactors\FindProjectInteractor;
+use App\UseCases\FetchOwnedProjectsUseCase;
+use App\Interactors\FetchOwnedProjectsInteractor;
+use App\UseCases\FetchParticipatingProjectsUseCase;
+use App\Interactors\FetchParticipatingProjectsInteractor;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,6 +42,8 @@ class AppServiceProvider extends ServiceProvider
         // ユースケース
         $this->app->bind(CreateProjectUseCase::class, CreateProjectInteractor::class);
         $this->app->bind(FindProjectUseCase::class, FindProjectInteractor::class);
+        $this->app->bind(FetchOwnedProjectsUseCase::class, FetchOwnedProjectsInteractor::class);
+        $this->app->bind(FetchParticipatingProjectsUseCase::class, FetchParticipatingProjectsInteractor::class);
         $this->app->bind(CreateTaskUseCase::class, CreateTaskInteractor::class);
 
         // createProjectInteractorで使用するリポジトリ

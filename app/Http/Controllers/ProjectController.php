@@ -11,113 +11,117 @@ use Throwable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UpdateProjectRequest;
-use App\Models\ProjectRole;
-use App\Enums\DefaultProjectRolePresetEnum;
-use App\Models\LocaleEnum;
+use App\UseCases\FetchOwnedProjectsUseCase;
+use App\UseCases\FetchParticipatingProjectsUseCase;
+use App\Http\Queries\ProjectIndexQuery;
+use App\Http\Resources\ProjectResource;
+use Illuminate\Http\Request;
+use App\ValueObjects\UserId;
+use App\Models\User;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class ProjectController extends Controller
 {
+    private FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase;
+    private FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase;
+
+    public function __construct(
+        FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase,
+        FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase,
+    ) {
+        $this->fetchOwnedProjectsUseCase = $fetchOwnedProjectsUseCase;
+        $this->fetchParticipatingProjectsUseCase = $fetchParticipatingProjectsUseCase;
+    }
+
     /**
      * プロジェクトの一覧を取得します。
      * 
-     * URLクエリパラメータ
-     * - filter: (created, participated, all)
-     * 
      * @return JsonResponse
      */
-    public function index(): JsonResponse
+    public function index(Request $request)
     {
-        // URLクエリパラメータ
-        $filter = request()->query('filter', null);
-
-        // クエリビルダ
-        $query = Project::query();
-
-        if ($filter === 'created') {
-            // ユーザ自身が作成したプロジェクトのみ取得する
-            $query->where('user_id', Auth::id());
-        } elseif ($filter === 'participated') {
-            // ユーザ自身がメンバーとなっているプロジェクトのみ取得する
-            $query->with(['members' => function ($query) {
-                $query->where('user_id', Auth::id());
-            }]);
-        } else {
-            // allの場合は参加しているプロジェクトと作成したプロジェクトを取得する
-            $query->with(['members' => function ($query) {
-                $query->where('user_id', Auth::id());
-            }])->orWhere('user_id', Auth::id());
-        }
-        $projects = $query->get();
-        return response()->json([
-            'message' => 'Projects fetched successfully',
-            'projects' => $projects,
-        ], Response::HTTP_OK);
-    }
-
-    /**
-     * プロジェクトを作成します。
-     */
-    public function store(CreateProjectRequest $request): JsonResponse
-    {
-        // バリデーション
-        $validated = $request->validated();
-
-        // データの作成
-        $data = $validated;
-        $data['project_status_id'] = ProjectStatusEnum::PLANNING->value;
-        $data['user_id'] = Auth::id();
-        $data['is_private'] = false;
-
-        // トランザクションを使用してプロジェクトを作成
-        $project = null;
-
-        $requestHeaderLocale = $request->header('Accept-Language');
-        try {
-            DB::transaction(function () use ($data, &$project) {
-                $project = Project::create($data);
-
-                // TODO: デフォルトロールの作成
-
-                // TODO: デフォルトパーミッション割当
-            });
-        } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Project creation failed',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        $user = Auth::user();
+        if (!$user) {
+            throw new UnauthorizedHttpException('Bearer', 'Unauthorized');
         }
 
-        // レスポンス
-        return response()->json([
-            'message' => 'Project created successfully',
-            'project' => $project,
-        ], Response::HTTP_CREATED);
+        $query = ProjectIndexQuery::fromRequest($request);
+        $userId = new UserId($user->id->getValue());  // 整数値を取得して新しいUserIdを作成
+
+        $projects = match(true) {
+            $query->isOwnedProjectsRequest() => 
+                $this->fetchOwnedProjectsUseCase->execute($userId, $query->perPage),
+            default => 
+                $this->fetchParticipatingProjectsUseCase->execute($userId),
+        };
+
+        return ProjectResource::collection($projects);
     }
 
-    /**
-     * プロジェクトを更新します。
-     */
-    public function update(UpdateProjectRequest $request, Project $project): JsonResponse
-    {
-        // バリデーション
-        $validated = $request->validated();
+    // /**
+    //  * プロジェクトを作成します。
+    //  */
+    // public function store(CreateProjectRequest $request): JsonResponse
+    // {
+    //     // バリデーション
+    //     $validated = $request->validated();
 
-        $project->update($validated);
+    //     // データの作成
+    //     $data = $validated;
+    //     $data['project_status_id'] = ProjectStatusEnum::PLANNING->value;
+    //     $data['user_id'] = Auth::id();
+    //     $data['is_private'] = false;
 
-        return response()->json([
-            'message' => 'Project updated successfully',
-            'project' => $project,
-        ], Response::HTTP_OK);
-    }
+    //     // トランザクションを使用してプロジェクトを作成
+    //     $project = null;
 
-    /**
-     * プロジェクトを削除します。
-     */
-    public function destroy(Project $project): JsonResponse
-    {
-        $project->delete();
-        return response()->json([
-            'message' => 'Project deleted successfully',
-        ], Response::HTTP_NO_CONTENT);
-    }
+    //     $requestHeaderLocale = $request->header('Accept-Language');
+    //     try {
+    //         DB::transaction(function () use ($data, &$project) {
+    //             $project = Project::create($data);
+
+    //             // TODO: デフォルトロールの作成
+
+    //             // TODO: デフォルトパーミッション割当
+    //         });
+    //     } catch (Throwable $e) {
+    //         return response()->json([
+    //             'message' => 'Project creation failed',
+    //             'error' => $e->getMessage(),
+    //         ], Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+
+    //     // レスポンス
+    //     return response()->json([
+    //         'message' => 'Project created successfully',
+    //         'project' => $project,
+    //     ], Response::HTTP_CREATED);
+    // }
+
+    // /**
+    //  * プロジェクトを更新します。
+    //  */
+    // public function update(UpdateProjectRequest $request, Project $project): JsonResponse
+    // {
+    //     // バリデーション
+    //     $validated = $request->validated();
+
+    //     $project->update($validated);
+
+    //     return response()->json([
+    //         'message' => 'Project updated successfully',
+    //         'project' => $project,
+    //     ], Response::HTTP_OK);
+    // }
+
+    // /**
+    //  * プロジェクトを削除します。
+    //  */
+    // public function destroy(Project $project): JsonResponse
+    // {
+    //     $project->delete();
+    //     return response()->json([
+    //         'message' => 'Project deleted successfully',
+    //     ], Response::HTTP_NO_CONTENT);
+    // }
 }

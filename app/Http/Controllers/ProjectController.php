@@ -2,14 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\DB;
 use App\Http\Requests\CreateProjectRequest;
-use App\Enums\ProjectStatusEnum;
-use Throwable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UpdateProjectRequest;
 use App\UseCases\FetchOwnedProjectsUseCase;
 use App\UseCases\FetchParticipatingProjectsUseCase;
@@ -19,25 +14,30 @@ use Illuminate\Http\Request;
 use App\ValueObjects\UserId;
 use App\UseCases\CreateProjectUseCase;
 use App\DataTransferObjects\CreateProjectDto;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use App\UseCases\UpdateProjectUseCase;
 use App\DataTransferObjects\UpdateProjectDto;
+use App\UseCases\DeleteProjectUseCase;
+use App\Models\Project;
+
 class ProjectController extends Controller
 {
     private CreateProjectUseCase $createProjectUseCase;
     private FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase;
     private FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase;
     private UpdateProjectUseCase $updateProjectUseCase;
+    private DeleteProjectUseCase $deleteProjectUseCase;
     public function __construct(
         CreateProjectUseCase $createProjectUseCase,
         FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase,
         FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase,
         UpdateProjectUseCase $updateProjectUseCase,
+        DeleteProjectUseCase $deleteProjectUseCase,
     ) {
         $this->createProjectUseCase = $createProjectUseCase;
         $this->fetchOwnedProjectsUseCase = $fetchOwnedProjectsUseCase;
         $this->fetchParticipatingProjectsUseCase = $fetchParticipatingProjectsUseCase;
         $this->updateProjectUseCase = $updateProjectUseCase;
+        $this->deleteProjectUseCase = $deleteProjectUseCase;
     }
 
     /**
@@ -80,11 +80,11 @@ class ProjectController extends Controller
     /**
      * プロジェクトを更新します。
      * 
-     * @param UpdateProjectRequest $request プロジェクト更新リクエスト
      * @param Project $project プロジェクト
+     * @param UpdateProjectRequest $request プロジェクト更新リクエスト
      * @return JsonResponse プロジェクトリソース
      */
-    public function update(UpdateProjectRequest $request, Project $project): JsonResponse
+    public function update(Project $project, UpdateProjectRequest $request): JsonResponse
     {
         $updateProjectDto = UpdateProjectDto::fromRequest($request);
         $project = $this->updateProjectUseCase->execute($project->id, $updateProjectDto);
@@ -94,14 +94,15 @@ class ProjectController extends Controller
 
     }
 
-    // /**
-    //  * プロジェクトを削除します。
-    //  */
-    // public function destroy(Project $project): JsonResponse
-    // {
-    //     $project->delete();
-    //     return response()->json([
-    //         'message' => 'Project deleted successfully',
-    //     ], Response::HTTP_NO_CONTENT);
-    // }
+    /**
+     * プロジェクトを削除します。
+     * 
+     * @param Project $project プロジェクト
+     * @return JsonResponse プロジェクトリソース
+     */
+    public function destroy(Project $project): JsonResponse
+    {
+        $this->deleteProjectUseCase->execute($project->id);
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
 }

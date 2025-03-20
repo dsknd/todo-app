@@ -152,6 +152,14 @@ class ProjectControllerTest extends TestCase
             ]
         ]);
     }
+
+    public function test_destroy_success(): void
+    {
+        $project = Project::factory()->create();
+        $response = $this->actingAs($this->user)
+                         ->deleteJson('/api/projects/' . $project->id);
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
 }
 
 

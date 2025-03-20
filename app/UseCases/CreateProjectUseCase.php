@@ -14,6 +14,7 @@ interface CreateProjectUseCase
      *
      * @param CreateProjectDto $dto プロジェクトの作成情報
      * @return Project 作成されたプロジェクト
+     * @throws InternalServerErrorException 内部サーバーエラーが発生した場合
      */
     public function execute(
         CreateProjectDto $dto,

@@ -60,13 +60,4 @@ class CustomProjectRole extends Model
     {
         return $this->belongsTo(Project::class, 'project_id');
     }
-
-    /**
-     * このロールに関連付けられたプロジェクトメンバーを取得
-     */
-    public function projectMembers()
-    {
-        return $this->belongsToMany(User::class, 'project_role_assignments', 'project_role_id', 'user_id')
-            ->using(ProjectRoleAssignment::class);
-    }
 }

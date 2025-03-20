@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 use App\ValueObjects\ProjectId;
-
+use App\DataTransferObjects\UpdateProjectDto;
 #[Group('interactor')]
 #[Group('update_project')]
 class UpdateProjectInteractorTest extends TestCase
@@ -37,16 +37,16 @@ class UpdateProjectInteractorTest extends TestCase
             'user_id' => $user->id,
         ]);
 
-        $updateData = [
-            'name' => '新しいプロジェクト名',
-            'description' => '新しい説明',
-        ];
+        $dto = UpdateProjectDto::builder()
+            ->name('新しいプロジェクト名')
+            ->description('新しい説明')
+            ->build();
 
         // 実行
-        $result = $this->interactor->execute($project->id, $updateData);
+        $result = $this->interactor->execute($project->id, $dto);
 
         // 検証
-        $this->assertTrue($result);
+        $this->assertTrue($result instanceof Project);
         $this->assertDatabaseHas('projects', [
             'id' => $project->id->getValue(),
             'name' => '新しいプロジェクト名',
@@ -59,15 +59,15 @@ class UpdateProjectInteractorTest extends TestCase
     {
         // 準備
         $nonExistentId = new ProjectId(99999); // 存在しないIDを直接使用
-        $updateData = [
-            'name' => '新しいプロジェクト名',
-        ];
+        $dto = UpdateProjectDto::builder()
+            ->name('新しいプロジェクト名')
+            ->build();
 
         // 実行
-        $result = $this->interactor->execute($nonExistentId, $updateData);
+        $result = $this->interactor->execute($nonExistentId, $dto);
 
         // 検証
-        $this->assertFalse($result);
+        $this->assertNull($result);
     }
 
     public function test_execute_updates_only_specified_attributes(): void
@@ -78,16 +78,15 @@ class UpdateProjectInteractorTest extends TestCase
             'description' => '元の説明',
         ]);
 
-        $updateData = [
-            'name' => '新しいプロジェクト名',
-            // descriptionは更新しない
-        ];
+        $dto = UpdateProjectDto::builder()
+            ->name('新しいプロジェクト名')
+            ->build();
 
         // 実行
-        $result = $this->interactor->execute($project->id, $updateData);
+        $result = $this->interactor->execute($project->id, $dto);
 
         // 検証
-        $this->assertTrue($result);
+        $this->assertTrue($result instanceof Project);
         $this->assertDatabaseHas('projects', [
             'id' => $project->id->getValue(),
             'name' => '新しいプロジェクト名',
@@ -104,10 +103,10 @@ class UpdateProjectInteractorTest extends TestCase
         ]);
 
         // 実行
-        $result = $this->interactor->execute($project->id, []);
+        $result = $this->interactor->execute($project->id, UpdateProjectDto::builder()->build());
 
         // 検証
-        $this->assertTrue($result);
+        $this->assertTrue($result instanceof Project);
         $this->assertDatabaseHas('projects', [
             'id' => $project->id->getValue(),
             'name' => '元のプロジェクト名',

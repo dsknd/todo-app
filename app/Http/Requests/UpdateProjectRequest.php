@@ -16,7 +16,7 @@ class UpdateProjectRequest extends FormRequest
         return [
             'name' => ['sometimes', 'nullable', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string'],
-            'status_id' => ['sometimes', 'nullable', 'integer'],
+            'project_status_id' => ['sometimes', 'nullable', 'integer'],
             'planned_start_date' => ['sometimes', 'nullable', 'date'],
             'planned_end_date' => [
                 'sometimes',
@@ -44,7 +44,7 @@ class UpdateProjectRequest extends FormRequest
             'name.string' => 'プロジェクト名は文字列で入力してください',
             'name.max' => 'プロジェクト名は255文字以内で入力してください',
             'description.string' => 'プロジェクトの説明は文字列で入力してください',
-            'status_id.integer' => 'プロジェクトのステータスは整数で入力してください',
+            'project_status_id.integer' => 'プロジェクトのステータスは整数で入力してください',
             'planned_start_date.date' => '予定開始日は日付形式で入力してください',
             'planned_end_date.date' => '予定終了日は日付形式で入力してください',
             'planned_end_date.after_or_equal' => '予定終了日は予定開始日以降の日付を指定してください',

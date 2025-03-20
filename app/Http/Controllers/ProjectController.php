@@ -2,122 +2,107 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\DB;
 use App\Http\Requests\CreateProjectRequest;
-use App\Enums\ProjectStatusEnum;
-use Throwable;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\UpdateProjectRequest;
-use App\Models\ProjectRole;
-use App\Enums\DefaultProjectRolePresetEnum;
-use App\Models\LocaleEnum;
+use App\UseCases\FetchOwnedProjectsUseCase;
+use App\UseCases\FetchParticipatingProjectsUseCase;
+use App\Http\Queries\ProjectIndexQuery;
+use App\Http\Resources\ProjectResource;
+use Illuminate\Http\Request;
+use App\ValueObjects\UserId;
+use App\UseCases\CreateProjectUseCase;
+use App\DataTransferObjects\CreateProjectDto;
+use App\UseCases\UpdateProjectUseCase;
+use App\DataTransferObjects\UpdateProjectDto;
+use App\UseCases\DeleteProjectUseCase;
+use App\Models\Project;
 
 class ProjectController extends Controller
 {
+    private CreateProjectUseCase $createProjectUseCase;
+    private FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase;
+    private FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase;
+    private UpdateProjectUseCase $updateProjectUseCase;
+    private DeleteProjectUseCase $deleteProjectUseCase;
+    public function __construct(
+        CreateProjectUseCase $createProjectUseCase,
+        FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase,
+        FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase,
+        UpdateProjectUseCase $updateProjectUseCase,
+        DeleteProjectUseCase $deleteProjectUseCase,
+    ) {
+        $this->createProjectUseCase = $createProjectUseCase;
+        $this->fetchOwnedProjectsUseCase = $fetchOwnedProjectsUseCase;
+        $this->fetchParticipatingProjectsUseCase = $fetchParticipatingProjectsUseCase;
+        $this->updateProjectUseCase = $updateProjectUseCase;
+        $this->deleteProjectUseCase = $deleteProjectUseCase;
+    }
+
     /**
      * プロジェクトの一覧を取得します。
      * 
-     * URLクエリパラメータ
-     * - filter: (created, participated, all)
-     * 
-     * @return JsonResponse
+     * @param Request $request リクエスト
+     * @return JsonResponse プロジェクトリソース
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        // URLクエリパラメータ
-        $filter = request()->query('filter', null);
+        $query = ProjectIndexQuery::fromRequest($request);
+        $userId = UserId::fromAuth();
 
-        // クエリビルダ
-        $query = Project::query();
+        $projects = match(true) {
+            $query->isOwnedProjectsRequest() => 
+                $this->fetchOwnedProjectsUseCase->execute($userId, $query->perPage),
+            default => 
+                $this->fetchParticipatingProjectsUseCase->execute($userId),
+        };
 
-        if ($filter === 'created') {
-            // ユーザ自身が作成したプロジェクトのみ取得する
-            $query->where('user_id', Auth::id());
-        } elseif ($filter === 'participated') {
-            // ユーザ自身がメンバーとなっているプロジェクトのみ取得する
-            $query->with(['members' => function ($query) {
-                $query->where('user_id', Auth::id());
-            }]);
-        } else {
-            // allの場合は参加しているプロジェクトと作成したプロジェクトを取得する
-            $query->with(['members' => function ($query) {
-                $query->where('user_id', Auth::id());
-            }])->orWhere('user_id', Auth::id());
-        }
-        $projects = $query->get();
-        return response()->json([
-            'message' => 'Projects fetched successfully',
-            'projects' => $projects,
-        ], Response::HTTP_OK);
+        return ProjectResource::collection($projects)->response()->setStatusCode(Response::HTTP_OK);
     }
 
     /**
      * プロジェクトを作成します。
+     * 
+     * @param CreateProjectRequest $request プロジェクト作成リクエスト
+     * @return JsonResponse プロジェクトリソース
      */
     public function store(CreateProjectRequest $request): JsonResponse
     {
-        // バリデーション
-        $validated = $request->validated();
-
-        // データの作成
-        $data = $validated;
-        $data['project_status_id'] = ProjectStatusEnum::PLANNING->value;
-        $data['user_id'] = Auth::id();
-        $data['is_private'] = false;
-
-        // トランザクションを使用してプロジェクトを作成
-        $project = null;
-
-        $requestHeaderLocale = $request->header('Accept-Language');
-        try {
-            DB::transaction(function () use ($data, &$project) {
-                $project = Project::create($data);
-
-                // TODO: デフォルトロールの作成
-
-                // TODO: デフォルトパーミッション割当
-            });
-        } catch (Throwable $e) {
-            return response()->json([
-                'message' => 'Project creation failed',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        // プロジェクトの作成
+        $createProjectDto = CreateProjectDto::fromRequest($request);
+        $project = $this->createProjectUseCase->execute($createProjectDto);
 
         // レスポンス
-        return response()->json([
-            'message' => 'Project created successfully',
-            'project' => $project,
-        ], Response::HTTP_CREATED);
+        return new ProjectResource($project)->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**
      * プロジェクトを更新します。
+     * 
+     * @param Project $project プロジェクト
+     * @param UpdateProjectRequest $request プロジェクト更新リクエスト
+     * @return JsonResponse プロジェクトリソース
      */
-    public function update(UpdateProjectRequest $request, Project $project): JsonResponse
+    public function update(Project $project, UpdateProjectRequest $request): JsonResponse
     {
-        // バリデーション
-        $validated = $request->validated();
+        $updateProjectDto = UpdateProjectDto::fromRequest($request);
+        $project = $this->updateProjectUseCase->execute($project->id, $updateProjectDto);
 
-        $project->update($validated);
+        // レスポンス
+        return new ProjectResource($project)->response()->setStatusCode(Response::HTTP_OK);
 
-        return response()->json([
-            'message' => 'Project updated successfully',
-            'project' => $project,
-        ], Response::HTTP_OK);
     }
 
     /**
      * プロジェクトを削除します。
+     * 
+     * @param Project $project プロジェクト
+     * @return JsonResponse プロジェクトリソース
      */
     public function destroy(Project $project): JsonResponse
     {
-        $project->delete();
-        return response()->json([
-            'message' => 'Project deleted successfully',
-        ], Response::HTTP_NO_CONTENT);
+        $this->deleteProjectUseCase->execute($project->id);
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }

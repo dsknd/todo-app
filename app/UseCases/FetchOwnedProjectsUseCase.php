@@ -10,6 +10,8 @@ interface FetchOwnedProjectsUseCase
     /**
      * ユーザーが作成したプロジェクトを取得します
      *
+     * @see FetchOwnedProjectsInteractor 実装クラス
+     *
      * @param UserId $userId
      * @param int $perPage
      * @return LengthAwarePaginator

@@ -5,6 +5,8 @@ namespace App\Interactors;
 use App\Repositories\Interfaces\ProjectRepository;
 use App\UseCases\UpdateProjectUseCase;
 use App\ValueObjects\ProjectId;
+use App\DataTransferObjects\UpdateProjectDto;
+use App\Models\Project;
 
 final class UpdateProjectInteractor implements UpdateProjectUseCase
 {
@@ -13,8 +15,16 @@ final class UpdateProjectInteractor implements UpdateProjectUseCase
     ) {
     }
 
-    public function execute(ProjectId $projectId, array $attributes): bool
+    public function execute(ProjectId $projectId, UpdateProjectDto $dto): ?Project
     {
-        return $this->projectRepository->update($projectId, $attributes);
+        if ($dto->isEmpty()) {
+            $project = $this->projectRepository->findById($projectId);
+            if (!$project) {
+                return null;
+            }
+            return $project;
+        }
+        $this->projectRepository->update($projectId, $dto->toArray());
+        return $this->projectRepository->findById($projectId);
     }
 } 

@@ -20,25 +20,25 @@ return new class extends Migration
     {
         Schema::create('default_project_role_translations', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('project_role_id'); // プロジェクトロールID
+            $table->unsignedBigInteger('default_project_role_id'); // プロジェクトロールID
             $table->unsignedBigInteger('locale_id');       // ロケールID
             $table->string('name');                        // プロジェクトロール名
             $table->string('description')->nullable();     // プロジェクトロールの説明
             $table->timestamps();                          // 作成日時、更新日時
 
             // 外部キー定義
-            $table->foreign('project_role_id')
-                ->references('id')
-                ->on('project_roles')
+            $table->foreign('default_project_role_id', 'default_project_role_translations_default_project_role_id_fk')
+                ->references('project_role_id')
+                ->on('default_project_roles')
                 ->cascadeOnDelete();
 
-            $table->foreign('locale_id')
+            $table->foreign('locale_id', 'default_project_role_translations_locale_id_fk')
                 ->references('id')
                 ->on('locales')
                 ->cascadeOnDelete();
 
             // 主キー定義
-            $table->primary(['project_role_id', 'locale_id']);
+            $table->primary(['default_project_role_id', 'locale_id']);
 
             // インデックス定義
             $table->index('locale_id');

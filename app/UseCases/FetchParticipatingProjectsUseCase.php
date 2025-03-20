@@ -11,6 +11,8 @@ interface FetchParticipatingProjectsUseCase
     /**
      * ユーザーが参加しているプロジェクトを取得します
      *
+     * @see FetchParticipatingProjectsInteractor 実装クラス
+     *
      * @param UserId $userId
      * @return Collection<int, Project>
      */

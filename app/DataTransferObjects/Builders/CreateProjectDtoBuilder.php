@@ -37,13 +37,13 @@ class CreateProjectDtoBuilder
      * リクエストからプロジェクト作成DTOを構築
      * 
      * @param CreateProjectRequest $request リクエスト
-     * @param UserId $userId ユーザーID
      * @return CreateProjectDto プロジェクト作成DTO
      * @internal このメソッドは CreateProjectDto::fromRequest() を通じて呼び出されることを意図しています
      */
-    public static function fromRequest(CreateProjectRequest $request, UserId $userId): CreateProjectDto
+    public static function fromRequest(CreateProjectRequest $request): CreateProjectDto
     {
         $validated = $request->validated();
+        $userId = UserId::fromAuth();
 
         return self::builder()
             ->name($validated['name'])

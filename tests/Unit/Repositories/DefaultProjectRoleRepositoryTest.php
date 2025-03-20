@@ -30,24 +30,14 @@ class DefaultProjectRoleRepositoryTest extends TestCase
     public function test_it_can_find_default_project_role_by_project_role_id()
     {
         // 準備
-        $projectRoleType = ProjectRoleType::factory()->create([
-            'key' => ProjectRoleTypeEnum::DEFAULT->getKey(),
-        ]);
+        $defaultProjectRole = DefaultProjectRole::factory()->create();
         
-        $projectRole = ProjectRole::factory()->create([
-            'project_role_type_id' => $projectRoleType->id,
-        ]);
-        
-        $defaultProjectRole = new DefaultProjectRole();
-        $defaultProjectRole->project_role_id = $projectRole->id;
-        $defaultProjectRole->save();
-
         // 実行
-        $foundDefaultProjectRole = $this->repository->findByProjectRoleId($projectRole->id);
+        $foundDefaultProjectRole = $this->repository->findByProjectRoleId($defaultProjectRole->project_role_id);
 
         // 検証
         $this->assertNotNull($foundDefaultProjectRole);
-        $this->assertTrue($projectRole->id->equals($foundDefaultProjectRole->project_role_id));
+        $this->assertTrue($defaultProjectRole->project_role_id->equals($foundDefaultProjectRole->project_role_id));
     }
 
     public function test_it_returns_null_when_default_project_role_not_found()

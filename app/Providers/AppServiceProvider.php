@@ -25,6 +25,14 @@ use App\Repositories\Interfaces\PermissionRepository;
 use App\Repositories\EloquentPermissionRepository;
 use App\UseCases\FindProjectUseCase;
 use App\Interactors\FindProjectInteractor;
+use App\UseCases\FetchOwnedProjectsUseCase;
+use App\Interactors\FetchOwnedProjectsInteractor;
+use App\UseCases\FetchParticipatingProjectsUseCase;
+use App\Interactors\FetchParticipatingProjectsInteractor;
+use App\UseCases\UpdateProjectUseCase;
+use App\Interactors\UpdateProjectInteractor;
+use App\UseCases\DeleteProjectUseCase;
+use App\Interactors\DeleteProjectInteractor;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,8 +46,11 @@ class AppServiceProvider extends ServiceProvider
         // ユースケース
         $this->app->bind(CreateProjectUseCase::class, CreateProjectInteractor::class);
         $this->app->bind(FindProjectUseCase::class, FindProjectInteractor::class);
+        $this->app->bind(FetchOwnedProjectsUseCase::class, FetchOwnedProjectsInteractor::class);
+        $this->app->bind(FetchParticipatingProjectsUseCase::class, FetchParticipatingProjectsInteractor::class);
         $this->app->bind(CreateTaskUseCase::class, CreateTaskInteractor::class);
-
+        $this->app->bind(UpdateProjectUseCase::class, UpdateProjectInteractor::class);
+        $this->app->bind(DeleteProjectUseCase::class, DeleteProjectInteractor::class);
         // createProjectInteractorで使用するリポジトリ
         $this->app->bind(ProjectRepository::class, EloquentProjectRepository::class);
         $this->app->bind(ProjectMemberRepository::class, EloquentProjectMemberRepository::class);

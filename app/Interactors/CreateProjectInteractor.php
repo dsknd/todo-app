@@ -11,6 +11,8 @@ use App\Repositories\Interfaces\ProjectMemberRepository;
 use App\ValueObjects\ProjectRoleId;
 use App\Enums\DefaultProjectRoleEnum;
 use App\DataTransferObjects\CreateProjectDto;
+use App\UseCases\Exceptions\InternalServerErrorException;
+use Throwable;
 
 class CreateProjectInteractor implements CreateProjectUseCase
 {
@@ -30,9 +32,8 @@ class CreateProjectInteractor implements CreateProjectUseCase
      * inherit-doc
      */
     public function execute(CreateProjectDto $dto): Project {
-        return DB::transaction(function () use (
-            $dto,
-        ) {
+        DB::beginTransaction();
+        try {
             // プロジェクトを作成
             $project = $this->projectRepository->create([
                 'name' => $dto->name,
@@ -52,6 +53,9 @@ class CreateProjectInteractor implements CreateProjectUseCase
             );
 
             return $project;
-        });
+        } catch (Throwable $e) {
+            DB::rollBack();
+            throw new InternalServerErrorException("Failed to create project", $e);
+        }
     }
 }

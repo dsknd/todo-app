@@ -16,7 +16,8 @@ use App\DataTransferObjects\CreateProjectDto;
 use DateTimeImmutable;
 use Exception;
 use App\Repositories\Interfaces\ProjectMemberRepository;
-
+use App\UseCases\Exceptions\InternalServerErrorException;
+use App\Repositories\Interfaces\ProjectRepository;
 #[Group('interactor')]
 #[Group('create_project')]
 class CreateProjectInteractorTest extends TestCase
@@ -128,8 +129,7 @@ class CreateProjectInteractorTest extends TestCase
             ->build();
 
         // 実行と検証
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Failed to create project member');
+        $this->expectException(InternalServerErrorException::class);
 
         try {
             $this->interactor->execute($dto);

@@ -12,6 +12,7 @@ class DefaultProjectRole extends Model
 
     protected $table = 'default_project_roles';
     protected $primaryKey = 'project_role_id';
+    public $timestamps = false;
 
     protected $fillable = [
         'key',

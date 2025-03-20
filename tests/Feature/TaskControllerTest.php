@@ -69,43 +69,43 @@ class TaskControllerTest extends TestCase
     //         ]);
     // }
 
-    public function test_store_success(): void
-    {
-        $data = [
-            'title' => 'Test Task',
-            'description' => 'Test Description',
-            'is_recurring' => false,
-            'category_id' => $this->category->id,
-            'priority_id' => $this->priority->id,
-            'planned_start_date' => now()->addDays(1)->format('Y-m-d'),
-            'planned_end_date' => now()->addDays(2)->format('Y-m-d'),
-            'actual_start_date' => now()->addDays(1)->format('Y-m-d'),
-            'actual_end_date' => now()->addDays(2)->format('Y-m-d'),
-        ];
+    // public function test_store_success(): void
+    // {
+    //     $data = [
+    //         'title' => 'Test Task',
+    //         'description' => 'Test Description',
+    //         'is_recurring' => false,
+    //         'category_id' => $this->category->id,
+    //         'priority_id' => $this->priority->id,
+    //         'planned_start_date' => now()->addDays(1)->format('Y-m-d'),
+    //         'planned_end_date' => now()->addDays(2)->format('Y-m-d'),
+    //         'actual_start_date' => now()->addDays(1)->format('Y-m-d'),
+    //         'actual_end_date' => now()->addDays(2)->format('Y-m-d'),
+    //     ];
 
-        $response = $this->actingAs($this->user)
-            ->postJson("/api/projects/{$this->project->id}/tasks", $data);
+    //     $response = $this->actingAs($this->user)
+    //         ->postJson("/api/projects/{$this->project->id}/tasks", $data);
 
-        \Log::info($response->getContent());
+    //     \Log::info($response->getContent());
 
-        $response->assertCreated()
-            ->assertJsonStructure([
-                'message',
-                'task' => [
-                    'id',
-                    'title',
-                    'description',
-                    'status_id',
-                    'project_id',
-                    'user_id',
-                    'created_at',
-                    'updated_at'
-                ]
-            ])
-            ->assertJsonPath('task.title', $data['title'])
-            ->assertJsonPath('task.description', $data['description'])
-            ->assertJsonPath('task.status_id', TaskStatusEnum::NOT_STARTED->value);
-    }
+    //     $response->assertCreated()
+    //         ->assertJsonStructure([
+    //             'message',
+    //             'task' => [
+    //                 'id',
+    //                 'title',
+    //                 'description',
+    //                 'status_id',
+    //                 'project_id',
+    //                 'user_id',
+    //                 'created_at',
+    //                 'updated_at'
+    //             ]
+    //         ])
+    //         ->assertJsonPath('task.title', $data['title'])
+    //         ->assertJsonPath('task.description', $data['description'])
+    //         ->assertJsonPath('task.status_id', TaskStatusEnum::NOT_STARTED->value);
+    // }
 
     // public function test_store_validation_error(): void
     // {

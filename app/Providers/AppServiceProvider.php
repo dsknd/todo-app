@@ -29,6 +29,8 @@ use App\UseCases\FetchOwnedProjectsUseCase;
 use App\Interactors\FetchOwnedProjectsInteractor;
 use App\UseCases\FetchParticipatingProjectsUseCase;
 use App\Interactors\FetchParticipatingProjectsInteractor;
+use App\UseCases\UpdateProjectUseCase;
+use App\Interactors\UpdateProjectInteractor;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -45,6 +47,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(FetchOwnedProjectsUseCase::class, FetchOwnedProjectsInteractor::class);
         $this->app->bind(FetchParticipatingProjectsUseCase::class, FetchParticipatingProjectsInteractor::class);
         $this->app->bind(CreateTaskUseCase::class, CreateTaskInteractor::class);
+        $this->app->bind(UpdateProjectUseCase::class, UpdateProjectInteractor::class);
 
         // createProjectInteractorで使用するリポジトリ
         $this->app->bind(ProjectRepository::class, EloquentProjectRepository::class);

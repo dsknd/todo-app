@@ -11,6 +11,8 @@ interface UpdateProjectUseCase
     /**
      * プロジェクトを更新します
      *
+     * @see UpdateProjectInteractor 実装クラス
+     *
      * @param ProjectId $projectId
      * @param UpdateProjectDto $dto
      * @return ?Project

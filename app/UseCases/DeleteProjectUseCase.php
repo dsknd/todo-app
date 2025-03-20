@@ -10,7 +10,7 @@ interface DeleteProjectUseCase
     /**
      * プロジェクトを削除します
      * 
-     * @see DeleteProjectInteractor
+     * @see DeleteProjectInteractor 実装クラス
      *
      * @param ProjectId $projectId
      * @return bool

@@ -21,6 +21,7 @@ use App\UseCases\CreateProjectUseCase;
 use App\DataTransferObjects\CreateProjectDto;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use App\UseCases\UpdateProjectUseCase;
+use App\DataTransferObjects\UpdateProjectDto;
 class ProjectController extends Controller
 {
     private CreateProjectUseCase $createProjectUseCase;
@@ -41,8 +42,11 @@ class ProjectController extends Controller
 
     /**
      * プロジェクトの一覧を取得します。
+     * 
+     * @param Request $request リクエスト
+     * @return JsonResponse プロジェクトリソース
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $query = ProjectIndexQuery::fromRequest($request);
         $userId = UserId::fromAuth();
@@ -54,7 +58,7 @@ class ProjectController extends Controller
                 $this->fetchParticipatingProjectsUseCase->execute($userId),
         };
 
-        return ProjectResource::collection($projects);
+        return ProjectResource::collection($projects)->response()->setStatusCode(Response::HTTP_OK);
     }
 
     /**
@@ -73,14 +77,22 @@ class ProjectController extends Controller
         return new ProjectResource($project)->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
-    // /**
-    //  * プロジェクトを更新します。
-    //  */
-    // public function update(UpdateProjectRequest $request, Project $project): JsonResponse
-    // {
-    //     $project->update($validated);
+    /**
+     * プロジェクトを更新します。
+     * 
+     * @param UpdateProjectRequest $request プロジェクト更新リクエスト
+     * @param Project $project プロジェクト
+     * @return JsonResponse プロジェクトリソース
+     */
+    public function update(UpdateProjectRequest $request, Project $project): JsonResponse
+    {
+        $updateProjectDto = UpdateProjectDto::fromRequest($request);
+        $project = $this->updateProjectUseCase->execute($project->id, $updateProjectDto);
 
-    // }
+        // レスポンス
+        return new ProjectResource($project)->response()->setStatusCode(Response::HTTP_OK);
+
+    }
 
     // /**
     //  * プロジェクトを削除します。

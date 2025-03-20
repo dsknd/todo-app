@@ -119,6 +119,39 @@ class ProjectControllerTest extends TestCase
             ]
         ]);
     }
+
+    public function test_update_success(): void
+    {
+        $project = Project::factory()->create();
+        $response = $this->actingAs($this->user)
+                         ->putJson('/api/projects/' . $project->id, [
+                            'name' => 'Updated Project',
+                            'description' => 'Updated Description',
+                         ]);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'description',
+                'is_private',
+                'status' => [
+                    'id',
+                    'name'
+                ],
+                'owner' => [
+                    'id',
+                    'name'
+                ],
+                'planned_start_date',
+                'planned_end_date',
+                'actual_start_date',
+                'actual_end_date',
+                'created_at',
+                'updated_at'
+            ]
+        ]);
+    }
 }
 
 

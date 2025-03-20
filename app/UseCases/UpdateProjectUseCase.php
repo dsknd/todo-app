@@ -3,6 +3,8 @@
 namespace App\UseCases;
 
 use App\ValueObjects\ProjectId;
+use App\DataTransferObjects\UpdateProjectDto;
+use App\Models\Project;
 
 interface UpdateProjectUseCase
 {
@@ -10,8 +12,8 @@ interface UpdateProjectUseCase
      * プロジェクトを更新します
      *
      * @param ProjectId $projectId
-     * @param array $attributes
-     * @return bool
+     * @param UpdateProjectDto $dto
+     * @return ?Project
      */
-    public function execute(ProjectId $projectId, array $attributes): bool;
+    public function execute(ProjectId $projectId, UpdateProjectDto $dto): ?Project;
 } 

@@ -20,21 +20,23 @@ use App\ValueObjects\UserId;
 use App\UseCases\CreateProjectUseCase;
 use App\DataTransferObjects\CreateProjectDto;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-
+use App\UseCases\UpdateProjectUseCase;
 class ProjectController extends Controller
 {
     private CreateProjectUseCase $createProjectUseCase;
     private FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase;
     private FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase;
-
+    private UpdateProjectUseCase $updateProjectUseCase;
     public function __construct(
         CreateProjectUseCase $createProjectUseCase,
         FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase,
         FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase,
+        UpdateProjectUseCase $updateProjectUseCase,
     ) {
         $this->createProjectUseCase = $createProjectUseCase;
         $this->fetchOwnedProjectsUseCase = $fetchOwnedProjectsUseCase;
         $this->fetchParticipatingProjectsUseCase = $fetchParticipatingProjectsUseCase;
+        $this->updateProjectUseCase = $updateProjectUseCase;
     }
 
     /**
@@ -76,15 +78,8 @@ class ProjectController extends Controller
     //  */
     // public function update(UpdateProjectRequest $request, Project $project): JsonResponse
     // {
-    //     // バリデーション
-    //     $validated = $request->validated();
-
     //     $project->update($validated);
 
-    //     return response()->json([
-    //         'message' => 'Project updated successfully',
-    //         'project' => $project,
-    //     ], Response::HTTP_OK);
     // }
 
     // /**

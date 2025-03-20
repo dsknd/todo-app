@@ -64,38 +64,10 @@ class ProjectController extends Controller
     // public function store(CreateProjectRequest $request): JsonResponse
     // {
     //     // バリデーション
-    //     $validated = $request->validated();
 
-    //     // データの作成
-    //     $data = $validated;
-    //     $data['project_status_id'] = ProjectStatusEnum::PLANNING->value;
-    //     $data['user_id'] = Auth::id();
-    //     $data['is_private'] = false;
-
-    //     // トランザクションを使用してプロジェクトを作成
-    //     $project = null;
-
-    //     $requestHeaderLocale = $request->header('Accept-Language');
-    //     try {
-    //         DB::transaction(function () use ($data, &$project) {
-    //             $project = Project::create($data);
-
-    //             // TODO: デフォルトロールの作成
-
-    //             // TODO: デフォルトパーミッション割当
-    //         });
-    //     } catch (Throwable $e) {
-    //         return response()->json([
-    //             'message' => 'Project creation failed',
-    //             'error' => $e->getMessage(),
-    //         ], Response::HTTP_INTERNAL_SERVER_ERROR);
-    //     }
-
+    //     // プロジェクトの作成
+    //     // オーナーロールの作成
     //     // レスポンス
-    //     return response()->json([
-    //         'message' => 'Project created successfully',
-    //         'project' => $project,
-    //     ], Response::HTTP_CREATED);
     // }
 
     // /**

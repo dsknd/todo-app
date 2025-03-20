@@ -16,7 +16,7 @@ class DefaultProjectRoleTranslationSeeder extends Seeder
             foreach (DefaultProjectRoleEnum::cases() as $role) {
                 foreach (LocaleEnum::cases() as $locale) {
                     DB::table('default_project_role_translations')->insert([
-                        'project_role_id' => $role->value,
+                        'default_project_role_id' => $role->value,
                         'locale_id' => $locale->value,
                         'name' => DefaultProjectRoleTranslationEnum::getName($role, $locale),
                         'description' => DefaultProjectRoleTranslationEnum::getDescription($role, $locale),

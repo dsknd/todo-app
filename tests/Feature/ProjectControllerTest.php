@@ -11,6 +11,11 @@ use App\Models\Project;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Models\ProjectMember;
+use App\Enums\ProjectStatusEnum;
+use App\Enums\ProjectRoleEnum;
+use App\Models\ProjectRole;
+use App\Models\DefaultProjectRole;
+use App\Enums\DefaultProjectRoleEnum;
 class ProjectControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -23,7 +28,6 @@ class ProjectControllerTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
-
     }
 
     public function test_index_success(): void
@@ -76,6 +80,44 @@ class ProjectControllerTest extends TestCase
 
         // 401 Unauthorized ステータスが返ることを確認
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function test_store_success(): void
+    {
+        ProjectStatus::factory()->planning()->create();
+        DefaultProjectRole::factory()->owner()->create();
+        // プロジェクトの作成
+        $response = $this->actingAs($this->user)
+                         ->postJson('/api/projects', [
+                            'name' => 'Test Project',
+                            'description' => 'Test Description',
+                            'is_private' => false,
+                            'planned_start_date' => '2024-01-01',
+                            'planned_end_date' => '2024-12-31',
+                        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonStructure([
+            'data' => [
+                'id',
+                'name',
+                'description',
+                'is_private',
+                'status' => [
+                    'id',
+                    'name'
+                ],
+                'owner' => [
+                    'id',
+                    'name'
+                ],
+                'planned_start_date',
+                'planned_end_date',
+                'actual_start_date',
+                'actual_end_date',
+                'created_at',
+                'updated_at'
+            ]
+        ]);
     }
 }
 

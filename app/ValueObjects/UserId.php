@@ -5,7 +5,7 @@ namespace App\ValueObjects;
 use InvalidArgumentException;
 use JsonSerializable;
 use Illuminate\Support\Facades\Auth;
-
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 final class UserId implements JsonSerializable
 {
     private int $id;
@@ -87,13 +87,12 @@ final class UserId implements JsonSerializable
      */
     public static function fromAuth(): self
     {
-        $id = Auth::id();
-        
-        if ($id === null) {
-            throw new \RuntimeException('認証されていません');
+        $user = Auth::user();
+        if (!$user) {
+            throw new UnauthorizedHttpException('Bearer', 'Unauthorized');
         }
         
-        return new self($id);
+        return new self($user->id->getValue());
     }
 
     /**

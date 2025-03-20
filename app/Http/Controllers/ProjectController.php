@@ -17,36 +17,33 @@ use App\Http\Queries\ProjectIndexQuery;
 use App\Http\Resources\ProjectResource;
 use Illuminate\Http\Request;
 use App\ValueObjects\UserId;
-use App\Models\User;
+use App\UseCases\CreateProjectUseCase;
+use App\DataTransferObjects\CreateProjectDto;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class ProjectController extends Controller
 {
+    private CreateProjectUseCase $createProjectUseCase;
     private FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase;
     private FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase;
 
     public function __construct(
+        CreateProjectUseCase $createProjectUseCase,
         FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase,
         FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase,
     ) {
+        $this->createProjectUseCase = $createProjectUseCase;
         $this->fetchOwnedProjectsUseCase = $fetchOwnedProjectsUseCase;
         $this->fetchParticipatingProjectsUseCase = $fetchParticipatingProjectsUseCase;
     }
 
     /**
      * プロジェクトの一覧を取得します。
-     * 
-     * @return JsonResponse
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
-        if (!$user) {
-            throw new UnauthorizedHttpException('Bearer', 'Unauthorized');
-        }
-
         $query = ProjectIndexQuery::fromRequest($request);
-        $userId = new UserId($user->id->getValue());  // 整数値を取得して新しいUserIdを作成
+        $userId = UserId::fromAuth();
 
         $projects = match(true) {
             $query->isOwnedProjectsRequest() => 
@@ -58,17 +55,21 @@ class ProjectController extends Controller
         return ProjectResource::collection($projects);
     }
 
-    // /**
-    //  * プロジェクトを作成します。
-    //  */
-    // public function store(CreateProjectRequest $request): JsonResponse
-    // {
-    //     // バリデーション
+    /**
+     * プロジェクトを作成します。
+     * 
+     * @param CreateProjectRequest $request プロジェクト作成リクエスト
+     * @return JsonResponse プロジェクトリソース
+     */
+    public function store(CreateProjectRequest $request): JsonResponse
+    {
+        // プロジェクトの作成
+        $createProjectDto = CreateProjectDto::fromRequest($request);
+        $project = $this->createProjectUseCase->execute($createProjectDto);
 
-    //     // プロジェクトの作成
-    //     // オーナーロールの作成
-    //     // レスポンス
-    // }
+        // レスポンス
+        return new ProjectResource($project)->response()->setStatusCode(Response::HTTP_CREATED);
+    }
 
     // /**
     //  * プロジェクトを更新します。

@@ -64,11 +64,10 @@ class CreateProjectDto
      * リクエストからプロジェクト作成DTOを構築
      * 
      * @param CreateProjectRequest $request リクエスト
-     * @param UserId $userId ユーザーID
      * @return self プロジェクト作成DTO
      */
-    public static function fromRequest(CreateProjectRequest $request, UserId $userId): self
+    public static function fromRequest(CreateProjectRequest $request): self
     {
-        return CreateProjectDtoBuilder::fromRequest($request, $userId);
+        return CreateProjectDtoBuilder::fromRequest($request);
     }
 } 

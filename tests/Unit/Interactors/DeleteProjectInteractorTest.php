@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Interactors;
 
+use App\Exceptions\ProjectNotFoundException;
 use App\Interactors\DeleteProjectInteractor;
 use App\Models\Project;
 use App\Models\ProjectMember;
@@ -58,6 +59,7 @@ class DeleteProjectInteractorTest extends TestCase
         $nonExistentId = new ProjectId(99999);
 
         // 実行
+        $this->expectException(ProjectNotFoundException::class);
         $result = $this->interactor->execute($nonExistentId);
 
         // 検証

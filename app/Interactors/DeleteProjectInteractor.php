@@ -5,6 +5,9 @@ namespace App\Interactors;
 use App\Repositories\Interfaces\ProjectRepository;
 use App\UseCases\DeleteProjectUseCase;
 use App\ValueObjects\ProjectId;
+use App\Exceptions\ProjectNotFoundException;
+use App\Exceptions\InternalServerErrorException;
+use Throwable;
 
 final class DeleteProjectInteractor implements DeleteProjectUseCase
 {
@@ -18,9 +21,21 @@ final class DeleteProjectInteractor implements DeleteProjectUseCase
      *
      * @param ProjectId $projectId
      * @return bool
+     * @throws ProjectNotFoundException
+     * @throws InternalServerErrorException
      */
     public function execute(ProjectId $projectId): bool
     {
-        return $this->projectRepository->delete($projectId);
+        $project = $this->projectRepository->findById($projectId);
+    
+        if ($project === null) {
+            throw new ProjectNotFoundException($projectId);
+        }
+
+        try {
+            return $this->projectRepository->delete($projectId);
+        } catch (Throwable $e) {
+            throw new InternalServerErrorException('Failed to delete project', $e);
+        }
     }
 } 

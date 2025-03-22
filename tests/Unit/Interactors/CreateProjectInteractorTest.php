@@ -16,7 +16,7 @@ use App\DataTransferObjects\CreateProjectDto;
 use DateTimeImmutable;
 use Exception;
 use App\Repositories\Interfaces\ProjectMemberRepository;
-use App\UseCases\Exceptions\InternalServerErrorException;
+use App\Exceptions\InternalServerErrorException;
 use App\Repositories\Interfaces\ProjectRepository;
 #[Group('interactor')]
 #[Group('create_project')]

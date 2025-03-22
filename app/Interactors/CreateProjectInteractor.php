@@ -11,7 +11,7 @@ use App\Repositories\Interfaces\ProjectMemberRepository;
 use App\ValueObjects\ProjectRoleId;
 use App\Enums\DefaultProjectRoleEnum;
 use App\DataTransferObjects\CreateProjectDto;
-use App\UseCases\Exceptions\InternalServerErrorException;
+use App\Exceptions\InternalServerErrorException;
 use Throwable;
 
 class CreateProjectInteractor implements CreateProjectUseCase

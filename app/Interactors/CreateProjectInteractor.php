@@ -5,7 +5,6 @@ namespace App\Interactors;
 use App\UseCases\CreateProjectUseCase;
 use Illuminate\Support\Facades\DB;
 use App\Models\Project;
-use App\Enums\ProjectStatusEnum;
 use App\Repositories\Interfaces\ProjectRepository;
 use App\Repositories\Interfaces\ProjectMemberRepository;
 use App\ValueObjects\ProjectRoleId;
@@ -43,6 +42,8 @@ class CreateProjectInteractor implements CreateProjectUseCase
                 $dto->userId,
                 ProjectRoleId::fromEnum(DefaultProjectRoleEnum::OWNER)
             );
+
+            DB::commit();
 
             return $project;
         } catch (Throwable $e) {

@@ -32,7 +32,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function findByUserId(UserId $userId, int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator
+    public function findByUserId(UserId $userId, ?int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator
     {
         $query = Project::where('user_id', $userId);
 
@@ -46,7 +46,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function findByMemberId(UserId $userId, int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator
+    public function findByMemberId(UserId $userId, ?int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator
     {
         $query = Project::whereHas('members', function ($query) use ($userId) {
             $query->where('user_id', $userId);

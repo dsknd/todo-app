@@ -2,9 +2,9 @@
 
 namespace App\UseCases;
 
-use App\Models\Project;
 use App\ValueObjects\UserId;
-use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use App\ValueObjects\ProjectOrderParam;
 
 interface FetchParticipatingProjectsUseCase
 {
@@ -14,7 +14,9 @@ interface FetchParticipatingProjectsUseCase
      * @see FetchParticipatingProjectsInteractor 実装クラス
      *
      * @param UserId $userId
-     * @return Collection<int, Project>
+     * @param ?int $perPage
+     * @param ?ProjectOrderParam $orderParam
+     * @return LengthAwarePaginator
      */
-    public function execute(UserId $userId): Collection;
+    public function execute(UserId $userId, ?int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator;
 } 

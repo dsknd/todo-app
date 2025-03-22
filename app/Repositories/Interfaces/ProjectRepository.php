@@ -34,7 +34,7 @@ interface ProjectRepository
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public function findByUserId(UserId $userId, int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator;
+    public function findByUserId(UserId $userId, ?int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator;
 
     /**
      * ユーザーが参加しているプロジェクトを検索
@@ -43,7 +43,7 @@ interface ProjectRepository
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public function findByMemberId(UserId $userId, int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator;
+    public function findByMemberId(UserId $userId, ?int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator;
 
     /**
      * プロジェクトを作成

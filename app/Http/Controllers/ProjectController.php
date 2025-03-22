@@ -18,6 +18,8 @@ use App\UseCases\UpdateProjectUseCase;
 use App\DataTransferObjects\UpdateProjectDto;
 use App\UseCases\DeleteProjectUseCase;
 use App\Models\Project;
+use App\Exceptions\ProjectNotFoundException;
+use App\Exceptions\ApiException;
 
 class ProjectController extends Controller
 {

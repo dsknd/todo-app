@@ -217,6 +217,21 @@ class ProjectControllerTest extends TestCase
                          ->deleteJson('/api/projects/' . $project->id);
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
+
+    public function test_destroy_project_not_found(): void
+    {
+        $response = $this->actingAs($this->user)
+                         ->deleteJson('/api/projects/' . 9999);
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+        $response->assertHeader('Content-Type', 'application/problem+json');
+        $response->assertJsonStructure([
+            'type',
+            'title',
+            'status',
+            'detail',
+            'instance',
+        ]);
+    }
 }
 
 

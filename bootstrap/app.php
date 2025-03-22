@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -28,6 +30,17 @@ return Application::configure(basePath: dirname(__DIR__))
                 'detail' => 'Unauthenticated',
                 'instance' => $request->path(),
             ], Response::HTTP_UNAUTHORIZED)->header('Content-Type', 'application/problem+json');
+        });
+
+        // モデルが見つからない場合の処理
+        $exceptions->renderable(function (NotFoundHttpException $e, Request $request) {
+            return response()->json([
+                'type' => 'https://example.com/probs/resource-not-found',
+                'title' => 'Resource Not Found',
+                'status' => Response::HTTP_NOT_FOUND,
+                'detail' => "The resource was not found.",
+                'instance' => $request->path(),
+            ], Response::HTTP_NOT_FOUND)->header('Content-Type', 'application/problem+json');
         });
 
         // 独自のAPIエラー
@@ -58,7 +71,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return response()->json([
                 'type' => 'https://example.com/probs/validation-error',
-                'title' => 'Your request parameters are invalid.',
+                'title' => 'Validation Error',
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'errors' => $errors
             ], Response::HTTP_UNPROCESSABLE_ENTITY)->header('Content-Type', 'application/problem+json');

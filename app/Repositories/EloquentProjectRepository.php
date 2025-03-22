@@ -8,7 +8,7 @@ use App\ValueObjects\ProjectId;
 use App\ValueObjects\UserId;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection as SupportCollection;
+use App\ValueObjects\ProjectOrderParam;
 
 class EloquentProjectRepository implements ProjectRepositoryInterface
 {
@@ -32,23 +32,31 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function findByUserId(UserId $userId, int $perPage = 15): LengthAwarePaginator
+    public function findByUserId(UserId $userId, int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator
     {
-        return Project::where('user_id', $userId)
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+        $query = Project::where('user_id', $userId);
+
+        if ($orderParam) {
+            $query->orderBy($orderParam->getColumn(), $orderParam->getDirection());
+        }
+
+        return $query->paginate($perPage);
     }
 
     /**
      * @inheritDoc
      */
-    public function findByMemberId(UserId $userId, int $perPage = 15): LengthAwarePaginator
+    public function findByMemberId(UserId $userId, int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator
     {
-        return Project::whereHas('members', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate($perPage);
+        $query = Project::whereHas('members', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        });
+
+        if ($orderParam) {
+            $query->orderBy($orderParam->getColumn(), $orderParam->getDirection());
+        }
+
+        return $query->paginate($perPage);
     }
 
     /**
@@ -147,21 +155,5 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
         
         $project->updateProgress();
         return true;
-    }
-
-    /**
-     * 参加者IDによってプロジェクトを検索します
-     *
-     * @param UserId $userId
-     * @return Collection<int, Project>
-     */
-    public function findByParticipantId(UserId $userId): SupportCollection
-    {
-        return Project::query()
-            ->whereHas('members', function ($query) use ($userId) {
-                $query->where('user_id', $userId->getValue());
-            })
-            ->orWhere('user_id', $userId->getValue()) // プロジェクト作成者も含める
-            ->get();
     }
 }

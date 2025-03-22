@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 use App\Models\ProjectRole;
+use App\ValueObjects\ProjectOrderParam;
 /**
  * このテストスイートでは、ProjectRepositoryインターフェースの各メソッドをテストしています
  * 
@@ -150,6 +151,31 @@ class ProjectRepositoryTest extends TestCase
         $this->assertEquals(
             $memberProjects->pluck('id')->sort()->values()->toArray(),
             $foundProjects->pluck('id')->sort()->values()->toArray()
+        );
+    }
+
+    public function test_it_can_find_projects_by_member_id_with_order_param()
+    {
+        // 準備
+        $user = User::factory()->create();
+        $projects = Project::factory()->count(3)->create();
+        foreach ($projects as $project) {
+            ProjectMember::factory()->create([
+                'project_id' => $project->id,
+                'user_id' => $user->id,
+            ]);
+        }
+
+        // 実行
+        $foundProjects = $this->repository->findByMemberId($user->id, 15, ProjectOrderParam::from('name', 'asc'));
+
+        // 検証
+        $this->assertEquals(3, $foundProjects->total());
+
+        // プロジェクト名の昇順でソートされていることを確認
+        $this->assertEquals(
+            $projects->pluck('name')->sort()->values()->toArray(),
+            $foundProjects->pluck('name')->sort()->values()->toArray()
         );
     }
 

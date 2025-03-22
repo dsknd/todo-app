@@ -7,6 +7,7 @@ use App\Exceptions\ApiException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\AuthenticationException;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -18,9 +19,20 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // 独自のAPIエラーを処理
+        // 認証エラー
+        $exceptions->renderable(function (AuthenticationException $e, Request $request) {
+            return response()->json([
+                'type' => 'https://example.com/probs/unauthenticated',
+                'title' => 'Unauthenticated',
+                'status' => Response::HTTP_UNAUTHORIZED,
+                'detail' => 'Unauthenticated',
+                'instance' => $request->path(),
+            ], Response::HTTP_UNAUTHORIZED)->header('Content-Type', 'application/problem+json');
+        });
+
+        // 独自のAPIエラー
         $exceptions->renderable(function (ApiException $e, Request $request) {
-            return Response::json([
+            return response()->json([
                 'type'    => $e->getType(), 
                 'title'   => $e->getTitle(),  
                 'status'  => $e->getStatus(), 
@@ -29,8 +41,8 @@ return Application::configure(basePath: dirname(__DIR__))
             ], $e->getStatus())->header('Content-Type', 'application/problem+json');
         });
 
-        // バリデーションエラーを処理
-        $exceptions->renderable(function (ValidationException $e) {
+        // バリデーションエラー
+        $exceptions->renderable(function (ValidationException $e, Request $request) {
             $errors = collect($e->validator->errors()->toArray())
                 ->map(function ($messages, $field) {
                     return array_map(function ($message) use ($field) {
@@ -44,22 +56,22 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->values()
                 ->all();
 
-            return Response::json([
+            return response()->json([
                 'type' => 'https://example.com/probs/validation-error',
                 'title' => 'Your request parameters are invalid.',
-                'status' => 422,
+                'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'errors' => $errors
-            ], 422)->header('Content-Type', 'application/problem+json');
+            ], Response::HTTP_UNPROCESSABLE_ENTITY)->header('Content-Type', 'application/problem+json');
         });
 
-        // 内部サーバーエラーを処理
-        $exceptions->renderable(function (Request $request) {
-            return Response::json([
+        // 内部サーバーエラー
+        $exceptions->renderable(function (Exception $e, Request $request) {
+            return response()->json([
                 'type' => 'https://example.com/probs/internal-server-error',
                 'title' => 'Internal Server Error',
-                'status' => 500,
+                'status' => Response::HTTP_INTERNAL_SERVER_ERROR,
                 'detail' => 'Unexpected error occurred.',
                 'instance' => $request->path(),
-            ], 500)->header('Content-Type', 'application/problem+json');
+            ], Response::HTTP_INTERNAL_SERVER_ERROR)->header('Content-Type', 'application/problem+json');
         });
     })->create();

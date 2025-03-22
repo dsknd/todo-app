@@ -8,14 +8,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\ProjectStatus;
 use App\Models\Project;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Models\ProjectMember;
-use App\Enums\ProjectStatusEnum;
-use App\Enums\ProjectRoleEnum;
-use App\Models\ProjectRole;
 use App\Models\DefaultProjectRole;
-use App\Enums\DefaultProjectRoleEnum;
+use Exception;
+use Mockery;
+use App\Interactors\CreateProjectInteractor;
+
 class ProjectControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -117,6 +116,64 @@ class ProjectControllerTest extends TestCase
                 'created_at',
                 'updated_at'
             ]
+        ]);
+    }
+
+    public function test_store_validation_error(): void
+    {
+        $response = $this->actingAs($this->user)
+                         ->postJson('/api/projects', [
+                            'name' => '',
+                        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertHeader('Content-Type', 'application/problem+json');
+        $response->assertJsonStructure([
+            'type',
+            'title',
+            'status',
+            'errors' => [
+                '*' => [
+                    'detail',
+                    'pointer'
+                ]
+            ]
+        ]);
+    }
+
+    // ユーザが同じ名前のプロジェクトを作成しようとした場合、500エラーが返ることを確認
+    public function test_store_duplicate_project_name(): void
+    {
+        ProjectStatus::factory()->planning()->create();
+        DefaultProjectRole::factory()->owner()->create();
+
+        $firstResponse = $this->actingAs($this->user)
+                         ->postJson('/api/projects', [
+                            'name' => 'Test Project',
+                            'description' => 'Test Description',
+                            'is_private' => false,
+                            'planned_start_date' => '2024-01-01',
+                            'planned_end_date' => '2024-12-31',
+                        ]);
+
+        $secondResponse = $this->actingAs($this->user)
+                         ->postJson('/api/projects', [
+                            'name' => 'Test Project',
+                            'description' => 'Test Description',
+                            'is_private' => false,
+                            'planned_start_date' => '2024-01-01',
+                            'planned_end_date' => '2024-12-31',
+                        ]);
+
+        $firstResponse->assertStatus(Response::HTTP_CREATED);
+        $secondResponse->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
+        $secondResponse->assertHeader('Content-Type', 'application/problem+json');
+        $secondResponse->assertJsonStructure([
+            'type',
+            'title',
+            'status',
+            'detail',
+            'instance',
         ]);
     }
 

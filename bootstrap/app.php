@@ -36,9 +36,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->renderable(function (NotFoundHttpException $e, Request $request) {
             return response()->json([
                 'type' => 'https://example.com/probs/resource-not-found',
-                'title' => 'Resource Not Found',
+                'title' => __('errors.resource_not_found.title'),
                 'status' => Response::HTTP_NOT_FOUND,
-                'detail' => "The resource was not found.",
+                'detail' => __('errors.resource_not_found.detail'),
                 'instance' => $request->path(),
             ], Response::HTTP_NOT_FOUND)->header('Content-Type', 'application/problem+json');
         });

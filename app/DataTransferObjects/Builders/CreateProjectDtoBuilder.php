@@ -6,7 +6,8 @@ use App\DataTransferObjects\CreateProjectDto;
 use App\ValueObjects\UserId;
 use DateTimeImmutable;
 use App\Http\Requests\CreateProjectRequest;
-
+use App\ValueObjects\ProjectStatusId;
+use App\Enums\ProjectStatusEnum;
 /**
  * プロジェクト作成DTOビルダー
  */
@@ -16,6 +17,7 @@ class CreateProjectDtoBuilder
     private ?string $description = null;
     private UserId $userId;
     private bool $isPrivate = false;
+    private ProjectStatusId $projectStatusId;
     private ?DateTimeImmutable $plannedStartDate = null;
     private ?DateTimeImmutable $plannedEndDate = null;
 
@@ -50,6 +52,7 @@ class CreateProjectDtoBuilder
             ->description($validated['description'] ?? null)
             ->userId($userId)
             ->isPrivate($validated['is_private'])
+            ->projectStatusId(ProjectStatusId::fromEnum(ProjectStatusEnum::PLANNING))
             ->plannedStartDate(
                 isset($validated['planned_start_date']) 
                     ? new DateTimeImmutable($validated['planned_start_date'])
@@ -112,6 +115,18 @@ class CreateProjectDtoBuilder
     }
 
     /**
+     * プロジェクトステータスIDを設定
+     * 
+     * @param ProjectStatusId $projectStatusId プロジェクトステータスID
+     * @return self プロジェクト作成DTOビルダー
+     */
+    public function projectStatusId(ProjectStatusId $projectStatusId): self
+    {
+        $this->projectStatusId = $projectStatusId;
+        return $this;
+    }
+
+    /**
      * 計画開始日を設定
      * 
      * @param ?DateTimeImmutable $plannedStartDate 計画開始日
@@ -156,6 +171,7 @@ class CreateProjectDtoBuilder
             description: $this->description,
             userId: $this->userId,
             isPrivate: $this->isPrivate,
+            projectStatusId: $this->projectStatusId,
             plannedStartDate: $this->plannedStartDate,
             plannedEndDate: $this->plannedEndDate,
         );

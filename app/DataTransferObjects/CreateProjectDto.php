@@ -6,7 +6,8 @@ use App\ValueObjects\UserId;
 use DateTimeImmutable;
 use App\DataTransferObjects\Builders\CreateProjectDtoBuilder;
 use App\Http\Requests\CreateProjectRequest;
-
+use App\ValueObjects\ProjectStatusId;
+use App\Enums\ProjectStatusEnum;
 /**
  * プロジェクト作成DTO
  */
@@ -17,6 +18,7 @@ class CreateProjectDto
         public readonly ?string $description,
         public readonly UserId $userId,
         public readonly bool $isPrivate,
+        public readonly ProjectStatusId $projectStatusId,
         public readonly ?DateTimeImmutable $plannedStartDate,
         public readonly ?DateTimeImmutable $plannedEndDate,
     ) {}
@@ -37,6 +39,7 @@ class CreateProjectDto
         ?string $description,
         UserId $userId,
         bool $isPrivate = false,
+        ProjectStatusId $projectStatusId,
         ?DateTimeImmutable $plannedStartDate = null,
         ?DateTimeImmutable $plannedEndDate = null,
     ): self {
@@ -45,6 +48,7 @@ class CreateProjectDto
             description: $description,
             userId: $userId,
             isPrivate: $isPrivate,
+            projectStatusId: $projectStatusId,
             plannedStartDate: $plannedStartDate,
             plannedEndDate: $plannedEndDate,
         );
@@ -69,5 +73,23 @@ class CreateProjectDto
     public static function fromRequest(CreateProjectRequest $request): self
     {
         return CreateProjectDtoBuilder::fromRequest($request);
+    }
+
+    /**
+     * プロジェクト作成DTOを配列に変換
+     * 
+     * @return array プロジェクト作成DTOの配列
+     */
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'description' => $this->description,
+            'user_id' => $this->userId,
+            'is_private' => $this->isPrivate,
+            'project_status_id' => $this->projectStatusId,
+            'planned_start_date' => $this->plannedStartDate,
+            'planned_end_date' => $this->plannedEndDate,
+        ];
     }
 } 

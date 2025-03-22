@@ -35,15 +35,7 @@ class CreateProjectInteractor implements CreateProjectUseCase
         DB::beginTransaction();
         try {
             // プロジェクトを作成
-            $project = $this->projectRepository->create([
-                'name' => $dto->name,
-                'description' => $dto->description,
-                'user_id' => $dto->userId,
-                'project_status_id' => ProjectStatusEnum::PLANNING->value,
-                'is_private' => $dto->isPrivate,
-                'planned_start_date' => $dto->plannedStartDate,
-                'planned_end_date' => $dto->plannedEndDate,
-            ]);
+            $project = $this->projectRepository->create($dto->toArray());
 
             // プロジェクトメンバーを作成
             $this->projectMemberRepository->add(

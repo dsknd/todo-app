@@ -5,10 +5,9 @@ namespace App\Repositories\Interfaces;
 use App\Models\Project;
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\UserId;
-use App\ValueObjects\CategoryId;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection as SupportCollection;
+use App\ValueObjects\ProjectOrderParam;
 
 interface ProjectRepository
 {
@@ -35,7 +34,7 @@ interface ProjectRepository
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public function findByUserId(UserId $userId, int $perPage = 15): LengthAwarePaginator;
+    public function findByUserId(UserId $userId, ?int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator;
 
     /**
      * ユーザーが参加しているプロジェクトを検索
@@ -44,7 +43,7 @@ interface ProjectRepository
      * @param int $perPage
      * @return LengthAwarePaginator
      */
-    public function findByMemberId(UserId $userId, int $perPage = 15): LengthAwarePaginator;
+    public function findByMemberId(UserId $userId, ?int $perPage = 15, ?ProjectOrderParam $orderParam = null): LengthAwarePaginator;
 
     /**
      * プロジェクトを作成
@@ -96,12 +95,4 @@ interface ProjectRepository
      * @return bool
      */
     public function updateProgress(ProjectId $id): bool;
-
-    /**
-     * 参加者IDによってプロジェクトを検索します
-     *
-     * @param UserId $userId
-     * @return SupportCollection<int, Project>
-     */
-    public function findByParticipantId(UserId $userId): SupportCollection;
 }

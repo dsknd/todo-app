@@ -5,6 +5,8 @@ namespace App\Interactors;
 use App\Repositories\Interfaces\ProjectRepository;
 use App\UseCases\DeleteProjectUseCase;
 use App\ValueObjects\ProjectId;
+use App\Exceptions\ProjectNotFoundException;
+use Exception;
 
 final class DeleteProjectInteractor implements DeleteProjectUseCase
 {
@@ -14,13 +16,16 @@ final class DeleteProjectInteractor implements DeleteProjectUseCase
     }
 
     /**
-     * プロジェクトを削除します
-     *
-     * @param ProjectId $projectId
-     * @return bool
+     * inherit-doc
      */
     public function execute(ProjectId $projectId): bool
     {
+        $project = $this->projectRepository->findById($projectId);
+    
+        if ($project === null) {
+            throw new ProjectNotFoundException($projectId);
+        }
+
         return $this->projectRepository->delete($projectId);
     }
 } 

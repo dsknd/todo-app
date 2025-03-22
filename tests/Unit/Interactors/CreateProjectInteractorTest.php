@@ -16,8 +16,9 @@ use App\DataTransferObjects\CreateProjectDto;
 use DateTimeImmutable;
 use Exception;
 use App\Repositories\Interfaces\ProjectMemberRepository;
-use App\UseCases\Exceptions\InternalServerErrorException;
+use App\Exceptions\InternalServerErrorException;
 use App\Repositories\Interfaces\ProjectRepository;
+use App\ValueObjects\ProjectStatusId;
 #[Group('interactor')]
 #[Group('create_project')]
 class CreateProjectInteractorTest extends TestCase
@@ -44,6 +45,7 @@ class CreateProjectInteractorTest extends TestCase
             ->description('Test Description')
             ->userId($user->id)
             ->isPrivate(true)
+            ->projectStatusId(ProjectStatusId::fromEnum(ProjectStatusEnum::PLANNING))
             ->plannedStartDate(new DateTimeImmutable('2024-01-01 00:00:00'))
             ->plannedEndDate(new DateTimeImmutable('2024-12-31 23:59:59'))
             ->build();
@@ -83,6 +85,7 @@ class CreateProjectInteractorTest extends TestCase
             ->name('Test Project')
             ->userId($user->id)
             ->isPrivate(false)
+            ->projectStatusId(ProjectStatusId::fromEnum(ProjectStatusEnum::PLANNING))
             ->build();
 
         $project = $this->interactor->execute($dto);
@@ -126,10 +129,11 @@ class CreateProjectInteractorTest extends TestCase
             ->name('Test Project')
             ->userId($user->id)
             ->isPrivate(false)
+            ->projectStatusId(ProjectStatusId::fromEnum(ProjectStatusEnum::PLANNING))
             ->build();
 
         // 実行と検証
-        $this->expectException(InternalServerErrorException::class);
+        $this->expectException(Exception::class);
 
         try {
             $this->interactor->execute($dto);

@@ -4,7 +4,7 @@ namespace App\UseCases;
 
 use App\ValueObjects\ProjectId;
 use App\Interactors\DeleteProjectInteractor;
-
+use App\Exceptions\ProjectNotFoundException;
 interface DeleteProjectUseCase
 {
     /**
@@ -14,6 +14,8 @@ interface DeleteProjectUseCase
      *
      * @param ProjectId $projectId
      * @return bool
+     * @throws ProjectNotFoundException
+     * @throws Exception
      */
     public function execute(ProjectId $projectId): bool;
 } 

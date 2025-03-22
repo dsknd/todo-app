@@ -9,7 +9,6 @@ use App\Repositories\EloquentProjectRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use App\Exceptions\InternalServerErrorException;
 use App\Repositories\Interfaces\ProjectRepository;
 use Illuminate\Database\QueryException;
 use PDOException;
@@ -107,7 +106,7 @@ class FetchOwnedProjectsInteractorTest extends TestCase
         $this->interactor = app(FetchOwnedProjectsInteractor::class);
 
         // 実行
-        $this->expectException(InternalServerErrorException::class);
+        $this->expectException(QueryException::class);
         $this->interactor->execute($user->id);
     }
 } 

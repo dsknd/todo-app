@@ -133,7 +133,7 @@ class CreateProjectInteractorTest extends TestCase
             ->build();
 
         // 実行と検証
-        $this->expectException(InternalServerErrorException::class);
+        $this->expectException(Exception::class);
 
         try {
             $this->interactor->execute($dto);

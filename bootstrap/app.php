@@ -7,7 +7,6 @@ use App\Exceptions\ApiException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
-use Throwable;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -54,7 +53,7 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         // 内部サーバーエラーを処理
-        $exceptions->renderable(function (Throwable $e, Request $request) {
+        $exceptions->renderable(function (Request $request) {
             return Response::json([
                 'type' => 'https://example.com/probs/internal-server-error',
                 'title' => 'Internal Server Error',

@@ -6,8 +6,6 @@ use App\Repositories\Interfaces\ProjectRepository;
 use App\UseCases\FetchOwnedProjectsUseCase;
 use App\ValueObjects\UserId;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Exceptions\InternalServerErrorException;
-use Throwable;
 
 final class FetchOwnedProjectsInteractor implements FetchOwnedProjectsUseCase
 {
@@ -25,10 +23,6 @@ final class FetchOwnedProjectsInteractor implements FetchOwnedProjectsUseCase
      */
     public function execute(UserId $userId, int $perPage = 15): LengthAwarePaginator
     {
-        try {
-            return $this->projectRepository->findByUserId($userId, $perPage);
-        } catch (Throwable $e) {
-            throw new InternalServerErrorException('Failed to fetch owned projects', $e);
-        }
+        return $this->projectRepository->findByUserId($userId, $perPage);
     }
 } 

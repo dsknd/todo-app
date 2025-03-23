@@ -2673,10 +2673,11 @@ namespace PHPSTORM_META {
 'validation.same','validation.size.array','validation.size.file','validation.size.numeric','validation.size.string',
 'validation.starts_with','validation.string','validation.timezone','validation.unique','validation.uploaded',
 'validation.uppercase','validation.url','validation.ulid','validation.uuid','validation.custom.attribute-name.rule-name',
-'errors.unauthenticated.title','errors.unauthenticated.detail','errors.resource_not_found.title','errors.resource_not_found.detail','errors.validation_error.title',
-'errors.validation_error.project.name.required','errors.validation_error.project.name.max','errors.validation_error.project.planned_start_date.date','errors.validation_error.project.planned_end_date.date','errors.validation_error.project.planned_end_date.after_or_equal',
-'errors.validation_error.project.actual_start_date.date','errors.validation_error.project.actual_end_date.date','errors.validation_error.project.actual_end_date.after_or_equal','errors.validation_error.project.is_private.required','errors.validation_error.project.is_private.boolean',
-'laravelEnum::messages.enum','laravelEnum::messages.enum_value','laravelEnum::messages.enum_key','scribe::scribe.0',);
+'errors.unauthenticated.title','errors.unauthenticated.detail','errors.resource_not_found.title','errors.resource_not_found.detail','errors.json_parse_error.title',
+'errors.json_parse_error.detail','errors.validation_error.title','errors.validation_error.project.name.required','errors.validation_error.project.name.max','errors.validation_error.project.planned_start_date.date',
+'errors.validation_error.project.planned_end_date.date','errors.validation_error.project.planned_end_date.after_or_equal','errors.validation_error.project.actual_start_date.date','errors.validation_error.project.actual_end_date.date','errors.validation_error.project.actual_end_date.after_or_equal',
+'errors.validation_error.project.is_private.required','errors.validation_error.project.is_private.boolean','laravelEnum::messages.enum','laravelEnum::messages.enum_value','laravelEnum::messages.enum_key',
+'scribe::scribe.0',);
         registerArgumentsSet('env', 
 'APP_NAME','APP_ENV','APP_KEY','APP_DEBUG','APP_TIMEZONE',
 'APP_URL','APP_LOCALE','APP_FALLBACK_LOCALE','APP_FAKER_LOCALE','APP_MAINTENANCE_DRIVER',

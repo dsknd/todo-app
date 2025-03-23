@@ -9,6 +9,10 @@ return [
         'title' => 'Resource not found.',
         'detail' => 'The specified resource was not found.',
     ],
+    'json_parse_error' => [
+        'title' => 'Bad Request.',
+        'detail' => 'The JSON syntax is invalid or corrupted.',
+    ],
     'validation_error' => [
         'title' => 'Validation Error.',
         'project' => [

@@ -9,6 +9,10 @@ return [
         'title' => '存在しないリソース',
         'detail' => '指定されたリソースは存在しません。',
     ],
+    'json_parse_error' => [
+        'title' => '不正なリクエスト',
+        'detail' => 'JSONの形式が無効または壊れています。',
+    ],
     'validation_error' => [
         'title' => '検証エラー',
         'project' => [

@@ -10,7 +10,9 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Middleware\Localization;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use App\Exceptions\JsonParseException;
+use App\Http\Middleware\ValidateJsonSyntax;
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -20,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(Localization::class);
+        $middleware->append(ValidateJsonSyntax::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         // 認証エラー
@@ -31,6 +34,17 @@ return Application::configure(basePath: dirname(__DIR__))
                 'detail' => __('errors.unauthenticated.detail'),
                 'instance' => $request->path(),
             ], Response::HTTP_UNAUTHORIZED)->header('Content-Type', 'application/problem+json');
+        });
+
+        // JSONパースエラー
+        $exceptions->renderable(function (JsonParseException $e, Request $request) {
+            return response()->json([
+                'type' => 'https://example.com/probs/bad-request',
+                'title' => __('errors.json_parse_error.title'),
+                'status' => Response::HTTP_BAD_REQUEST,
+                'detail' => __('errors.json_parse_error.detail'),
+                'instance' => $request->path(),
+            ], Response::HTTP_BAD_REQUEST)->header('Content-Type', 'application/problem+json');
         });
 
         // モデルが見つからない場合の処理

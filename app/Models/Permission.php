@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Casts\PermissionIdCast;
+use App\ValueObjects\LocaleId;
+use Illuminate\Database\Eloquent\Builder;
 
 class Permission extends Model
 {
@@ -155,4 +157,25 @@ class Permission extends Model
             ->where('permissions.id', $permission->id)
             ->exists();
     }
+
+    /**
+     * 関連する翻訳テーブルを取得
+     * 
+     * @return array<Permission> 親権限から順に並んだ配列
+     */
+    public function translations(): HasMany
+    {
+        return $this->hasMany(PermissionTranslation::class, 'permission_id', 'id');
+    }
+
+    /**
+     * 翻訳テーブルを含むクエリを返す
+     */
+    public static function scopeWithTranslations(Builder $query, LocaleId $localeId): Builder
+    {
+        return $query->with('translations', function ($query) use ($localeId) {
+            $query->where('locale_id', $localeId);
+        });
+    }
+    
 }

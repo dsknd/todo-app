@@ -8,8 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Http\Middleware\Localization;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -18,16 +19,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->append(Localization::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         // 認証エラー
         $exceptions->renderable(function (AuthenticationException $e, Request $request) {
             return response()->json([
                 'type' => 'https://example.com/probs/unauthenticated',
-                'title' => 'Unauthenticated',
+                'title' => __('errors.unauthenticated.title'),
                 'status' => Response::HTTP_UNAUTHORIZED,
-                'detail' => 'Unauthenticated',
+                'detail' => __('errors.unauthenticated.detail'),
                 'instance' => $request->path(),
             ], Response::HTTP_UNAUTHORIZED)->header('Content-Type', 'application/problem+json');
         });
@@ -71,7 +72,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return response()->json([
                 'type' => 'https://example.com/probs/validation-error',
-                'title' => 'Validation Error',
+                'title' => __('errors.validation_error.title'),
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'errors' => $errors
             ], Response::HTTP_UNPROCESSABLE_ENTITY)->header('Content-Type', 'application/problem+json');

@@ -3,7 +3,7 @@
 namespace App\ValueObjects;
 
 use App\Enums\LocaleEnum;
-
+use Illuminate\Http\Request;
 class LocaleCode
 {
     private const ALLOWED_LANGUAGES = ['ja', 'en'];
@@ -97,6 +97,12 @@ class LocaleCode
             'en' => LocaleEnum::ENGLISH,
             default => throw new \InvalidArgumentException("Unsupported language code: {$this->language}"),
         };
+    }
+
+    public static function fromRequest(Request $request): self
+    {
+        $locale = $request->getPreferredLanguage(self::ALLOWED_LANGUAGES);
+        return new self($locale);
     }
     
 }

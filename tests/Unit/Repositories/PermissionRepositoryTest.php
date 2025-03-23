@@ -320,4 +320,20 @@ class PermissionRepositoryTest extends TestCase
                 && $permission->action === 'write';
         }));
     }
+
+    public function test_it_can_check_if_permission_is_included_in()
+    {
+        // 準備
+        $parent = Permission::factory()->create();
+        $child = Permission::factory()->create();
+        
+        // クロージャーテーブルの関係をセットアップ（ヘルパー使用）
+        PermissionHierarchySetup::setupParentChild($parent, $child);
+
+        // 実行
+        $isIncluded = $this->repository->areIncludedIn([$parent->id->getValue()], $child->id);
+
+        // 検証
+        $this->assertTrue($isIncluded);
+    }
 } 

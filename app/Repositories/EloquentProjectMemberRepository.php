@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use DateTimeImmutable;
 use App\Models\ProjectRole;
+use App\ValueObjects\PermissionId;
+
 class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterface
 {
     /**
@@ -143,20 +145,6 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
     //     return $this->update($projectId, $userId, ['role_id' => null]);
     // }
 
-    // /**
-    //  * @inheritDoc
-    //  */
-    // public function hasPermission(ProjectId $projectId, UserId $userId, string $permission): bool
-    // {
-    //     $member = $this->findByProjectIdAndUserId($projectId, $userId);
-
-    //     if (!$member) {
-    //         return false;
-    //     }
-
-    //     return $member->hasPermission($permission);
-    // }
-
     /**
      * @inheritDoc
      */
@@ -175,6 +163,20 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
 
         // ロール名を比較
         return $member->role_id->equals($projectRoleId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasPermission(UserId $userId, ProjectId $projectId, PermissionId $permissionId): bool
+    {
+        return ProjectMember::query()
+            ->where('user_id', $userId->getValue())
+            ->where('project_id', $projectId->getValue())
+            ->whereHas('role.permissions', function ($query) use ($permissionId) {
+                $query->where('id', $permissionId->getValue());
+            })
+            ->exists();
     }
 
     // /**

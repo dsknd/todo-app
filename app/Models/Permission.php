@@ -159,6 +159,16 @@ class Permission extends Model
     }
 
     /**
+     * 指定された権限のいずれかに含まれるかどうかを確認
+     */
+    public function isIncludedIn(array $permissionIds): bool
+    {
+        return $this->ancestors()
+            ->whereIn('permissions.id', $permissionIds)
+            ->exists();
+    }
+
+    /**
      * 関連する翻訳テーブルを取得
      * 
      * @return array<Permission> 親権限から順に並んだ配列

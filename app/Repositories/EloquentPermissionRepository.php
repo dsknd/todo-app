@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Permission;
+use App\Models\PermissionClosure;
 use App\Models\ProjectPermission;
 use App\Repositories\Interfaces\PermissionRepository;
 use App\ValueObjects\PermissionId;
@@ -137,6 +138,18 @@ class EloquentPermissionRepository implements PermissionRepository
         
         return $ancestor->contains($descendant);
     }
+
+    /**
+     * inherit doc
+     */
+    public function areIncludedIn(array $hasPermissions, PermissionId $requiredPermissionId): bool
+    {
+        return $this->findById($requiredPermissionId)
+            ->ancestors()
+            ->whereIn('permissions.id', $hasPermissions)
+            ->exists();
+    }
+
 
     public function isProjectPermission(PermissionId $id): bool
     {

@@ -17,7 +17,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
      */
     public function findById(ProjectId $projectId): ?Project
     {
-        return Project::query()->find($projectId->getValue());
+        return Project::find($projectId);
     }
 
     /**
@@ -72,13 +72,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
      */
     public function update(ProjectId $projectId, array $attributes): bool
     {
-        $project = $this->findById($projectId);
-        
-        if (!$project) {
-            return false;
-        }
-        
-        return $project->update($attributes);
+        return Project::where('id', $projectId)->update($attributes) ? true : false;
     }
 
     /**
@@ -86,13 +80,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
      */
     public function delete(ProjectId $projectId): bool
     {
-        $project = $this->findById($projectId);
-        
-        if (!$project) {
-            return false;
-        }
-        
-        return $project->delete();
+        return Project::destroy($projectId) ? true : false;
     }
 
     /**

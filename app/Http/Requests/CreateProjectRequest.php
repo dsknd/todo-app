@@ -44,16 +44,16 @@ class CreateProjectRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'プロジェクト名は必須です',
-            'name.max' => 'プロジェクト名は255文字以内で入力してください',
-            'planned_start_date.date' => '予定開始日は日付形式で入力してください',
-            'planned_end_date.date' => '予定終了日は日付形式で入力してください',
-            'planned_end_date.after_or_equal' => '予定終了日は予定開始日以降の日付を指定してください',
-            'actual_start_date.date' => '実績開始日は日付形式で入力してください',
-            'actual_end_date.date' => '実績終了日は日付形式で入力してください',
-            'actual_end_date.after_or_equal' => '実績終了日は実績開始日以降の日付を指定してください',
-            'is_private.required' => 'プロジェクトの公開設定は必須です',
-            'is_private.boolean' => 'プロジェクトの公開設定はブール値で入力してください',
+            'name.required' => __('errors.validation_error.project.name.required'),
+            'name.max' => __('errors.validation_error.project.name.max'),
+            'planned_start_date.date' => __('errors.validation_error.project.planned_start_date.date'),
+            'planned_end_date.date' => __('errors.validation_error.project.planned_end_date.date'),
+            'planned_end_date.after_or_equal' => __('errors.validation_error.project.planned_end_date.after_or_equal'),
+            'actual_start_date.date' => __('errors.validation_error.project.actual_start_date.date'),
+            'actual_end_date.date' => __('errors.validation_error.project.actual_end_date.date'),
+            'actual_end_date.after_or_equal' => __('errors.validation_error.project.actual_end_date.after_or_equal'),
+            'is_private.required' => __('errors.validation_error.project.is_private.required'),
+            'is_private.boolean' => __('errors.validation_error.project.is_private.boolean'),
         ];
     }
 

@@ -68,7 +68,12 @@ class DatabaseSeeder extends Seeder
             // 権限
             PermissionSeeder::class,
             PermissionTranslationSeeder::class,
+
+            // プロジェクト権限
             ProjectPermissionSeeder::class,
+
+            // デフォルトプロジェクトロール権限
+            DefaultProjectPermissionSeeder::class,
 
             // プロジェクトステータス
             ProjectStatusSeeder::class,

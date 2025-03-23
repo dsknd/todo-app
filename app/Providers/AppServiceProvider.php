@@ -33,6 +33,8 @@ use App\UseCases\UpdateProjectUseCase;
 use App\Interactors\UpdateProjectInteractor;
 use App\UseCases\DeleteProjectUseCase;
 use App\Interactors\DeleteProjectInteractor;
+use App\Interactors\AuthorizeProjectPermissionInteractor;
+use App\UseCases\AuthorizeProjectPermissionUseCase;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -51,6 +53,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CreateTaskUseCase::class, CreateTaskInteractor::class);
         $this->app->bind(UpdateProjectUseCase::class, UpdateProjectInteractor::class);
         $this->app->bind(DeleteProjectUseCase::class, DeleteProjectInteractor::class);
+        $this->app->bind(AuthorizeProjectPermissionUseCase::class, AuthorizeProjectPermissionInteractor::class);
         // createProjectInteractorで使用するリポジトリ
         $this->app->bind(ProjectRepository::class, EloquentProjectRepository::class);
         $this->app->bind(ProjectMemberRepository::class, EloquentProjectMemberRepository::class);

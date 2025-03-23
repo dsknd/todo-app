@@ -86,13 +86,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
      */
     public function delete(ProjectId $projectId): bool
     {
-        $project = $this->findById($projectId);
-        
-        if (!$project) {
-            return false;
-        }
-        
-        return $project->delete();
+        return Project::destroy($projectId) ? true : false;
     }
 
     /**

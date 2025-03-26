@@ -5,7 +5,7 @@ namespace App\Repositories\Interfaces;
 use App\Models\Permission;
 use App\ValueObjects\PermissionId;
 use Illuminate\Support\Collection;
-
+use App\ValueObjects\ProjectRoleId;
 interface PermissionRepository
 {
     /**

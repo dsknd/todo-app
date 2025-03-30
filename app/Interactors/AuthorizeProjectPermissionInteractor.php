@@ -27,10 +27,7 @@ class AuthorizeProjectPermissionInteractor implements AuthorizeProjectPermission
         // ロールを取得
         $permissions = $this->projectMemberQueryRepository->findMemberPermissions($projectId, $userId);
 
-        // ロールが持つ権限を取得
-        $permissionIds = $permissions->permissions->pluck('permission_id')->toArray();
-
         // ロールが持つ権限が、指定された権限を含むかどうかを確認
-        return $this->permissionRepository->areIncludedIn($permissionIds, $permissionId);
+        return $this->permissionRepository->imply($permissions->getPermissionIds(), $permissionId);
     }
 } 

@@ -93,6 +93,15 @@ interface PermissionRepository
     public function areIncludedIn(array $hasPermissions, PermissionId $requiredPermissionId): bool;
 
     /**
+     * 指定された権限が複数の権限のいずれかに含まれるかどうかを確認
+     *
+     * @param Collection $hasPermissions
+     * @param Permission $requiredPermission
+     * @return bool
+     */
+    public function imply(Collection $hasPermissions, Permission $requiredPermission): bool;
+
+    /**
      * プロジェクト権限の判定用メソッド
      *
      * @param PermissionId $id

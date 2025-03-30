@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Repositories\EloquentProjectRepository;
 use App\ValueObjects\ProjectId;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 
@@ -47,6 +48,7 @@ class FindProjectInteractorTest extends TestCase
         $nonExistentId = new ProjectId(99999);
 
         // 実行
+        $this->expectException(ModelNotFoundException::class);
         $result = $this->interactor->execute($nonExistentId);
 
         // 検証

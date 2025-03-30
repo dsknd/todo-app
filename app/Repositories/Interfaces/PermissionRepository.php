@@ -85,7 +85,7 @@ interface PermissionRepository
 
     /**
      * 指定された権限が複数の権限のいずれかに含まれるかどうかを確認
-     *
+     * @deprecated 代わりにimplyを使用
      * @param array<PermissionId> $hasPermissions
      * @param PermissionId $requiredPermissionId
      * @return bool
@@ -95,11 +95,11 @@ interface PermissionRepository
     /**
      * 指定された権限が複数の権限のいずれかに含まれるかどうかを確認
      *
-     * @param Collection $hasPermissions
-     * @param Permission $requiredPermission
+     * @param array<PermissionId> $hasPermissions
+     * @param PermissionId $requiredPermissionId
      * @return bool
      */
-    public function imply(Collection $hasPermissions, Permission $requiredPermission): bool;
+    public function imply(array $hasPermissions, PermissionId $requiredPermissionId): bool;
 
     /**
      * プロジェクト権限の判定用メソッド

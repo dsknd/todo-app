@@ -153,11 +153,11 @@ class EloquentPermissionRepository implements PermissionRepository
     /**
      * inherit doc
      */
-    public function imply(Collection $hasPermissions, Permission $requiredPermission): bool
+    public function imply(array $hasPermissions, PermissionId $requiredPermissionId): bool
     {
-        return $this->findById($requiredPermission->id)
+        return $this->findById($requiredPermissionId)
             ->ancestors()
-            ->whereIn('permissions.id', $hasPermissions->pluck('id')->toArray())
+            ->whereIn('permissions.id', $hasPermissions)
             ->exists();
     }
 

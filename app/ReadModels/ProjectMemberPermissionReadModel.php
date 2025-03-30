@@ -12,7 +12,6 @@ use Illuminate\Support\Collection;
  * @property ProjectId $projectId プロジェクトID
  * @property UserId $userId ユーザーID
  * @property array $permissionIds 権限IDの配列
- * @property array $permissionDetails 権限詳細の配列
  */
 class ProjectMemberPermissionReadModel
 {
@@ -22,13 +21,25 @@ class ProjectMemberPermissionReadModel
         public readonly Collection $permissions
     ) {}
 
+    /**
+     * 権限IDの配列を取得
+     * 
+     * @return array<PermissionId>
+     */
     public function getPermissionIds(): array
     {
-        return $this->permissionIds;
-    }
+        // 権限がない場合は空の配列を返す
+        if ($this->permissions->isEmpty()) {
+            return [];
+        }
 
-    public function hasPermission(PermissionId $permissionId): bool
-    {
-        return in_array($permissionId->getValue(), $this->permissionIds);
+        // 権限IDの配列を作成
+        $permissionIds = [];
+        foreach ($this->permissions as $permission) {
+            $permissionIds[] = new PermissionId($permission->permission_id);
+        }
+
+        // 権限IDの配列を返す
+        return $permissionIds;
     }
 }

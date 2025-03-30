@@ -345,9 +345,9 @@ class PermissionRepositoryTest extends TestCase
         
         // クロージャーテーブルの関係をセットアップ（ヘルパー使用）
         PermissionHierarchySetup::setupParentChild($parent, $child);
-
+        
         // 実行
-        $implies = $this->repository->imply(collect([$parent]), $child);
+        $implies = $this->repository->imply([$parent->id->getValue()], $child->id);
 
         // 検証
         $this->assertTrue($implies);

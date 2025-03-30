@@ -4,6 +4,7 @@ namespace App\ValueObjects;
 
 use InvalidArgumentException;
 use JsonSerializable;
+use App\Enums\PermissionEnum;
 class PermissionId implements JsonSerializable
 {
     private int $value;
@@ -88,5 +89,20 @@ class PermissionId implements JsonSerializable
         }
 
         return new self((int) $id);
+    }
+
+    /**
+     * EnumからPermissionIdを生成
+     *
+     * @param PermissionEnum $permissionEnum
+     * @return PermissionId
+     */
+    public static function fromEnum(PermissionEnum $permissionEnum): self
+    {
+        if (!is_numeric($permissionEnum->value)) {
+            throw new InvalidArgumentException('権限IDは数値である必要があります。');
+        }
+
+        return new self((int) $permissionEnum->value);
     }
 } 

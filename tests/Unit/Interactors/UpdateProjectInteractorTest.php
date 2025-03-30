@@ -11,6 +11,8 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 use App\ValueObjects\ProjectId;
 use App\DataTransferObjects\UpdateProjectDto;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 #[Group('interactor')]
 #[Group('update_project')]
 class UpdateProjectInteractorTest extends TestCase
@@ -64,6 +66,7 @@ class UpdateProjectInteractorTest extends TestCase
             ->build();
 
         // 実行
+        $this->expectException(ModelNotFoundException::class);
         $result = $this->interactor->execute($nonExistentId, $dto);
 
         // 検証

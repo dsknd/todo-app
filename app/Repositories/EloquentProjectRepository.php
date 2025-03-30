@@ -17,7 +17,7 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
      */
     public function findById(ProjectId $projectId): ?Project
     {
-        return Project::find($projectId);
+        return Project::findOrFail($projectId);
     }
 
     /**

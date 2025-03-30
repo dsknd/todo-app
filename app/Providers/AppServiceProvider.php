@@ -35,6 +35,8 @@ use App\UseCases\DeleteProjectUseCase;
 use App\Interactors\DeleteProjectInteractor;
 use App\Interactors\AuthorizeProjectPermissionInteractor;
 use App\UseCases\AuthorizeProjectPermissionUseCase;
+use App\Repositories\EloquentProjectMemberQueryRepository;
+use App\Repositories\Interfaces\ProjectMemberQueryRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -66,6 +68,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CustomProjectRoleRepository::class, EloquentCustomProjectRoleRepository::class);
         $this->app->bind(ProjectRolePermissionRepository::class, EloquentProjectRolePermissionRepository::class);
         $this->app->bind(PermissionRepository::class, EloquentPermissionRepository::class);
+
+        // readmodel
+        $this->app->bind(ProjectMemberQueryRepository::class, EloquentProjectMemberQueryRepository::class);
     }
 
     /**

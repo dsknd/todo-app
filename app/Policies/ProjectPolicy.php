@@ -4,11 +4,21 @@ namespace App\Policies;
 
 use App\Models\Project;
 use App\Models\User;
+use App\UseCases\AuthorizeProjectPermissionUseCase;
+use App\ValueObjects\UserId;
+use App\ValueObjects\ProjectId;
+use App\ValueObjects\PermissionId;
+use App\Enums\PermissionEnum;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ProjectPolicy
 {
     use HandlesAuthorization;
+
+    public function __construct(
+        private readonly AuthorizeProjectPermissionUseCase $authorizeProjectPermissionUseCase,
+    ) {}
+
     /**
      * Determine whether the user can view any models.
      */
@@ -22,7 +32,11 @@ class ProjectPolicy
      */
     public function view(User $user, Project $project): bool
     {
-        return false;
+        return $this->authorizeProjectPermissionUseCase->execute(
+            $user->id,
+            $project->id,
+            PermissionId::fromEnum(PermissionEnum::PROJECT_READ),
+        );
     }
 
     /**

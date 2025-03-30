@@ -336,4 +336,20 @@ class PermissionRepositoryTest extends TestCase
         // 検証
         $this->assertTrue($isIncluded);
     }
+
+    public function test_it_can_check_if_permission_implies()
+    {
+        // 準備
+        $parent = Permission::factory()->create();
+        $child = Permission::factory()->create();
+        
+        // クロージャーテーブルの関係をセットアップ（ヘルパー使用）
+        PermissionHierarchySetup::setupParentChild($parent, $child);
+        
+        // 実行
+        $implies = $this->repository->imply([$parent->id->getValue()], $child->id);
+
+        // 検証
+        $this->assertTrue($implies);
+    }
 } 

@@ -18,7 +18,7 @@ use App\UseCases\UpdateProjectUseCase;
 use App\DataTransferObjects\UpdateProjectDto;
 use App\UseCases\DeleteProjectUseCase;
 use App\Models\Project;
-
+use App\UseCases\FindProjectUseCase;
 class ProjectController extends Controller
 {
     private CreateProjectUseCase $createProjectUseCase;
@@ -26,18 +26,21 @@ class ProjectController extends Controller
     private FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase;
     private UpdateProjectUseCase $updateProjectUseCase;
     private DeleteProjectUseCase $deleteProjectUseCase;
+    private FindProjectUseCase $findProjectUseCase;
     public function __construct(
         CreateProjectUseCase $createProjectUseCase,
         FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase,
         FetchParticipatingProjectsUseCase $fetchParticipatingProjectsUseCase,
         UpdateProjectUseCase $updateProjectUseCase,
         DeleteProjectUseCase $deleteProjectUseCase,
+        FindProjectUseCase $findProjectUseCase,
     ) {
         $this->createProjectUseCase = $createProjectUseCase;
         $this->fetchOwnedProjectsUseCase = $fetchOwnedProjectsUseCase;
         $this->fetchParticipatingProjectsUseCase = $fetchParticipatingProjectsUseCase;
         $this->updateProjectUseCase = $updateProjectUseCase;
         $this->deleteProjectUseCase = $deleteProjectUseCase;
+        $this->findProjectUseCase = $findProjectUseCase;
     }
 
     /**
@@ -61,6 +64,19 @@ class ProjectController extends Controller
         return ProjectResource::collection($projects)->response()->setStatusCode(Response::HTTP_OK);
     }
 
+    /**
+     * プロジェクトを取得します。
+     * 
+     * @param Project $project プロジェクト
+     * @return JsonResponse プロジェクトリソース
+     */
+    public function show(Project $project): JsonResponse
+    {
+        $userId = UserId::fromAuth();
+        $project = $this->findProjectUseCase->execute($project->id);
+
+        return new ProjectResource($project)->response()->setStatusCode(Response::HTTP_OK);
+    }
     /**
      * プロジェクトを作成します。
      * 

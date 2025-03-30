@@ -15,6 +15,7 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 use App\Models\ProjectRole;
 use App\ValueObjects\ProjectOrderParam;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 /**
  * このテストスイートでは、ProjectRepositoryインターフェースの各メソッドをテストしています
  * 
@@ -73,6 +74,7 @@ class ProjectRepositoryTest extends TestCase
         $nonExistentId = new ProjectId(999);
 
         // 実行
+        $this->expectException(ModelNotFoundException::class);
         $result = $this->repository->findById($nonExistentId);
 
         // 検証

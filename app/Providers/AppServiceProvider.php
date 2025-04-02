@@ -35,8 +35,8 @@ use App\UseCases\DeleteProjectUseCase;
 use App\Interactors\DeleteProjectInteractor;
 use App\Interactors\AuthorizeProjectPermissionInteractor;
 use App\UseCases\AuthorizeProjectPermissionUseCase;
-use App\Repositories\EloquentProjectMemberQueryRepository;
-use App\Repositories\Interfaces\ProjectMemberQueryRepository;
+use App\Repositories\EloquentProjectMemberPermissionQueryRepository;
+use App\Repositories\Interfaces\ProjectMemberPermissionQueryRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -45,7 +45,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(CheckProjectRolePermissionUseCase::class, CheckProjectRolePermission::class);
 
         // ユースケース
         $this->app->bind(CreateProjectUseCase::class, CreateProjectInteractor::class);
@@ -70,7 +69,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PermissionRepository::class, EloquentPermissionRepository::class);
 
         // readmodel
-        $this->app->bind(ProjectMemberQueryRepository::class, EloquentProjectMemberQueryRepository::class);
+        $this->app->bind(ProjectMemberPermissionQueryRepository::class, EloquentProjectMemberPermissionQueryRepository::class);
     }
 
     /**

@@ -6,7 +6,7 @@ use App\ValueObjects\ProjectId;
 use App\ValueObjects\UserId;
 use App\ReadModels\ProjectMemberPermissionReadModel;
 
-interface ProjectMemberQueryRepository
+interface ProjectMemberPermissionQueryRepository
 {
     public function findMemberPermissions(ProjectId $projectId, UserId $userId): ProjectMemberPermissionReadModel;
 }

@@ -2,14 +2,14 @@
 
 namespace App\Repositories;
 
-use App\Repositories\Interfaces\ProjectMemberQueryRepository;
+use App\Repositories\Interfaces\ProjectMemberPermissionQueryRepository;
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\UserId;
 use App\ReadModels\ProjectMemberPermissionReadModel;
 use App\Models\ProjectMember;
 use Illuminate\Support\Collection;
 
-class EloquentProjectMemberQueryRepository implements ProjectMemberQueryRepository
+class EloquentProjectMemberPermissionQueryRepository implements ProjectMemberPermissionQueryRepository
 {
     /**
      * プロジェクトメンバーの権限情報を取得

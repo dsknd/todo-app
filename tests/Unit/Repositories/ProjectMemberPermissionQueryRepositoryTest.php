@@ -4,9 +4,6 @@ namespace Tests\Unit\ReadModels;
 
 use Tests\TestCase;
 use App\ReadModels\ProjectMemberPermissionReadModel;
-use App\ValueObjects\ProjectId;
-use App\ValueObjects\UserId;
-use App\ValueObjects\PermissionId;
 use App\Models\ProjectMember;
 use App\Models\ProjectRole;
 use App\Models\ProjectRolePermission;
@@ -14,23 +11,23 @@ use App\Models\ProjectPermission;
 use App\Models\Permission;
 use App\Models\Project;
 use App\Models\User;
-use App\Repositories\Interfaces\ProjectMemberQueryRepository;
-use App\Repositories\EloquentProjectMemberQueryRepository;
+use App\Repositories\Interfaces\ProjectMemberPermissionQueryRepository;
+use App\Repositories\EloquentProjectMemberPermissionQueryRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Group;
 
 #[Group('repository')]
 #[Group('readmodel')]
-class ProjectMemberQueryRepositoryTest extends TestCase
+class ProjectMemberPermissionQueryRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    private ProjectMemberQueryRepository $queryRepository;
+    private ProjectMemberPermissionQueryRepository $queryRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->queryRepository = new EloquentProjectMemberQueryRepository();
+        $this->queryRepository = new EloquentProjectMemberPermissionQueryRepository();
     }
 
 

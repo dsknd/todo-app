@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Http\Middleware\Localization;
 use App\Exceptions\JsonParseException;
 use App\Http\Middleware\ValidateJsonSyntax;
+use Illuminate\Auth\Access\AuthorizationException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -34,6 +35,17 @@ return Application::configure(basePath: dirname(__DIR__))
                 'detail' => __('errors.unauthenticated.detail'),
                 'instance' => $request->path(),
             ], Response::HTTP_UNAUTHORIZED)->header('Content-Type', 'application/problem+json');
+        });
+
+        // 認可エラー
+        $exceptions->renderable(function (AuthorizationException $e, Request $request) {
+            return response()->json([
+                'type' => 'https://example.com/probs/unauthorized',
+                'title' => __('errors.unauthorized.title'),
+                'status' => Response::HTTP_FORBIDDEN,
+                'detail' => __('errors.unauthorized.detail'),
+                'instance' => $request->path(),
+            ], Response::HTTP_FORBIDDEN)->header('Content-Type', 'application/problem+json');
         });
 
         // JSONパースエラー

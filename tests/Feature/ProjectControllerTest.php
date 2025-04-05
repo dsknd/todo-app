@@ -179,6 +179,15 @@ class ProjectControllerTest extends TestCase
 
     public function test_update_success(): void
     {
+        // プロジェクトの作成
+        // 権限の作成
+        // 権限の階層
+        // プロジェクト権限作成
+        // ユーザの作成
+        // プロジェクトメンバーの作成
+        // プロジェクトロールの作成
+        // プロジェクトロールの権限割当
+        
         $project = Project::factory()->create();
         $response = $this->actingAs($this->user)
                          ->putJson('/api/projects/' . $project->id, [

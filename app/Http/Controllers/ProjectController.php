@@ -19,6 +19,7 @@ use App\DataTransferObjects\UpdateProjectDto;
 use App\UseCases\DeleteProjectUseCase;
 use App\Models\Project;
 use App\UseCases\FindProjectUseCase;
+use Illuminate\Support\Facades\Gate;
 class ProjectController extends Controller
 {
     private CreateProjectUseCase $createProjectUseCase;
@@ -85,6 +86,9 @@ class ProjectController extends Controller
      */
     public function store(CreateProjectRequest $request): JsonResponse
     {
+        // プロジェクトの作成権限を確認
+        Gate::authorize('create', Project::class);
+
         // プロジェクトの作成
         $createProjectDto = CreateProjectDto::fromRequest($request);
         $project = $this->createProjectUseCase->execute($createProjectDto);
@@ -102,6 +106,10 @@ class ProjectController extends Controller
      */
     public function update(Project $project, UpdateProjectRequest $request): JsonResponse
     {
+        // プロジェクトの更新権限を確認
+        // Gate::authorize('update', $project);
+
+        // プロジェクトの更新
         $updateProjectDto = UpdateProjectDto::fromRequest($request);
         $project = $this->updateProjectUseCase->execute($project->id, $updateProjectDto);
 

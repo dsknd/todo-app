@@ -107,7 +107,7 @@ class ProjectController extends Controller
     public function update(Project $project, UpdateProjectRequest $request): JsonResponse
     {
         // プロジェクトの更新権限を確認
-        // Gate::authorize('update', $project);
+        Gate::authorize('update', $project);
 
         // プロジェクトの更新
         $updateProjectDto = UpdateProjectDto::fromRequest($request);

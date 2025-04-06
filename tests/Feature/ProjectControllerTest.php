@@ -2,18 +2,21 @@
 
 namespace Tests\Feature;
 
+use App\Enums\DefaultProjectRoleEnum;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\ProjectStatus;
 use App\Models\Project;
 use Illuminate\Contracts\Auth\Authenticatable;
 use App\Models\ProjectMember;
-use App\Models\DefaultProjectRole;
-use Exception;
-use Mockery;
-use App\Interactors\CreateProjectInteractor;
+use App\ValueObjects\ProjectRoleId;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\ProjectPermissionSeeder;
+use Database\Seeders\DefaultProjectRoleSeeder;
+use Database\Seeders\ProjectStatusSeeder;
+use Database\Seeders\ProjectRoleTypeSeeder;
+use Database\Seeders\DefaultProjectPermissionSeeder;
 
 class ProjectControllerTest extends TestCase
 {
@@ -27,15 +30,29 @@ class ProjectControllerTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
+
+        // シーダーの実行順序を確認
+        $this->seed([
+            PermissionSeeder::class,
+            ProjectPermissionSeeder::class,
+            ProjectRoleTypeSeeder::class,
+            DefaultProjectRoleSeeder::class,
+            DefaultProjectPermissionSeeder::class,
+            ProjectStatusSeeder::class,
+        ]);
+
+
     }
 
     public function test_index_success(): void
     {
         // テストデータの準備
         $project = Project::factory()->create();
+
         ProjectMember::factory()->create([
             'project_id' => $project->id,
             'user_id' => $this->user->id,
+            'role_id' => new ProjectRoleId(DefaultProjectRoleEnum::OWNER->value),
         ]);
 
         // GETリクエストを送信
@@ -83,8 +100,6 @@ class ProjectControllerTest extends TestCase
 
     public function test_store_success(): void
     {
-        ProjectStatus::factory()->planning()->create();
-        DefaultProjectRole::factory()->owner()->create();
         // プロジェクトの作成
         $response = $this->actingAs($this->user)
                          ->postJson('/api/projects', [
@@ -144,9 +159,6 @@ class ProjectControllerTest extends TestCase
     // ユーザが同じ名前のプロジェクトを作成しようとした場合、500エラーが返ることを確認
     public function test_store_duplicate_project_name(): void
     {
-        ProjectStatus::factory()->planning()->create();
-        DefaultProjectRole::factory()->owner()->create();
-
         $firstResponse = $this->actingAs($this->user)
                          ->postJson('/api/projects', [
                             'name' => 'Test Project',
@@ -179,22 +191,22 @@ class ProjectControllerTest extends TestCase
 
     public function test_update_success(): void
     {
-        // プロジェクトの作成
-        // 権限の作成
-        // 権限の階層
-        // プロジェクト権限作成
-        // ユーザの作成
-        // プロジェクトメンバーの作成
-        // プロジェクトロールの作成
-        // プロジェクトロールの権限割当
-        
         $project = Project::factory()->create();
+
+        ProjectMember::factory()->create([
+            'project_id' => $project->id,
+            'user_id' => $this->user->id,
+            'role_id' => new ProjectRoleId(DefaultProjectRoleEnum::OWNER->value),
+        ]);
+
         $response = $this->actingAs($this->user)
                          ->putJson('/api/projects/' . $project->id, [
                             'name' => 'Updated Project',
                             'description' => 'Updated Description',
                          ]);
+
         $response->assertStatus(Response::HTTP_OK);
+
         $response->assertJsonStructure([
             'data' => [
                 'id',

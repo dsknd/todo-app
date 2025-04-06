@@ -13,6 +13,10 @@ return [
         'title' => '不正なリクエスト',
         'detail' => 'JSONの形式が無効または壊れています。',
     ],
+    'unauthorized' => [
+        'title' => '認可エラー',
+        'detail' => 'このリソースにアクセスする権限がありません。',
+    ],
     'validation_error' => [
         'title' => '検証エラー',
         'project' => [

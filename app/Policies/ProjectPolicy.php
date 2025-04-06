@@ -10,7 +10,7 @@ use App\ValueObjects\ProjectId;
 use App\ValueObjects\PermissionId;
 use App\Enums\PermissionEnum;
 use Illuminate\Auth\Access\HandlesAuthorization;
-
+use Illuminate\Support\Facades\Auth;
 class ProjectPolicy
 {
     use HandlesAuthorization;
@@ -44,7 +44,13 @@ class ProjectPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        $user = Auth::user();
+
+        if ($user === null) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -52,7 +58,11 @@ class ProjectPolicy
      */
     public function update(User $user, Project $project): bool
     {
-        return false;
+        return $this->authorizeProjectPermissionUseCase->execute(
+            $user->id,
+            $project->id,
+            PermissionId::fromEnum(PermissionEnum::PROJECT_UPDATE),
+        );
     }
 
     /**
@@ -60,7 +70,11 @@ class ProjectPolicy
      */
     public function delete(User $user, Project $project): bool
     {
-        return false;
+        return $this->authorizeProjectPermissionUseCase->execute(
+            $user->id,
+            $project->id,
+            PermissionId::fromEnum(PermissionEnum::PROJECT_DELETE),
+        );
     }
 
     /**

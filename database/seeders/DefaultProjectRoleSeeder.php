@@ -14,6 +14,7 @@ class DefaultProjectRoleSeeder extends Seeder
         DB::transaction(function () {
             foreach (DefaultProjectRoleEnum::cases() as $role) {
                 $projectRoleId = DB::table('project_roles')->insertGetId([
+                    'id' => $role->value,
                     'project_role_type_id' => ProjectRoleTypeEnum::DEFAULT->value,
                     'assignable_limit' => DefaultProjectRoleEnum::getAssignableLimit($role),
                     'assigned_count' => 0,

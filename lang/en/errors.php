@@ -13,6 +13,10 @@ return [
         'title' => 'Bad Request.',
         'detail' => 'The JSON syntax is invalid or corrupted.',
     ],
+    'unauthorized' => [
+        'title' => 'Unauthorized.',
+        'detail' => 'You are not authorized to access this resource.',
+    ],
     'validation_error' => [
         'title' => 'Validation Error.',
         'project' => [

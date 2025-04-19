@@ -178,7 +178,7 @@ class ProjectControllerTest extends TestCase
                         ]);
 
         $firstResponse->assertStatus(Response::HTTP_CREATED);
-        $secondResponse->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
+        $secondResponse->assertStatus(Response::HTTP_BAD_REQUEST);
         $secondResponse->assertHeader('Content-Type', 'application/problem+json');
         $secondResponse->assertJsonStructure([
             'type',

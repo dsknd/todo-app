@@ -44,4 +44,12 @@ return [
             ],
         ],
     ],
+    'create_project_failure' => [
+        'title' => 'プロジェクト作成エラー',
+        'detail' => '内部サーバーエラーが発生しました。',
+    ],
+    'duplicate_project_name' => [
+        'title' => '重複するプロジェクト名',
+        'detail' => '指定されたプロジェクト名は既に存在します。',
+    ],
 ];

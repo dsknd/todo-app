@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions;
+namespace App\Http\Exceptions;
 
 use RuntimeException;
 use Throwable;
@@ -10,7 +10,6 @@ class ApiException extends RuntimeException
     private int $status;
     private string $title;
     private string $detail;
-    private string $instance;
     private Throwable $previous;
 
     public function __construct(
@@ -18,7 +17,6 @@ class ApiException extends RuntimeException
         int $status = 500,
         string $title = '',
         string $detail = '',
-        string $instance = '',
         ?Throwable $previous = null
     ) {
         $message = $title . "\n" . $detail;  
@@ -27,7 +25,6 @@ class ApiException extends RuntimeException
         $this->status = $status;
         $this->title = $title;
         $this->detail = $detail;
-        $this->instance = $instance;
         $this->previous = $previous;
     }
 
@@ -49,10 +46,5 @@ class ApiException extends RuntimeException
     public function getDetail(): string
     {
         return $this->detail;
-    }
-
-    public function getInstance(): string
-    {
-        return $this->instance;
     }
 } 

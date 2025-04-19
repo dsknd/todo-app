@@ -10,8 +10,11 @@ use App\Repositories\Interfaces\ProjectMemberRepository;
 use App\ValueObjects\ProjectRoleId;
 use App\Enums\DefaultProjectRoleEnum;
 use App\DataTransferObjects\CreateProjectDto;
-use Illuminate\Database\QueryException;
-use App\Http\Exceptions\DuplicateProjectNameException;
+use App\Repositories\Exceptions\DuplicateProjectNameException;
+use App\UseCases\Exceptions\CreateProjectFailureException;
+use App\Enums\ErrorCodeEnum;
+use Exception;
+use App\ValueObjects\UserId;
 
 class CreateProjectInteractor implements CreateProjectUseCase
 {
@@ -21,8 +24,7 @@ class CreateProjectInteractor implements CreateProjectUseCase
     public function __construct(
         ProjectRepository $projectRepository,
         ProjectMemberRepository $projectMemberRepository
-    )
-    {
+    ) {
         $this->projectRepository = $projectRepository;
         $this->projectMemberRepository = $projectMemberRepository;
     }
@@ -34,26 +36,33 @@ class CreateProjectInteractor implements CreateProjectUseCase
     {
         return DB::transaction(function () use ($dto) {
             try {
-                // プロジェクトを作成
-                $project = $this->projectRepository->create($dto->toArray());
-
-                // プロジェクトメンバーを作成
-                $this->projectMemberRepository->add(
-                    $project->id,
-                    $dto->userId,
-                    ProjectRoleId::fromEnum(DefaultProjectRoleEnum::OWNER)
-                );
-
+                $project = $this->_createProject($dto);
+                $this->_createProjectMember($project, $dto->userId);
                 return $project;
-            } catch (QueryException $e) {
-                // 重複エラーの場合は、DuplicateProjectNameExceptionを投げる
-                if ($e->getCode() === '23000' && str_contains($e->getMessage(), 'Duplicate entry')) {
-                    throw new DuplicateProjectNameException($e);
-                }
-
-                // 重複エラー以外の場合は、そのままエラーを投げる
-                throw $e;
+            } catch (DuplicateProjectNameException $e) {
+                throw new CreateProjectFailureException(ErrorCodeEnum::DUPLICATE_PROJECT_NAME, $e);
+            } catch (Exception $e) {
+                throw new CreateProjectFailureException(ErrorCodeEnum::UNKNOWN, $e);
             }
         });
+    }
+
+    /**
+     * プロジェクトを作成
+     */
+    private function _createProject(CreateProjectDto $dto): Project
+    {
+        $attributes = $dto->toArray();
+        return $this->projectRepository->create($attributes);
+    }
+
+    /**
+     * プロジェクトメンバーを作成
+     */
+    private function _createProjectMember(Project $project, UserId $userId): void
+    {
+        $projectId = $project->id;
+        $projectRoleId = ProjectRoleId::fromEnum(DefaultProjectRoleEnum::OWNER);
+        $this->projectMemberRepository->add($projectId,$userId,$projectRoleId);
     }
 }

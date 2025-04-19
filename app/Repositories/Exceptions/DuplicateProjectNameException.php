@@ -2,12 +2,12 @@
 
 namespace App\Repositories\Exceptions;
 
-use RuntimeException;
+use Exception;
 use Throwable;
 use App\Enums\ErrorCodeEnum;
 use App\Enums\ErrorMessageEnum;
 
-class DuplicateProjectNameException extends RuntimeException
+class DuplicateProjectNameException extends Exception
 {
     private const ERROR_CODE = ErrorCodeEnum::DUPLICATE_PROJECT_NAME->value;
     private const MESSAGE = ErrorMessageEnum::DUPLICATE_PROJECT_NAME->value;

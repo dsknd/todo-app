@@ -89,6 +89,7 @@ class ProjectController extends Controller
      * 
      * @param CreateProjectRequest $request プロジェクト作成リクエスト
      * @return JsonResponse プロジェクトリソース
+     * @throws DuplicateProjectNameException プロジェクト名が重複している場合
      */
     public function store(CreateProjectRequest $request): JsonResponse
     {

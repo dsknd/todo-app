@@ -84,6 +84,7 @@ class ProjectController extends Controller
      * 
      * @param CreateProjectRequest $request プロジェクト作成リクエスト
      * @return JsonResponse プロジェクトリソース
+     * @throws ApiException プロジェクト作成権限がない場合
      */
     public function store(CreateProjectRequest $request): JsonResponse
     {

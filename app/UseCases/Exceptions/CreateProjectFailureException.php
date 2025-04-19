@@ -2,12 +2,11 @@
 
 namespace App\UseCases\Exceptions;
 
-use Exception;
 use Throwable;
 use App\Enums\ErrorMessageEnum;
 use App\Enums\ErrorCodeEnum;
 
-class CreateProjectFailureException extends Exception
+class CreateProjectFailureException extends ApplicationException
 {
     private const MESSAGE = ErrorMessageEnum::CREATE_PROJECT_FAILURE->value;
 

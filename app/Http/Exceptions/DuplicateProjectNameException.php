@@ -14,14 +14,10 @@ class DuplicateProjectNameException extends ApiException
     private string $title;
     private string $detail;
 
-    public function __construct(
-        ?Throwable $previous = null
-    ) {
-        // エラーメッセージを取得
+    public function __construct(Throwable $previous) {
         $this->title = Lang::get('errors.duplicate_project_name.title');
         $this->detail = Lang::get('errors.duplicate_project_name.detail');
 
-        // 親クラスのコンストラクタを呼び出す
         parent::__construct(
             self::TYPE,
             self::STATUS,

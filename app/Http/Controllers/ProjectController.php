@@ -20,6 +20,11 @@ use App\UseCases\DeleteProjectUseCase;
 use App\Models\Project;
 use App\UseCases\FindProjectUseCase;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Exceptions\ApiException;
+use App\UseCases\Exceptions\CreateProjectFailureException;
+use App\Enums\ErrorCodeEnum;
+use App\Http\Exceptions\DuplicateProjectNameException;
+use App\Http\ExceptionHandlers\ApplicationExceptionHandler;
 class ProjectController extends Controller
 {
     private CreateProjectUseCase $createProjectUseCase;
@@ -84,7 +89,6 @@ class ProjectController extends Controller
      * 
      * @param CreateProjectRequest $request プロジェクト作成リクエスト
      * @return JsonResponse プロジェクトリソース
-     * @throws ApiException プロジェクト作成権限がない場合
      */
     public function store(CreateProjectRequest $request): JsonResponse
     {
@@ -93,7 +97,9 @@ class ProjectController extends Controller
 
         // プロジェクトの作成
         $createProjectDto = CreateProjectDto::fromRequest($request);
-        $project = $this->createProjectUseCase->execute($createProjectDto);
+        $project = ApplicationExceptionHandler::handle(function () use ($createProjectDto) {
+            return $this->createProjectUseCase->execute($createProjectDto);
+        });
 
         // レスポンス
         return new ProjectResource($project)->response()->setStatusCode(Response::HTTP_CREATED);

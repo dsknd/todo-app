@@ -2,9 +2,10 @@
 
 namespace App\Http\Exceptions;
 
-use RuntimeException;
+use Exception;
 use Throwable;
-class ApiException extends RuntimeException
+
+class ApiException extends Exception
 {
     private string $type;
     private int $status;

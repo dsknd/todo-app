@@ -126,7 +126,13 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project): JsonResponse
     {
+        // プロジェクトの削除権限を確認
+        Gate::authorize('delete', $project);
+
+        // プロジェクトの削除
         $this->deleteProjectUseCase->execute($project->id);
+
+        // レスポンス
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }

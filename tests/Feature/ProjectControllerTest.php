@@ -234,6 +234,13 @@ class ProjectControllerTest extends TestCase
     public function test_destroy_success(): void
     {
         $project = Project::factory()->create();
+
+        ProjectMember::factory()->create([
+            'project_id' => $project->id,
+            'user_id' => $this->user->id,
+            'role_id' => new ProjectRoleId(DefaultProjectRoleEnum::OWNER->value),
+        ]);
+
         $response = $this->actingAs($this->user)
                          ->deleteJson('/api/projects/' . $project->id);
         $response->assertStatus(Response::HTTP_NO_CONTENT);

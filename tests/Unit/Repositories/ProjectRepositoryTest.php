@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\Group;
 use App\Models\ProjectRole;
 use App\ValueObjects\ProjectOrderParam;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Repositories\Exceptions\DuplicateProjectNameException;
 /**
  * このテストスイートでは、ProjectRepositoryインターフェースの各メソッドをテストしています
  * 
@@ -223,6 +224,26 @@ class ProjectRepositoryTest extends TestCase
         $this->assertEquals('2023-12-31', $project->planned_end_date->format('Y-m-d'));
         $this->assertEquals('2023-01-01', $project->actual_start_date->format('Y-m-d'));
         $this->assertEquals('2023-12-31', $project->actual_end_date->format('Y-m-d'));
+    }
+
+    public function test_it_throws_duplicate_project_name_exception_when_project_name_already_exists()
+    {
+        // 準備
+        $user = User::factory()->create();
+        $project = Project::factory()->create();
+
+        // 実行
+        $this->expectException(DuplicateProjectNameException::class);
+        $this->repository->create([
+            'name' => $project->name,
+            'description' => $project->description,
+            'is_private' => $project->is_private,
+            'user_id' => $project->user_id,
+            'project_status_id' => $project->project_status_id,
+            'planned_start_date' => $project->planned_start_date,
+            'planned_end_date' => $project->planned_end_date,
+            'actual_start_date' => $project->actual_start_date,
+        ]);
     }
 
     public function test_it_can_update_project()

@@ -28,6 +28,7 @@ class ProjectController extends Controller
     private UpdateProjectUseCase $updateProjectUseCase;
     private DeleteProjectUseCase $deleteProjectUseCase;
     private FindProjectUseCase $findProjectUseCase;
+    
     public function __construct(
         CreateProjectUseCase $createProjectUseCase,
         FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase,

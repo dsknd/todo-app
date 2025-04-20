@@ -78,8 +78,33 @@ namespace App\Models{
  * 
  *
  * @property \App\ValueObjects\ProjectRoleId $project_role_id
+ * @property \App\ValueObjects\ProjectId $project_id
+ * @property \App\ValueObjects\ProjectRoleNumber $role_number
+ * @property string $name
+ * @property string|null $description
+ * @property-read \App\Models\Project $project
+ * @property-read \App\Models\ProjectRole $projectRole
+ * @method static \Database\Factories\CustomProjectRoleFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomProjectRole newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomProjectRole newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomProjectRole query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomProjectRole whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomProjectRole whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomProjectRole whereProjectId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomProjectRole whereProjectRoleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomProjectRole whereRoleNumber($value)
+ */
+	class CustomProjectRole extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property \App\ValueObjects\ProjectRoleId $project_role_id
  * @property string $key
  * @property-read \App\Models\ProjectRole $projectRole
+ * @method static \Database\Factories\DefaultProjectRoleFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultProjectRole newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultProjectRole newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DefaultProjectRole query()
@@ -202,6 +227,8 @@ namespace App\Models{
  * @property-read int|null $descendants_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectPermission> $projectPermissions
  * @property-read int|null $project_permissions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PermissionTranslation> $translations
+ * @property-read int|null $translations_count
  * @method static \Database\Factories\PermissionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission newQuery()
@@ -212,6 +239,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereResource($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereScope($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission withTranslations(\App\ValueObjects\LocaleId $localeId)
  */
 	class Permission extends \Eloquent {}
 }
@@ -234,6 +262,30 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PermissionClosure whereDescendantId($value)
  */
 	class PermissionClosure extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property \App\ValueObjects\PermissionId $permission_id
+ * @property \App\ValueObjects\LocaleId $locale_id
+ * @property string $name
+ * @property string $description
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Permission $permission
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PermissionTranslation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PermissionTranslation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PermissionTranslation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PermissionTranslation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PermissionTranslation whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PermissionTranslation whereLocaleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PermissionTranslation whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PermissionTranslation wherePermissionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PermissionTranslation whereUpdatedAt($value)
+ */
+	class PermissionTranslation extends \Eloquent {}
 }
 
 namespace App\Models{

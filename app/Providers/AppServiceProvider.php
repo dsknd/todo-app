@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\UseCases\CheckProjectRolePermissionUseCase;
-use App\UseCases\Implementations\CheckProjectRolePermission;
 use App\Interactors\CreateProjectInteractor;
 use App\UseCases\CreateProjectUseCase;
 use App\Interactors\CreateTaskInteractor;

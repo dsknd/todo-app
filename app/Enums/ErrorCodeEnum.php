@@ -10,4 +10,7 @@ enum ErrorCodeEnum: int
     // プロジェクト
     case DUPLICATE_PROJECT_NAME = 4001;
     case PROJECT_NOT_FOUND = 4002;
+
+    // ユーザー
+    case USER_NOT_FOUND = 5001;
 }

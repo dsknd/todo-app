@@ -15,6 +15,10 @@ use DateTimeImmutable;
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\UserId;
 use App\ValueObjects\ProjectRoleId;
+use App\ValueObjects\PaginatorPageCount;
+use App\ValueObjects\ProjectMemberOrderParamList;
+use App\ValueObjects\ProjectMemberOrderParam;
+use App\ValueObjects\ProjectMemberNextToken;
 
 /**
  * プロジェクトメンバーリポジトリのテスト
@@ -123,6 +127,147 @@ class ProjectMemberRepositoryTest extends TestCase
             $projects->pluck('id')->sort()->values()->toArray(),
             $members->pluck('project_id')->sort()->values()->toArray()
         );
+    }
+
+    /**
+     * プロジェクトIDでメンバーを検索できること
+     */
+    public function test_it_can_search_members_by_project_id_only_with_page_count()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $users = User::factory()->count(2)->create();
+
+        foreach ($users as $user) {
+            ProjectMember::factory()->create([
+                'project_id' => $project->id,
+                'user_id' => $user->id,
+            ]);
+        }
+
+        // ページに含まれるレコード数を1に設定
+        $pageCount = PaginatorPageCount::from(1);
+
+        // ソート条件を設定
+        $orderParamList = ProjectMemberOrderParamList::from([
+            ProjectMemberOrderParam::createJoinedAtDesc()
+        ]);
+
+        // 実行
+        $members = $this->repository->searchByProjectId(
+            $project->id,
+            $pageCount,
+            $orderParamList
+        );
+
+        // 検証
+        $this->assertCount(1, $members);
+    }
+
+    /**
+     * プロジェクトIDでメンバーを検索できること（参加日時降順）
+     */
+    public function test_it_can_search_members_by_project_id_sorted_by_joined_at_desc()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $users = User::factory()->count(2)->create();
+
+        $joinedAtList = [
+            '2023-01-01 10:00:00',
+            '2023-01-01 11:00:00',  // より明確な時間差
+        ];
+
+        for ($i = 0; $i < count($users); $i++) {
+            ProjectMember::factory()->create([
+                'project_id' => $project->id,
+                'user_id' => $users[$i]->id,
+                'joined_at' => $joinedAtList[$i],
+            ]);
+        }
+
+        // ページに含まれるレコード数を設定
+        $pageCount = PaginatorPageCount::from(count($users));
+
+        // ソート条件を指定（参加日時の降順）
+        $orderParamList = ProjectMemberOrderParamList::from([
+            ProjectMemberOrderParam::createJoinedAtDesc()
+        ]);
+
+        // 実行
+        $members = $this->repository->searchByProjectId(
+            $project->id,
+            $pageCount,
+            $orderParamList
+        );
+
+        // 検証
+        $this->assertCount(count($users), $members);
+        
+        // 降順なので、新しい時刻（11:00:00）が最初に来る
+        $expectedOrder = [
+            '2023-01-01 11:00:00',
+            '2023-01-01 10:00:00',
+        ];
+        
+        $actualOrder = $members->pluck('joined_at')->map(function ($date) {
+            return $date->format('Y-m-d H:i:s');
+        })->toArray();
+        
+        $this->assertEquals($expectedOrder, $actualOrder);
+    }
+
+    /**
+     * プロジェクトIDでメンバーを検索できること（参加日時昇順）
+     */
+    public function test_it_can_search_members_by_project_id_sorted_by_joined_at_asc()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $users = User::factory()->count(2)->create();
+
+        $joinedAtList = [
+            '2023-01-01 10:00:00',
+            '2023-01-01 11:00:00',
+        ];
+
+        for ($i = 0; $i < count($users); $i++) {
+            ProjectMember::factory()->create([
+                'project_id' => $project->id,
+                'user_id' => $users[$i]->id,
+                'joined_at' => $joinedAtList[$i],
+            ]);
+        }
+
+        // ページに含まれるレコード数を設定
+        $pageCount = PaginatorPageCount::from(count($users));
+
+        // ソート条件を指定（参加日時の昇順）
+        $orderParamList = ProjectMemberOrderParamList::from([
+            ProjectMemberOrderParam::createJoinedAtAsc()
+        ]);
+
+        // 実行
+        $members = $this->repository->searchByProjectId(
+            $project->id,
+            $pageCount,
+            $orderParamList
+        );
+
+        // 検証
+        $this->assertCount(count($users), $members);
+        
+        // 昇順なので、古い時刻（10:00:00）が最初に来る
+        $expectedOrder = [
+            '2023-01-01 10:00:00',
+            '2023-01-01 11:00:00',
+        ];
+        
+        $actualOrder = $members->pluck('joined_at')->map(function ($date) {
+            return $date->format('Y-m-d H:i:s');
+        })->toArray();
+        
+        $this->assertEquals($expectedOrder, $actualOrder);
     }
 
     /**

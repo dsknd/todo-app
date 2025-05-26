@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\DB;
 use DateTimeImmutable;
 use App\Models\ProjectRole;
 use App\ValueObjects\PermissionId;
+use App\ValueObjects\PaginatorPageCount;
+use App\ValueObjects\ProjectMemberNextToken;
+use App\ValueObjects\ProjectMemberOrderParamList;
 
 class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterface
 {
@@ -41,6 +44,58 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
     public function findByUserId(UserId $userId): Collection
     {
         return ProjectMember::where('user_id', $userId)->get();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function searchByProjectId(
+        ProjectId $projectId,
+        PaginatorPageCount $pageCount,
+        ProjectMemberOrderParamList $orderParamList
+    ): Collection
+    {
+        $query = ProjectMember::where('project_id', $projectId->getValue());
+    
+        // ソート条件を適用
+        foreach ($orderParamList->all() as $orderParam) {
+            $query->orderBy($orderParam->getColumn(), $orderParam->getDirection());
+        }
+    
+        // ページ数分だけデータを取得
+        $query->take($pageCount->getValue());
+    
+        return $query->get();
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function searchByProjectIdWithNextToken(ProjectMemberNextToken $nextToken): Collection
+    {
+        $query = ProjectMember::query();
+    
+        // プロジェクトIDの条件
+        $query->where('project_id', $nextToken->getProjectId()->getValue());
+    
+        // カーソルベースの条件（joined_atを使用）
+        if ($nextToken->getJoinedAt()) {
+            $query->where('joined_at', '>', $nextToken->getJoinedAt()->getValue());
+        }
+    
+        // ソート条件
+        foreach ($nextToken->getOrderParamList()->all() as $orderParam) {
+            $query->orderBy($orderParam->getColumn(), $orderParam->getDirection());
+        }
+        
+        // joined_atで最終的な順序を保証
+        $query->orderBy('joined_at', 'asc');
+    
+        // ページサイズ
+        $query->take($nextToken->getPageCount()->getValue());
+    
+        return $query->get();
     }
 
     /**

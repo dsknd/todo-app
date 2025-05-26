@@ -8,6 +8,10 @@ use App\ValueObjects\ProjectId;
 use App\ValueObjects\PermissionId;
 use App\Repositories\Interfaces\ProjectMemberPermissionQueryRepository;
 use App\Repositories\Interfaces\PermissionRepository;
+
+/**
+ * プロジェクトの権限を確認するインタラクタ
+ */
 class AuthorizeProjectPermissionInteractor implements AuthorizeProjectPermissionUseCase
 {
     /**

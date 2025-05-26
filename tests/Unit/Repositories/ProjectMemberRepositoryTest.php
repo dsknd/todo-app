@@ -19,6 +19,8 @@ use App\ValueObjects\PaginatorPageCount;
 use App\ValueObjects\ProjectMemberOrderParamList;
 use App\ValueObjects\ProjectMemberOrderParam;
 use App\ValueObjects\ProjectMemberNextToken;
+use App\ValueObjects\ProjectMemberCreatedAt;
+use Ramsey\Uuid\Generator\UnixTimeGenerator;
 
 /**
  * プロジェクトメンバーリポジトリのテスト
@@ -268,6 +270,71 @@ class ProjectMemberRepositoryTest extends TestCase
         })->toArray();
         
         $this->assertEquals($expectedOrder, $actualOrder);
+    }
+
+    /**
+     * NextTokenでプロジェクトメンバーを検索できること
+     */
+    public function test_it_can_search_members_by_project_id_with_next_token()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $users = User::factory()->count(3)->create();
+
+        $members = [];
+        $baseTime = now();
+        for ($i = 0; $i < count($users); $i++) {
+            $members[] = ProjectMember::factory()->create([
+                'project_id' => $project->id,
+                'user_id' => $users[$i]->id,
+                'joined_at' => $baseTime,
+                'created_at' => $baseTime->copy()->addSeconds($i),
+            ]);
+        }
+
+        dd($members);
+
+        // ページに含まれるレコード数を設定
+        $pageCount = PaginatorPageCount::from(2);
+
+        // ソート条件を指定
+        $orderParamList = ProjectMemberOrderParamList::from([
+            ProjectMemberOrderParam::createJoinedAtAsc()
+        ]);
+
+        // 最初のページを取得
+        $resultFirstPage = $this->repository->searchByProjectId($project->id, $pageCount, $orderParamList);
+
+        // 最初のページの最後のメンバーのcreated_atをカーソルとして使用
+        $lastMemberOfFirstPage = $resultFirstPage->last();
+        $nextToken = ProjectMemberNextToken::from(
+            $project->id,
+            $pageCount,
+            $orderParamList,
+            ProjectMemberCreatedAt::from($lastMemberOfFirstPage->created_at)
+        );
+
+        dd($resultFirstPage->pluck('created_at'));
+
+        // 2ページ目を取得
+        $resultSecondPage = $this->repository->searchByProjectIdWithNextToken($nextToken);
+
+        // 検証
+        $this->assertCount(2, $resultFirstPage);
+        $this->assertCount(1, $resultSecondPage);
+
+        // すべての参加日時が同じであることを確認
+        foreach ($resultFirstPage as $member) {
+            $this->assertEquals($baseTime->format('Y-m-d H:i:s'), $member->joined_at->format('Y-m-d H:i:s'));
+        }
+        
+        // 2ページ目のメンバーが最初のページの最後のメンバーより後に作成されていることを確認
+        foreach ($resultSecondPage as $member) {
+            $this->assertGreaterThan(
+                $lastMemberOfFirstPage->created_at,
+                $member->created_at
+            );
+        }
     }
 
     /**

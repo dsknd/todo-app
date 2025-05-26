@@ -8,14 +8,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Casts\ProjectIdCast;
 use App\Casts\UserIdCast;
 use App\Casts\ProjectRoleIdCast;
+use App\Casts\ProjectMemberCreatedAtCast;
+
 class ProjectMember extends Pivot
 {
     use HasFactory;
     
+    /**
+     * テーブル名
+     */
     protected $table = 'project_members';
 
-    // timestampsを無効にする
-    public $timestamps = false;
+    /**
+     * タイムスタンプを有効にする
+     */
+    public $timestamps = true;
 
     /**
      * 複数代入可能な属性
@@ -25,6 +32,8 @@ class ProjectMember extends Pivot
         'user_id',
         'role_id',
         'joined_at',
+        'created_at',
+        'updated_at',
     ];
 
     /**
@@ -37,6 +46,8 @@ class ProjectMember extends Pivot
         'user_id' => UserIdCast::class,
         'role_id' => ProjectRoleIdCast::class,
         'joined_at' => 'datetime',
+        'created_at' => ProjectMemberCreatedAtCast::class,
+        'updated_at' => 'datetime',
     ];
 
     /**

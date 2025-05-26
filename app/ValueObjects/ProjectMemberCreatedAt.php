@@ -5,8 +5,11 @@ namespace App\ValueObjects;
 use DateTimeImmutable;
 use JsonSerializable;
 use InvalidArgumentException;
+use DateTimeInterface;
+use Illuminate\Support\Carbon;
+use DateTime;
 
-class ProjectMemberJoinedAt implements JsonSerializable
+class ProjectMemberCreatedAt implements JsonSerializable
 {
     private DateTimeImmutable $value;
 
@@ -62,19 +65,31 @@ class ProjectMemberJoinedAt implements JsonSerializable
     }
 
     /**
-     * DateTimeImmutableもしくは文字列からインスタンスを作成
+     * 様々な日時形式からインスタンスを作成
      *
-     * @param DateTimeImmutable|string $value
+     * @param DateTimeInterface|string $value
      * @return self
      */
-    public static function from(DateTimeImmutable|string $value): self
+    public static function from(DateTimeInterface|string $value): self
     {
         if ($value instanceof DateTimeImmutable) {
-            return self::fromDateTimeImmutable($value);
+            return new self($value);
+        }
+
+        if ($value instanceof Carbon) {
+            return new self($value->toDateTimeImmutable());
+        }
+
+        if ($value instanceof DateTime) {
+            return new self(DateTimeImmutable::createFromInterface($value));
+        }
+
+        if ($value instanceof DateTimeInterface) {
+            return new self(DateTimeImmutable::createFromInterface($value));
         }
 
         if (is_string($value)) {
-            return self::fromString($value);
+            return new self(new DateTimeImmutable($value));
         }
 
         throw new InvalidArgumentException('Invalid value type');

@@ -4,11 +4,12 @@ namespace App\ValueObjects;
 
 use App\ValueObjects\ProjectMemberOrderParam;
 use InvalidArgumentException;
+use JsonSerializable;
 
 /**
  * プロジェクトメンバーのソート条件リスト
  */
-final class ProjectMemberOrderParamList
+final class ProjectMemberOrderParamList implements JsonSerializable
 {
     /**
      * コンストラクタ
@@ -87,5 +88,15 @@ final class ProjectMemberOrderParamList
     public static function from(array $orderParamList): self
     {
         return new self($orderParamList);
+    }
+
+    /**
+     * JSONシリアライズ
+     *
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->orderParamList;
     }
 }

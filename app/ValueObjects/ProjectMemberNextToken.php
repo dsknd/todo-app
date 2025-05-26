@@ -4,7 +4,7 @@ namespace App\ValueObjects;
 
 use InvalidArgumentException;
 use App\ValueObjects\ProjectMemberOrderParamList;
-use DateTime;
+use App\ValueObjects\ProjectMemberCreatedAt;
 
 /**
  * プロジェクトメンバーページネーションの次のトークン
@@ -17,13 +17,13 @@ final class ProjectMemberNextToken
      * @param ProjectId $projectId
      * @param PaginatorPageCount $pageCount
      * @param ProjectMemberOrderParamList $orderParamList
-     * @param ProjectMemberJoinedAt $joinedAt
+     * @param ProjectMemberCreatedAt $createdAt
      */
     private function __construct(
         private readonly ProjectId $projectId,
         private readonly PaginatorPageCount $pageCount,
         private readonly ProjectMemberOrderParamList $orderParamList,
-        private readonly ProjectMemberJoinedAt $joinedAt
+        private readonly ProjectMemberCreatedAt $createdAt
     ) {}
 
     /**
@@ -32,20 +32,20 @@ final class ProjectMemberNextToken
      * @param ProjectId $projectId
      * @param PaginatorPageCount $pageCount
      * @param ProjectMemberOrderParamList $orderParamList
-     * @param ProjectMemberJoinedAt $joinedAt
+     * @param ProjectMemberCreatedAt $createdAt
      * @return self
      */
     public static function from(
         ProjectId $projectId,
         PaginatorPageCount $pageCount,
         ProjectMemberOrderParamList $orderParamList,
-        ProjectMemberJoinedAt $joinedAt,
+        ProjectMemberCreatedAt $createdAt,
     ): self {
         return new self(
             $projectId,
             $pageCount,
             $orderParamList,
-            $joinedAt
+            $createdAt
         );
     }
 
@@ -66,13 +66,13 @@ final class ProjectMemberNextToken
         $projectId = ProjectId::from($data['project_id']);
         $pageCount = PaginatorPageCount::from($data['per_page']);
         $orderParamList = ProjectMemberOrderParamList::from($data['order']);
-        $joinedAt = ProjectMemberJoinedAt::from($data['last_evaluated_key']);
+        $createdAt = ProjectMemberCreatedAt::from($data['created_at']);
 
         return new self(
             $projectId,
             $pageCount,
             $orderParamList,
-            $joinedAt
+            $createdAt
         );
     }
 
@@ -87,7 +87,7 @@ final class ProjectMemberNextToken
             'project_id' => $this->projectId->getValue(),
             'per_page' => $this->pageCount->getValue(),
             'order' => $this->orderParamList,
-            'joined_at' => $this->joinedAt->getValue(),
+            'created_at' => $this->createdAt->getValue(),
         ];
         
         return base64_encode(json_encode($data));
@@ -126,10 +126,10 @@ final class ProjectMemberNextToken
     /**
      * 参加日時を取得
      * 
-     * @return ProjectMemberJoinedAt
+     * @return ProjectMemberCreatedAt
      */
-    public function getJoinedAt(): ProjectMemberJoinedAt
+    public function getCreatedAt(): ProjectMemberCreatedAt
     {
-        return $this->joinedAt;
+        return $this->createdAt;
     }
 }

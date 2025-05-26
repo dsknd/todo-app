@@ -79,18 +79,18 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
         // プロジェクトIDの条件
         $query->where('project_id', $nextToken->getProjectId()->getValue());
     
-        // カーソルベースの条件（joined_atを使用）
-        if ($nextToken->getJoinedAt()) {
-            $query->where('joined_at', '>', $nextToken->getJoinedAt()->getValue());
+        // カーソルベースの条件（created_atのみを使用）
+        if ($nextToken->getCreatedAt()) {
+            $query->where('created_at', '>', $nextToken->getCreatedAt()->getValue());
         }
     
-        // ソート条件
+        // ユーザー指定のソート条件
         foreach ($nextToken->getOrderParamList()->all() as $orderParam) {
             $query->orderBy($orderParam->getColumn(), $orderParam->getDirection());
         }
         
-        // joined_atで最終的な順序を保証
-        $query->orderBy('joined_at', 'asc');
+        // created_atでセカンダリソート（カーソル用）
+        $query->orderBy('created_at', 'asc');
     
         // ページサイズ
         $query->take($nextToken->getPageCount()->getValue());

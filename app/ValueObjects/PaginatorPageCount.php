@@ -3,11 +3,12 @@
 namespace App\ValueObjects;
 
 use InvalidArgumentException;
+use JsonSerializable;
 
 /**
  * 1ページあたりの表示件数の値オブジェクト
  */
-final class PaginatorPageCount
+final class PaginatorPageCount implements JsonSerializable
 {
 
     /**
@@ -85,7 +86,22 @@ final class PaginatorPageCount
         return "{$this->pageCount}";
     }
 
+    /**
+     * ページ数を取得
+     *
+     * @return int
+     */
     public function getValue(): int
+    {
+        return $this->pageCount;
+    }
+
+    /**
+     * JSONシリアライズ
+     *
+     * @return int
+     */
+    public function jsonSerialize(): mixed
     {
         return $this->pageCount;
     }

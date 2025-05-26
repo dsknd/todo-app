@@ -11,12 +11,19 @@ final class ProjectMemberOrderParam
      */
     private const ALLOWED_COLUMNS = [
         'joined_at',
+        'user_id',
+        'role_id',
+        'created_at',
+        'updated_at'
     ];
 
     /**
      * ソート方向の一覧
      */
-    private const ALLOWED_DIRECTIONS = ['asc', 'desc'];
+    private const ALLOWED_DIRECTIONS = [
+        'asc',
+        'desc'
+    ];
 
     /**
      * @param string $column ソート対象のカラム
@@ -28,22 +35,6 @@ final class ProjectMemberOrderParam
         private readonly string $direction
     ) {
         $this->validate();
-    }
-
-    /**
-     * デフォルトのソート条件を作成（作成日時の昇順）
-     */
-    public static function createJoinedAtAsc(): self
-    {
-        return new self('joined_at', 'asc');
-    }
-
-    /**
-     * デフォルトのソート条件を作成（作成日時の降順）
-     */
-    public static function createJoinedAtDesc(): self
-    {
-        return new self('joined_at', 'desc');
     }
 
     /**
@@ -130,5 +121,85 @@ final class ProjectMemberOrderParam
     public function __toString(): string
     {
         return "{$this->column} {$this->direction}";
+    }
+
+    /**
+     * デフォルトのソート条件を作成（参加日時の昇順）
+     */
+    public static function createJoinedAtAsc(): self
+    {
+        return new self('joined_at', 'asc');
+    }
+
+    /**
+     * デフォルトのソート条件を作成（参加日時の降順）
+     */
+    public static function createJoinedAtDesc(): self
+    {
+        return new self('joined_at', 'desc');
+    }
+
+    /**
+     * デフォルトのソート条件を作成（ユーザーIDの昇順）
+     */
+    public static function createUserIdAsc(): self
+    {
+        return new self('user_id', 'asc');
+    }
+
+    /**
+     * デフォルトのソート条件を作成（ユーザーIDの降順）
+     */
+    public static function createUserIdDesc(): self
+    {
+        return new self('user_id', 'desc');
+    }
+
+    /**
+     * デフォルトのソート条件を作成（プロジェクトロールIDの昇順）
+     */
+    public static function createRoleIdAsc(): self
+    {
+        return new self('role_id', 'asc');
+    }
+
+    /**
+     * デフォルトのソート条件を作成（プロジェクトロールIDの降順）
+     */
+    public static function createRoleIdDesc(): self
+    {
+        return new self('role_id', 'desc');
+    }
+
+    /**
+     * デフォルトのソート条件を作成（作成日時の昇順）
+     */
+    public static function createCreatedAtAsc(): self
+    {
+        return new self('created_at', 'asc');
+    }
+
+    /**
+     * デフォルトのソート条件を作成（作成日時の降順）
+     */
+    public static function createCreatedAtDesc(): self
+    {
+        return new self('created_at', 'desc');
+    }
+
+    /**
+     * デフォルトのソート条件を作成（更新日時の昇順）
+     */
+    public static function createUpdatedAtAsc(): self
+    {
+        return new self('updated_at', 'asc');
+    }
+
+    /**
+     * デフォルトのソート条件を作成（更新日時の降順）
+     */
+    public static function createUpdatedAtDesc(): self
+    {
+        return new self('updated_at', 'desc');
     }
 } 

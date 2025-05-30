@@ -292,8 +292,6 @@ class ProjectMemberRepositoryTest extends TestCase
             ]);
         }
 
-        dd($members);
-
         // ページに含まれるレコード数を設定
         $pageCount = PaginatorPageCount::from(2);
 
@@ -314,7 +312,6 @@ class ProjectMemberRepositoryTest extends TestCase
             ProjectMemberCreatedAt::from($lastMemberOfFirstPage->created_at)
         );
 
-        dd($resultFirstPage->pluck('created_at'));
 
         // 2ページ目を取得
         $resultSecondPage = $this->repository->searchByProjectIdWithNextToken($nextToken);

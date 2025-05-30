@@ -20,7 +20,6 @@ use App\ValueObjects\ProjectMemberOrderParamList;
 use App\ValueObjects\ProjectMemberOrderParam;
 use App\ValueObjects\ProjectMemberNextToken;
 use App\ValueObjects\ProjectMemberId;
-use Ramsey\Uuid\Generator\UnixTimeGenerator;
 
 /**
  * プロジェクトメンバーリポジトリのテスト

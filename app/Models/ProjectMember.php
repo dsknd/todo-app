@@ -25,6 +25,11 @@ class ProjectMember extends Pivot
     public $timestamps = true;
 
     /**
+     * 主キー
+     */
+    protected $primaryKey = 'id';
+
+    /**
      * 複数代入可能な属性
      */
     protected $fillable = [

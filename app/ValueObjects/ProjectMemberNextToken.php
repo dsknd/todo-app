@@ -4,7 +4,7 @@ namespace App\ValueObjects;
 
 use InvalidArgumentException;
 use App\ValueObjects\ProjectMemberOrderParamList;
-use App\ValueObjects\ProjectMemberCreatedAt;
+use App\ValueObjects\ProjectMemberId;
 
 /**
  * プロジェクトメンバーページネーションの次のトークン
@@ -17,13 +17,13 @@ final class ProjectMemberNextToken
      * @param ProjectId $projectId
      * @param PaginatorPageCount $pageCount
      * @param ProjectMemberOrderParamList $orderParamList
-     * @param ProjectMemberCreatedAt $createdAt
+     * @param ProjectMemberId|null $lastId
      */
     private function __construct(
         private readonly ProjectId $projectId,
         private readonly PaginatorPageCount $pageCount,
         private readonly ProjectMemberOrderParamList $orderParamList,
-        private readonly ProjectMemberCreatedAt $createdAt
+        private readonly ?ProjectMemberId $lastId = null
     ) {}
 
     /**
@@ -32,20 +32,20 @@ final class ProjectMemberNextToken
      * @param ProjectId $projectId
      * @param PaginatorPageCount $pageCount
      * @param ProjectMemberOrderParamList $orderParamList
-     * @param ProjectMemberCreatedAt $createdAt
+     * @param ProjectMemberId|null $lastId
      * @return self
      */
     public static function from(
         ProjectId $projectId,
         PaginatorPageCount $pageCount,
         ProjectMemberOrderParamList $orderParamList,
-        ProjectMemberCreatedAt $createdAt,
+        ?ProjectMemberId $lastId = null,
     ): self {
         return new self(
             $projectId,
             $pageCount,
             $orderParamList,
-            $createdAt
+            $lastId
         );
     }
 
@@ -66,13 +66,13 @@ final class ProjectMemberNextToken
         $projectId = ProjectId::from($data['project_id']);
         $pageCount = PaginatorPageCount::from($data['per_page']);
         $orderParamList = ProjectMemberOrderParamList::from($data['order']);
-        $createdAt = ProjectMemberCreatedAt::from($data['created_at']);
+        $lastId = isset($data['last_id']) ? ProjectMemberId::from($data['last_id']) : null;
 
         return new self(
             $projectId,
             $pageCount,
             $orderParamList,
-            $createdAt
+            $lastId
         );
     }
 
@@ -87,8 +87,11 @@ final class ProjectMemberNextToken
             'project_id' => $this->projectId->getValue(),
             'per_page' => $this->pageCount->getValue(),
             'order' => $this->orderParamList,
-            'created_at' => $this->createdAt->getValue(),
         ];
+        
+        if ($this->lastId) {
+            $data['last_id'] = $this->lastId->getValue();
+        }
         
         return base64_encode(json_encode($data));
     }
@@ -124,12 +127,12 @@ final class ProjectMemberNextToken
     }
 
     /**
-     * 参加日時を取得
+     * 最後のIDを取得
      * 
-     * @return ProjectMemberCreatedAt
+     * @return ProjectMemberId|null
      */
-    public function getCreatedAt(): ProjectMemberCreatedAt
+    public function getLastId(): ?ProjectMemberId
     {
-        return $this->createdAt;
+        return $this->lastId;
     }
 }

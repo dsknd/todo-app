@@ -16,6 +16,7 @@ return new class extends Migration
     {
         Schema::create('project_members', function (Blueprint $table) {
             // カラム定義
+            $table->id();                                    // 主キーID（AUTO_INCREMENT）
             $table->unsignedBigInteger('project_id');        // プロジェクトID
             $table->unsignedBigInteger('user_id');           // ユーザID
             $table->unsignedBigInteger('role_id');           // ロールID
@@ -38,14 +39,13 @@ return new class extends Migration
                 ->on('project_roles')
                 ->cascadeOnDelete();
 
-            // 主キー制約
-            $table->primary(['project_id', 'user_id']);
+            // ユニークキー制約（重複メンバー防止）
+            $table->unique(['project_id', 'user_id']);
 
             // インデックス
             $table->index('role_id');
             $table->index('user_id');
             $table->index('joined_at');
-            $table->index('created_at');
         });
     }
 

@@ -19,7 +19,7 @@ use App\ValueObjects\PaginatorPageCount;
 use App\ValueObjects\ProjectMemberOrderParamList;
 use App\ValueObjects\ProjectMemberOrderParam;
 use App\ValueObjects\ProjectMemberNextToken;
-use App\ValueObjects\ProjectMemberCreatedAt;
+use App\ValueObjects\ProjectMemberId;
 use Ramsey\Uuid\Generator\UnixTimeGenerator;
 
 /**
@@ -288,7 +288,6 @@ class ProjectMemberRepositoryTest extends TestCase
                 'project_id' => $project->id,
                 'user_id' => $users[$i]->id,
                 'joined_at' => $baseTime,
-                'created_at' => $baseTime->copy()->addSeconds($i),
             ]);
         }
 
@@ -303,15 +302,14 @@ class ProjectMemberRepositoryTest extends TestCase
         // 最初のページを取得
         $resultFirstPage = $this->repository->searchByProjectId($project->id, $pageCount, $orderParamList);
 
-        // 最初のページの最後のメンバーのcreated_atをカーソルとして使用
+        // 最初のページの最後のメンバーのidをカーソルとして使用
         $lastMemberOfFirstPage = $resultFirstPage->last();
         $nextToken = ProjectMemberNextToken::from(
             $project->id,
             $pageCount,
             $orderParamList,
-            ProjectMemberCreatedAt::from($lastMemberOfFirstPage->created_at)
+            ProjectMemberId::from($lastMemberOfFirstPage->id)
         );
-
 
         // 2ページ目を取得
         $resultSecondPage = $this->repository->searchByProjectIdWithNextToken($nextToken);
@@ -325,11 +323,11 @@ class ProjectMemberRepositoryTest extends TestCase
             $this->assertEquals($baseTime->format('Y-m-d H:i:s'), $member->joined_at->format('Y-m-d H:i:s'));
         }
         
-        // 2ページ目のメンバーが最初のページの最後のメンバーより後に作成されていることを確認
+        // 2ページ目のメンバーが最初のページの最後のメンバーより後のIDを持つことを確認
         foreach ($resultSecondPage as $member) {
             $this->assertGreaterThan(
-                $lastMemberOfFirstPage->created_at,
-                $member->created_at
+                $lastMemberOfFirstPage->id,
+                $member->id
             );
         }
     }

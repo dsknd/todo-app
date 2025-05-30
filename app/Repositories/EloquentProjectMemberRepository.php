@@ -79,9 +79,9 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
         // プロジェクトIDの条件
         $query->where('project_id', $nextToken->getProjectId()->getValue());
     
-        // カーソルベースの条件（created_atのみを使用）
-        if ($nextToken->getCreatedAt()) {
-            $query->where('created_at', '>', $nextToken->getCreatedAt()->getValue());
+        // カーソルベースの条件（idを使用）
+        if ($nextToken->getLastId()) {
+            $query->where('id', '>', $nextToken->getLastId()->getValue());
         }
     
         // ユーザー指定のソート条件
@@ -89,8 +89,8 @@ class EloquentProjectMemberRepository implements ProjectMemberRepositoryInterfac
             $query->orderBy($orderParam->getColumn(), $orderParam->getDirection());
         }
         
-        // created_atでセカンダリソート（カーソル用）
-        $query->orderBy('created_at', 'asc');
+        // idでセカンダリソート（カーソル用、一意性を担保）
+        $query->orderBy('id', 'asc');
     
         // ページサイズ
         $query->take($nextToken->getPageCount()->getValue());

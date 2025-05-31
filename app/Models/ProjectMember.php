@@ -31,6 +31,16 @@ class ProjectMember extends Pivot
     protected $primaryKey = 'id';
 
     /**
+     * 主キーが自動インクリメントかどうか
+     */
+    public $incrementing = true;
+
+    /**
+     * 主キーのデータ型
+     */
+    protected $keyType = 'int';
+
+    /**
      * 複数代入可能な属性
      */
     protected $fillable = [

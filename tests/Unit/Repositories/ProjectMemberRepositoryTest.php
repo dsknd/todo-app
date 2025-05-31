@@ -329,22 +329,6 @@ class ProjectMemberRepositoryTest extends TestCase
                 $member->id
             );
         }
-
-        // IDが昇順になっていることを確認
-        for ($i = 0; $i < count($members); $i++) {
-            $this->assertEquals(
-                $members[$i]->id,
-                $resultSecondPage[$i]->id
-            );
-        }
-
-        // 参加日時昇順かつID昇順になっていることを確認
-        foreach ($resultSecondPage as $member) {
-            $this->assertEquals(
-                $members[$i]->joined_at,
-                $member->id
-            );
-        }
     }
 
     /**

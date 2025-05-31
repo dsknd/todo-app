@@ -23,6 +23,8 @@ class ProjectMemberSearchResultReadModel implements JsonSerializable
 
     /**
      * 検索結果が空かどうか
+     * 
+     * @return bool 検索結果が空かどうか
      */
     public function isEmpty(): bool
     {
@@ -31,10 +33,32 @@ class ProjectMemberSearchResultReadModel implements JsonSerializable
 
     /**
      * 検索結果の件数
+     * 
+     * @return int 検索結果の件数
      */
     public function count(): int
     {
         return $this->members->count();
+    }
+
+    /**
+     * プロジェクトメンバーのコレクションを取得
+     * 
+     * @return Collection<ProjectMemberReadModel> プロジェクトメンバーのコレクション
+     */
+    public function members(): Collection
+    {
+        return $this->members;
+    }
+
+    /**
+     * 次のページのトークンを取得
+     * 
+     * @return ?ProjectMemberNextToken 次のページのトークン
+     */
+    public function nextToken(): ?ProjectMemberNextToken
+    {
+        return $this->nextToken;
     }
 
     /**
@@ -47,6 +71,8 @@ class ProjectMemberSearchResultReadModel implements JsonSerializable
 
     /**
      * JSONシリアライゼーション
+     * 
+     * @return array 配列
      */
     public function jsonSerialize(): array
     {
@@ -55,6 +81,8 @@ class ProjectMemberSearchResultReadModel implements JsonSerializable
 
     /**
      * メンバーリストを配列として取得
+     * 
+     * @return array 配列
      */
     public function toArray(): array
     {

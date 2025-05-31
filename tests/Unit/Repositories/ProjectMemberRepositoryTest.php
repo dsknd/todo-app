@@ -293,7 +293,7 @@ class ProjectMemberRepositoryTest extends TestCase
         // ページに含まれるレコード数を設定
         $pageCount = PaginatorPageCount::from(2);
 
-        // ソート条件を指定
+        // ソート条件を指定(参加日時昇順)
         $orderParamList = ProjectMemberOrderParamList::from([
             ProjectMemberOrderParam::createJoinedAtAsc()
         ]);
@@ -326,6 +326,22 @@ class ProjectMemberRepositoryTest extends TestCase
         foreach ($resultSecondPage as $member) {
             $this->assertGreaterThan(
                 $lastMemberOfFirstPage->id,
+                $member->id
+            );
+        }
+
+        // IDが昇順になっていることを確認
+        for ($i = 0; $i < count($members); $i++) {
+            $this->assertEquals(
+                $members[$i]->id,
+                $resultSecondPage[$i]->id
+            );
+        }
+
+        // 参加日時昇順かつID昇順になっていることを確認
+        foreach ($resultSecondPage as $member) {
+            $this->assertEquals(
+                $members[$i]->joined_at,
                 $member->id
             );
         }

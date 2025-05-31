@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Interfaces\ProjectMemberQueryRepository;
 use App\ValueObjects\ProjectId;
 use App\Models\User;
 use Illuminate\Support\Collection;
@@ -17,10 +18,10 @@ use App\ValueObjects\ProjectMemberNextToken;
 /**
  * プロジェクトメンバーの問い合わせ専用Repository
  */
-class EloquentProjectMemberQueryRepository
+class EloquentProjectMemberQueryRepository implements ProjectMemberQueryRepository
 {
     /**
-     * プロジェクトメンバーを取得する
+     * @inheritDoc
      */
     public function find(ProjectMemberId $projectMemberId): ?ProjectMemberReadModel
     {
@@ -57,7 +58,7 @@ class EloquentProjectMemberQueryRepository
     }
 
     /**
-     * プロジェクトIDでプロジェクトメンバー一覧を取得する
+     * @inheritDoc
      */
     public function findByProjectId(ProjectId $projectId): Collection
     {
@@ -92,7 +93,7 @@ class EloquentProjectMemberQueryRepository
     }
 
     /**
-     * プロジェクトIDとユーザーIDでプロジェクトメンバーを取得する
+     * @inheritDoc
      */
     public function findByProjectIdAndUserId(ProjectId $projectId, UserId $userId): ?ProjectMemberReadModel
     {
@@ -130,7 +131,7 @@ class EloquentProjectMemberQueryRepository
     }
 
     /**
-     * プロジェクトメンバーを検索する（初回検索）
+     * @inheritDoc
      */
     public function search(
         ProjectId $projectId,
@@ -197,7 +198,7 @@ class EloquentProjectMemberQueryRepository
     }
 
     /**
-     * NextTokenを使ってプロジェクトメンバーを検索する（次ページ以降）
+     * @inheritDoc
      */
     public function searchByNextToken(ProjectMemberNextToken $nextToken): ProjectMemberSearchResultReadModel
     {

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Casts\ProjectIdCast;
 use App\Casts\UserIdCast;
 use App\Casts\ProjectRoleIdCast;
-use App\Casts\ProjectMemberCreatedAtCast;
 use App\Casts\ProjectMemberIdCast;
 
 class ProjectMember extends Pivot
@@ -47,9 +46,6 @@ class ProjectMember extends Pivot
         'project_id',
         'user_id',
         'role_id',
-        'joined_at',
-        'created_at',
-        'updated_at',
     ];
 
     /**
@@ -63,7 +59,7 @@ class ProjectMember extends Pivot
         'user_id' => UserIdCast::class,
         'role_id' => ProjectRoleIdCast::class,
         'joined_at' => 'datetime',
-        'created_at' => ProjectMemberCreatedAtCast::class,
+        'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 

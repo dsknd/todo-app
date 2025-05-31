@@ -20,8 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('project_id');        // プロジェクトID
             $table->unsignedBigInteger('user_id');           // ユーザID
             $table->unsignedBigInteger('role_id');           // ロールID
-            $table->timestamp('joined_at', 6)->useCurrent(); // プロジェクト参画日時（マイクロ秒精度）
-            $table->timestamps(6);                           // 作成日時, 更新日時（マイクロ秒精度）
+            $table->timestamp('joined_at')->useCurrent();    // プロジェクト参画日時
+            $table->timestamps();                            // 作成日時, 更新日時
 
             // 外部キー制約
             $table->foreign('project_id')

@@ -9,6 +9,7 @@ use App\Casts\ProjectIdCast;
 use App\Casts\UserIdCast;
 use App\Casts\ProjectRoleIdCast;
 use App\Casts\ProjectMemberCreatedAtCast;
+use App\Casts\ProjectMemberIdCast;
 
 class ProjectMember extends Pivot
 {
@@ -47,6 +48,7 @@ class ProjectMember extends Pivot
      * @var array<string, string>
      */
     protected $casts = [
+        'id' => ProjectMemberIdCast::class,
         'project_id' => ProjectIdCast::class,
         'user_id' => UserIdCast::class,
         'role_id' => ProjectRoleIdCast::class,

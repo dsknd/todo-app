@@ -25,11 +25,15 @@ final class ProjectMemberId
     /**
      * 値からインスタンスを作成
      *
-     * @param int $value
+     * @param int|ProjectMemberId $value
      * @return self
      */
-    public static function from(int $value): self
+    public static function from(int|ProjectMemberId $value): self
     {
+        if ($value instanceof self) {
+            return $value;
+        }
+        
         return new self($value);
     }
 

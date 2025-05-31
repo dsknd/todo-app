@@ -5,7 +5,7 @@ namespace Tests\Unit\Repositories;
 use App\Models\Project;
 use App\Models\ProjectMember;
 use App\Models\User;
-use App\Repositories\ProjectMemberQueryRepository;
+use App\Repositories\EloquentProjectMemberQueryRepository;
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\ProjectMemberId;
 use App\ValueObjects\UserId;
@@ -27,12 +27,12 @@ class ProjectMemberQueryRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    private ProjectMemberQueryRepository $repository;
+    private EloquentProjectMemberQueryRepository $repository;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->repository = new ProjectMemberQueryRepository();
+        $this->repository = new EloquentProjectMemberQueryRepository();
     }
 
     /**

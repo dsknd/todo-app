@@ -17,7 +17,7 @@ use App\ValueObjects\ProjectMemberNextToken;
 /**
  * プロジェクトメンバーの問い合わせ専用Repository
  */
-class ProjectMemberQueryRepository
+class EloquentProjectMemberQueryRepository
 {
     /**
      * プロジェクトメンバーを取得する

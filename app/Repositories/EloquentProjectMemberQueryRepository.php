@@ -51,7 +51,8 @@ class EloquentProjectMemberQueryRepository
         return new ProjectMemberReadModel(
             ProjectMemberId::from($result->member_id),
             ProjectId::from($result->project_id),
-            $user
+            $user,
+            $result->joined_at
         );
     }
 
@@ -84,7 +85,8 @@ class EloquentProjectMemberQueryRepository
             return new ProjectMemberReadModel(
                 ProjectMemberId::from($result->member_id),
                 ProjectId::from($result->project_id),
-                $user
+                $user,
+                $result->joined_at
             );
         });
     }
@@ -122,7 +124,8 @@ class EloquentProjectMemberQueryRepository
         return new ProjectMemberReadModel(
             ProjectMemberId::from($result->member_id),
             ProjectId::from($result->project_id),
-            $user
+            $user,
+            $result->joined_at
         );
     }
 
@@ -276,7 +279,8 @@ class EloquentProjectMemberQueryRepository
             return new ProjectMemberReadModel(
                 ProjectMemberId::from($result->member_id),
                 ProjectId::from($result->project_id),
-                $user
+                $user,
+                $result->joined_at
             );
         });
     }

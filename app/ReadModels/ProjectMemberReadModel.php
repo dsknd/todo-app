@@ -7,6 +7,7 @@ use App\ValueObjects\ProjectId;
 use App\Models\User;
 use App\ValueObjects\ProjectMemberId;
 use App\ValueObjects\UserId;
+use DateTime;
 
 /**
  * プロジェクトメンバーのReadModel（読み取り専用DTO）
@@ -14,6 +15,7 @@ use App\ValueObjects\UserId;
  * @property ProjectMemberId $projectMemberId プロジェクトメンバーID
  * @property ProjectId $projectId プロジェクトID
  * @property User $user ユーザー
+ * @property DateTime $joinedAt 参加日時
  */
 class ProjectMemberReadModel implements JsonSerializable
 {
@@ -21,6 +23,7 @@ class ProjectMemberReadModel implements JsonSerializable
         public readonly ProjectMemberId $projectMemberId,
         public readonly ProjectId $projectId,
         public readonly User $user,
+        public readonly DateTime $joinedAt,
         // TODO: プロジェクトロールを追加
     ) {}
 
@@ -66,5 +69,10 @@ class ProjectMemberReadModel implements JsonSerializable
     public function userEmail(): string
     {
         return $this->user->email;
+    }
+
+    public function joinedAt(): DateTime
+    {
+        return $this->joinedAt;
     }
 }

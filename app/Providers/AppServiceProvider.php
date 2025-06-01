@@ -37,8 +37,8 @@ use App\Repositories\EloquentProjectMemberPermissionQueryRepository;
 use App\Repositories\Interfaces\ProjectMemberPermissionQueryRepository;
 use App\Repositories\Interfaces\ProjectMemberQueryRepository;
 use App\Repositories\EloquentProjectMemberQueryRepository;
-use App\UseCases\SearchProjectMemberUseCase;
-use App\Interactors\SearchProjectMemberInteractor;
+use App\UseCases\GetProjectMemberUseCase;
+use App\Interactors\GetProjectMemberInteractor;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -59,7 +59,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(DeleteProjectUseCase::class, DeleteProjectInteractor::class);
 
         // projectMember
-        $this->app->bind(SearchProjectMemberUseCase::class, SearchProjectMemberInteractor::class);
+        $this->app->bind(GetProjectMemberUseCase::class, GetProjectMemberInteractor::class);
 
         // projectPermission
         $this->app->bind(AuthorizeProjectPermissionUseCase::class, AuthorizeProjectPermissionInteractor::class);

@@ -2,12 +2,13 @@
 
 namespace App\ValueObjects;
 
+use JsonSerializable;
 use InvalidArgumentException;
 
 /**
  * プロジェクトメンバーページネーションの次のトークン
  */
-final class ProjectMemberNextToken
+final class ProjectMemberNextToken implements JsonSerializable
 {
     /**
      * コンストラクタ
@@ -23,6 +24,16 @@ final class ProjectMemberNextToken
         private readonly ProjectMemberSortOrders $sortOrders,
         private readonly ?ProjectMemberId $lastId = null
     ) {}
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'next_token' => $this->encode(),
+        ];
+    }
 
     /**
      * プロジェクトID、ページカウント、ソート条件を指定してインスタンスを作成

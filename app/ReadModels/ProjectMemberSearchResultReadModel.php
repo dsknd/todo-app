@@ -46,7 +46,7 @@ class ProjectMemberSearchResultReadModel implements JsonSerializable
      * 
      * @return Collection<ProjectMemberReadModel> プロジェクトメンバーのコレクション
      */
-    public function members(): Collection
+    public function getMembers(): Collection
     {
         return $this->members;
     }
@@ -56,7 +56,7 @@ class ProjectMemberSearchResultReadModel implements JsonSerializable
      * 
      * @return ?ProjectMemberNextToken 次のページのトークン
      */
-    public function nextToken(): ?ProjectMemberNextToken
+    public function getNextToken(): ?ProjectMemberNextToken
     {
         return $this->nextToken;
     }
@@ -87,11 +87,11 @@ class ProjectMemberSearchResultReadModel implements JsonSerializable
     public function toArray(): array
     {
         return [
-            'members' => $this->members->toArray(),
+            'members' => $this->getMembers()->toArray(),
             'pagination' => [
                 'current_count' => $this->count(),
-                'has_more' => $this->hasMore,
-                'next_token' => $this->nextToken?->encode(),
+                'has_more' => $this->hasNextPage(),
+                'next_token' => $this->getNextToken(),
             ],
         ];
     }

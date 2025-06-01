@@ -9,7 +9,7 @@ use App\Repositories\EloquentProjectMemberQueryRepository;
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\ProjectMemberId;
 use App\ValueObjects\UserId;
-use App\ValueObjects\PaginatorPageCount;
+use App\ValueObjects\PaginationPageSize;
 use App\ReadModels\ProjectMemberReadModel;
 use App\ReadModels\ProjectMemberSearchResultReadModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -175,14 +175,14 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         }
 
         // 実行（降順ソート、ページサイズ3）
-        $pageCount = PaginatorPageCount::from(3);
+        $pageSize = PaginationPageSize::from(3);
         $sortOrders = ProjectMemberSortOrders::from([
             ProjectMemberSortOrder::from('joined_at', 'desc')
         ]);
         
         $result = $this->repository->search(
             new ProjectId($project->id->getValue()),
-            $pageCount,
+            $pageSize,
             $sortOrders
         );
 
@@ -213,14 +213,14 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         }
 
         // 実行（ページサイズ5で2件のデータ）
-        $pageCount = PaginatorPageCount::from(5);
+        $pageSize = PaginationPageSize::from(5);
         $sortOrders = ProjectMemberSortOrders::from([
             ProjectMemberSortOrder::from('joined_at', 'desc')
         ]);
         
         $result = $this->repository->search(
             new ProjectId($project->id->getValue()),
-            $pageCount,
+            $pageSize,
             $sortOrders
         );
 
@@ -257,14 +257,14 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         }
 
         // 最初のページを取得
-        $pageCount = PaginatorPageCount::from(2);
+        $pageSize = PaginationPageSize::from(2);
         $sortOrders = ProjectMemberSortOrders::from([
             ProjectMemberSortOrder::from('joined_at', 'asc')
         ]);
         
         $firstPage = $this->repository->search(
             new ProjectId($project->id->getValue()),
-            $pageCount,
+            $pageSize,
             $sortOrders
         );
 
@@ -295,14 +295,14 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         $project = Project::factory()->create();
 
         // 実行
-        $pageCount = PaginatorPageCount::from(10);
+        $pageSize = PaginationPageSize::from(10);
         $sortOrders = ProjectMemberSortOrders::from([
             ProjectMemberSortOrder::from('joined_at', 'desc')
         ]);
         
         $result = $this->repository->search(
             new ProjectId($project->id->getValue()),
-            $pageCount,
+            $pageSize,
             $sortOrders
         );
 
@@ -337,14 +337,14 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         }
 
         // 実行（昇順ソート）
-        $pageCount = PaginatorPageCount::from(10);
+        $pageSize = PaginationPageSize::from(10);
         $sortOrders = ProjectMemberSortOrders::from([
             ProjectMemberSortOrder::from('joined_at', 'asc')
         ]);
         
         $result = $this->repository->search(
             new ProjectId($project->id->getValue()),
-            $pageCount,
+            $pageSize,
             $sortOrders
         );
 

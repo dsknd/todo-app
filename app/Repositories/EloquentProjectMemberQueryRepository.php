@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 use App\ValueObjects\ProjectMemberId;
 use App\Models\ProjectMember;
 use App\ValueObjects\UserId;
-use App\ValueObjects\PaginatorPageCount;
+use App\ValueObjects\PaginationPageSize;
 use App\ValueObjects\ProjectMemberSortOrders;
 use App\ReadModels\ProjectMemberReadModel;
 use App\ReadModels\ProjectMemberSearchResultReadModel;
@@ -135,7 +135,7 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
      */
     public function search(
         ProjectId $projectId,
-        PaginatorPageCount $pageCount,
+        PaginationPageSize $pageSize,
         ProjectMemberSortOrders $sortOrders
     ): ProjectMemberSearchResultReadModel
     {
@@ -165,14 +165,14 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
         $query->orderBy('project_members.id', 'asc');
 
         // ページサイズ+1件取得して、次のページがあるかを判定
-        $limit = $pageCount->getValue() + 1;
+        $limit = $pageSize->getValue() + 1;
         $results = $query->take($limit)->get();
 
         // 次のページがあるかチェック
-        $hasMore = $results->count() > $pageCount->getValue();
+        $hasMore = $results->count() > $pageSize->getValue();
         if ($hasMore) {
             // 余分な1件を削除
-            $results = $results->take($pageCount->getValue());
+            $results = $results->take($pageSize->getValue());
         }
 
         // ReadModelに変換
@@ -184,7 +184,7 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
             $lastMember = $members->last();
             $nextPageToken = ProjectMemberNextToken::from(
                 $projectId,
-                $pageCount,
+                $pageSize,
                 $sortOrders,
                 $lastMember->projectMemberId
             );
@@ -234,14 +234,14 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
         $query->orderBy('project_members.id', 'asc');
 
         // ページサイズ+1件取得して、次のページがあるかを判定
-        $limit = $nextToken->getPageCount()->getValue() + 1;
+        $limit = $nextToken->getPageSize()->getValue() + 1;
         $results = $query->take($limit)->get();
 
         // 次のページがあるかチェック
-        $hasMore = $results->count() > $nextToken->getPageCount()->getValue();
+        $hasMore = $results->count() > $nextToken->getPageSize()->getValue();
         if ($hasMore) {
             // 余分な1件を削除
-            $results = $results->take($nextToken->getPageCount()->getValue());
+            $results = $results->take($nextToken->getPageSize()->getValue());
         }
 
         // ReadModelに変換
@@ -253,7 +253,7 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
             $lastMember = $members->last();
             $nextPageToken = ProjectMemberNextToken::from(
                 $nextToken->getProjectId(),
-                $nextToken->getPageCount(),
+                $nextToken->getPageSize(),
                 $nextToken->getSortOrders(),
                 $lastMember->projectMemberId
             );

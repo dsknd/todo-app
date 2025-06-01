@@ -3,7 +3,7 @@
 namespace App\Repositories\Interfaces;
 
 use App\ValueObjects\ProjectId;
-use App\ValueObjects\PaginatorPageCount;
+use App\ValueObjects\PaginationPageSize;
 use App\ValueObjects\ProjectMemberSortOrders;
 use App\ReadModels\ProjectMemberReadModel;
 use App\ValueObjects\UserId;
@@ -50,13 +50,13 @@ interface ProjectMemberQueryRepository
      * プロジェクトメンバーを検索します
      * 
      * @param ProjectId $projectId プロジェクトID
-     * @param PaginatorPageCount $pageCount ページあたりの表示件数
+     * @param PaginationPageSize $pageSize ページあたりの表示件数
      * @param ProjectMemberSortOrders $sortOrders ソート順
      * @return ProjectMemberSearchResultReadModel プロジェクトメンバーのコレクション
      */
     public function search(
         ProjectId $projectId,
-        PaginatorPageCount $pageCount,
+        PaginationPageSize $pageSize,
         ProjectMemberSortOrders $sortOrders
     ): ProjectMemberSearchResultReadModel;
 

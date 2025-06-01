@@ -8,7 +8,7 @@ use JsonSerializable;
 /**
  * 1ページあたりの表示件数の値オブジェクト
  */
-final class PaginatorPageCount implements JsonSerializable
+final class PaginationPageSize implements JsonSerializable
 {
 
     /**

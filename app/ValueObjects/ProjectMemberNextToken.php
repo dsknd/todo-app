@@ -3,8 +3,6 @@
 namespace App\ValueObjects;
 
 use InvalidArgumentException;
-use App\ValueObjects\ProjectMemberSortOrders;
-use App\ValueObjects\ProjectMemberId;
 
 /**
  * プロジェクトメンバーページネーションの次のトークン
@@ -15,13 +13,13 @@ final class ProjectMemberNextToken
      * コンストラクタ
      *
      * @param ProjectId $projectId
-     * @param PaginatorPageCount $pageCount
+     * @param PaginationPageSize $pageSize
      * @param ProjectMemberSortOrders $sortOrders
      * @param ProjectMemberId|null $lastId
      */
     private function __construct(
         private readonly ProjectId $projectId,
-        private readonly PaginatorPageCount $pageCount,
+        private readonly PaginationPageSize $pageSize,
         private readonly ProjectMemberSortOrders $sortOrders,
         private readonly ?ProjectMemberId $lastId = null
     ) {}
@@ -30,20 +28,20 @@ final class ProjectMemberNextToken
      * プロジェクトID、ページカウント、ソート条件を指定してインスタンスを作成
      * 
      * @param ProjectId $projectId
-     * @param PaginatorPageCount $pageCount
+     * @param PaginationPageSize $pageSize
      * @param ProjectMemberSortOrders $sortOrders
      * @param ProjectMemberId|null $lastId
      * @return self
      */
     public static function from(
         ProjectId $projectId,
-        PaginatorPageCount $pageCount,
+        PaginationPageSize $pageSize,
         ProjectMemberSortOrders $sortOrders,
         ?ProjectMemberId $lastId = null,
     ): self {
         return new self(
             $projectId,
-            $pageCount,
+            $pageSize,
             $sortOrders,
             $lastId
         );
@@ -64,7 +62,7 @@ final class ProjectMemberNextToken
         }
 
         $projectId = ProjectId::from($data['project_id']);
-        $pageCount = PaginatorPageCount::from($data['per_page']);
+        $pageCount = PaginationPageSize::from($data['per_page']);
         $sortOrders = ProjectMemberSortOrders::from($data['order']);
         $lastId = isset($data['last_id']) ? ProjectMemberId::from($data['last_id']) : null;
 
@@ -85,7 +83,7 @@ final class ProjectMemberNextToken
     {
         $data = [
             'project_id' => $this->projectId->getValue(),
-            'per_page' => $this->pageCount->getValue(),
+            'per_page' => $this->pageSize->getValue(),
             'order' => $this->sortOrders,
         ];
         
@@ -109,11 +107,11 @@ final class ProjectMemberNextToken
     /**
      * ページカウントを取得
      * 
-     * @return PaginatorPageCount
+     * @return PaginationPageSize
      */
-    public function getPageCount(): PaginatorPageCount
+    public function getPageSize(): PaginationPageSize
     {
-        return $this->pageCount;
+        return $this->pageSize;
     }
 
     /**

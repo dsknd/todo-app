@@ -17,6 +17,7 @@ use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
 use App\ValueObjects\ProjectMemberSortOrders;
 use App\ValueObjects\ProjectMemberSortOrder;
+use Illuminate\Pagination\CursorPaginator;
 
 /**
  * プロジェクトメンバークエリリポジトリのテスト
@@ -72,33 +73,6 @@ class ProjectMemberQueryRepositoryTest extends TestCase
 
         // 検証
         $this->assertNull($result);
-    }
-
-    /**
-     * プロジェクトIDでプロジェクトメンバ一覧を取得できること
-     */
-    public function test_it_can_find_project_members_by_project_id()
-    {
-        // 準備
-        $project = Project::factory()->create();
-        $users = User::factory()->count(3)->create();
-        
-        foreach ($users as $user) {
-            ProjectMember::factory()->create([
-                'project_id' => $project->id,
-                'user_id' => $user->id,
-            ]);
-        }
-
-        // 実行
-        $results = $this->repository->findByProjectId(new ProjectId($project->id->getValue()));
-
-        // 検証
-        $this->assertCount(3, $results);
-        $results->each(function ($result) use ($project) {
-            $this->assertInstanceOf(ProjectMemberReadModel::class, $result);
-            $this->assertEquals($project->id->getValue(), $result->projectId->getValue());
-        });
     }
 
     /**
@@ -361,7 +335,7 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         // 準備
         $project1 = Project::factory()->create();
         $project2 = Project::factory()->create();
-        $users = User::factory()->count(5)->create();
+        $users = User::factory()->count(10)->create();
         
         $joinedAtList = [
             '2023-01-01 10:00:00',
@@ -369,6 +343,12 @@ class ProjectMemberQueryRepositoryTest extends TestCase
             '2023-01-01 12:00:00',
             '2023-01-01 13:00:00',
             '2023-01-01 14:00:00',
+            '2023-01-01 15:00:00',
+            '2023-01-01 16:00:00',
+            '2023-01-01 17:00:00',
+            '2023-01-01 18:00:00',
+            '2023-01-01 19:00:00',
+            '2023-01-01 20:00:00',
         ];
 
         // プロジェクト1のメンバーを作成
@@ -394,12 +374,13 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         
         $result = $this->repository->getByProjectId(
             new ProjectId($project1->id->getValue()),
+            PaginationPageSize::from(10),
             $sortOrders
         );
 
         // 検証
-        $this->assertInstanceOf(\Illuminate\Pagination\CursorPaginator::class, $result);
-        $this->assertCount(5, $result->items());
+        $this->assertInstanceOf(CursorPaginator::class, $result);
+        $this->assertCount(10, $result->items());
         
         // プロジェクト1のメンバーのみが含まれることを確認
         foreach ($result->items() as $item) {
@@ -437,6 +418,7 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         
         $result = $this->repository->getByProjectId(
             new ProjectId($project->id->getValue()),
+            PaginationPageSize::from(10),
             $sortOrders
         );
 
@@ -480,6 +462,7 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         
         $result = $this->repository->getByProjectId(
             new ProjectId($project->id->getValue()),
+            PaginationPageSize::from(10),
             $sortOrders
         );
 
@@ -508,6 +491,7 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         
         $result = $this->repository->getByProjectId(
             new ProjectId($emptyProject->id->getValue()),
+            PaginationPageSize::from(10),
             $sortOrders
         );
 
@@ -548,6 +532,7 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         
         $result = $this->repository->getByProjectId(
             new ProjectId($targetProject->id->getValue()),
+            PaginationPageSize::from(10),
             $sortOrders
         );
 

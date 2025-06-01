@@ -10,7 +10,6 @@ use App\ValueObjects\UserId;
 use App\ValueObjects\ProjectMemberId;
 use App\ValueObjects\ProjectMemberNextToken;
 use App\ReadModels\ProjectMemberSearchResultReadModel;
-use Illuminate\Support\Collection;
 use Illuminate\Pagination\CursorPaginator;
 
 interface ProjectMemberQueryRepository
@@ -24,16 +23,6 @@ interface ProjectMemberQueryRepository
     public function find(
         ProjectMemberId $projectMemberId
     ): ?ProjectMemberReadModel;
-
-    /**
-     * プロジェクトIDでプロジェクトメンバーを取得します
-     * 
-     * @param ProjectId $projectId プロジェクトID
-     * @return Collection<ProjectMemberReadModel> プロジェクトメンバーのコレクション
-     */
-    public function findByProjectId(
-        ProjectId $projectId
-    ): Collection;
 
     /**
      * プロジェクトIDとユーザIDでプロジェクトメンバーを取得します
@@ -51,11 +40,12 @@ interface ProjectMemberQueryRepository
      * プロジェクトIDでプロジェクトメンバーを取得します
      * 
      * @param ProjectId $projectId プロジェクトID
-     * @return CursorPaginator プロジェクトメンバーのカーソルページネーター
+     * @return CursorPaginator<ProjectMemberReadModel> プロジェクトメンバーのカーソルページネーター
      */
     public function getByProjectId(
         ProjectId $projectId,
-        ProjectMemberSortOrders $sortOrders
+        PaginationPageSize $pageSize,
+        ProjectMemberSortOrders $sortOrders,
     ): CursorPaginator;
 
     /**

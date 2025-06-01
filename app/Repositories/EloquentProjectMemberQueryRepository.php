@@ -61,41 +61,6 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
     /**
      * @inheritDoc
      */
-    public function findByProjectId(ProjectId $projectId): Collection
-    {
-        $results = ProjectMember::query()
-            ->join('users', 'project_members.user_id', '=', 'users.id')
-            ->select([
-                'project_members.id as member_id',
-                'project_members.project_id',
-                'project_members.user_id',
-                'project_members.joined_at',
-                'users.id as user_id',
-                'users.name as user_name',
-                'users.email as user_email'
-            ])
-            ->where('project_members.project_id', $projectId->getValue())
-            ->get();
-
-        return $results->map(function ($result) {
-            // 手動でUserオブジェクトを作成
-            $user = new User();
-            $user->id = $result->user_id;
-            $user->name = $result->user_name;
-            $user->email = $result->user_email;
-
-            return new ProjectMemberReadModel(
-                ProjectMemberId::from($result->member_id),
-                ProjectId::from($result->project_id),
-                $user,
-                $result->joined_at
-            );
-        });
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function findByProjectIdAndUserId(ProjectId $projectId, UserId $userId): ?ProjectMemberReadModel
     {
         $result = ProjectMember::query()
@@ -133,6 +98,7 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
 
     public function getByProjectId(
         ProjectId $projectId,
+        PaginationPageSize $pageSize,
         ProjectMemberSortOrders $sortOrders
     ): CursorPaginator
     {
@@ -154,7 +120,7 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
             $query->orderBy($column, $sortOrder->getDirection());
         }
 
-        return $query->cursorPaginate();
+        return $query->cursorPaginate($pageSize->getValue());
     }
 
     /**

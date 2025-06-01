@@ -8,10 +8,10 @@ use App\ValueObjects\PaginationPageSize;
 use App\ValueObjects\ProjectMemberSortOrder;
 use App\ValueObjects\ProjectMemberSortOrders;
 use App\ValueObjects\ProjectMemberNextToken;
-use App\UseCases\FetchProjectMemberUseCase;
+use App\UseCases\SearchProjectMemberUseCase;
 use App\DataTransferObjects\ProjectMemberListDto;
 
-class FetchProjectMemberInteractor implements FetchProjectMemberUseCase
+class SearchProjectMemberInteractor implements SearchProjectMemberUseCase
 {
     /**
      * コンストラクタ
@@ -32,7 +32,10 @@ class FetchProjectMemberInteractor implements FetchProjectMemberUseCase
         ?ProjectMemberSortOrders $orderParamList = null
     ): ProjectMemberListDto
     {
-        $pageSize = PaginationPageSize::from($pageSize->getValue());
+        // ページサイズが指定されていない場合は、デフォルト値を設定
+        if ($pageSize === null) {
+            $pageSize = PaginationPageSize::default();
+        }
 
         // ソート条件が指定されていない場合は、ソート条件のデフォルト値を設定
         if (!$orderParamList) {

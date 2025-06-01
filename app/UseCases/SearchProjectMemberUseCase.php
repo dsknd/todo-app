@@ -8,21 +8,21 @@ use App\ValueObjects\PaginationPageSize;
 use App\DataTransferObjects\ProjectMemberListDto;
 
 /**
- * プロジェクトメンバー一覧を取得するユースケース
+ * プロジェクトメンバーを検索するユースケース
  */
-interface FetchProjectMemberUseCase
+interface SearchProjectMemberUseCase
 {
     /**
      * プロジェクトメンバー一覧を取得します
      *
      * @param ProjectId $projectId プロジェクトID
-     * @param PaginationPageSize|null $pageCount ページあたりの表示件数
-     * @param ProjectMemberSortOrders|null $orderParamList ソート順
+     * @param PaginationPageSize|null $pageSize ページあたりの表示件数
+     * @param ProjectMemberSortOrders|null $sortOrders ソート順
      * @return ProjectMemberListDto プロジェクトメンバー一覧
      */
     public function execute(
         ProjectId $projectId,
-        ?PaginationPageSize $pageCount = null,
-        ?ProjectMemberSortOrders $orderParamList = null
+        ?PaginationPageSize $pageSize = null,
+        ?ProjectMemberSortOrders $sortOrders = null
     ): ProjectMemberListDto;
 } 

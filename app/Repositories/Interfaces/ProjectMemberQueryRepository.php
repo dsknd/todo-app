@@ -11,6 +11,7 @@ use App\ValueObjects\ProjectMemberId;
 use App\ValueObjects\ProjectMemberNextToken;
 use App\ReadModels\ProjectMemberSearchResultReadModel;
 use Illuminate\Support\Collection;
+use Illuminate\Pagination\CursorPaginator;
 
 interface ProjectMemberQueryRepository
 {
@@ -45,6 +46,17 @@ interface ProjectMemberQueryRepository
         ProjectId $projectId,
         UserId $userId)
     : ?ProjectMemberReadModel;
+
+    /**
+     * プロジェクトIDでプロジェクトメンバーを取得します
+     * 
+     * @param ProjectId $projectId プロジェクトID
+     * @return CursorPaginator プロジェクトメンバーのカーソルページネーター
+     */
+    public function getByProjectId(
+        ProjectId $projectId,
+        ProjectMemberSortOrders $sortOrders
+    ): CursorPaginator;
 
     /**
      * プロジェクトメンバーを検索します

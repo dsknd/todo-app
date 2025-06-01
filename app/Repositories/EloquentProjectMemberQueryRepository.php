@@ -14,6 +14,7 @@ use App\ValueObjects\ProjectMemberSortOrders;
 use App\ReadModels\ProjectMemberReadModel;
 use App\ReadModels\ProjectMemberSearchResultReadModel;
 use App\ValueObjects\ProjectMemberNextToken;
+use Illuminate\Pagination\CursorPaginator;
 
 /**
  * プロジェクトメンバーの問い合わせ専用Repository
@@ -128,6 +129,32 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
             $user,
             $result->joined_at
         );
+    }
+
+    public function getByProjectId(
+        ProjectId $projectId,
+        ProjectMemberSortOrders $sortOrders
+    ): CursorPaginator
+    {
+        $query = ProjectMember::query()
+            ->join('users', 'project_members.user_id', '=', 'users.id')
+            ->select([
+                'project_members.id as member_id',
+                'project_members.project_id',
+                'project_members.user_id',
+                'project_members.joined_at',
+                'users.id as user_id',
+                'users.name as user_name',
+                'users.email as user_email'
+            ])
+            ->where('project_members.project_id', $projectId->getValue());
+
+        foreach($sortOrders->all() as $sortOrder){
+            $column = $sortOrder->getColumn();
+            $query->orderBy($column, $sortOrder->getDirection());
+        }
+
+        return $query->cursorPaginate();
     }
 
     /**

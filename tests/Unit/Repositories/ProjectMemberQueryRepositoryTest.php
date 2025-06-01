@@ -352,4 +352,208 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         $this->assertCount(3, $result->members);
         $this->assertFalse($result->hasNextPage());
     }
+
+    /**
+     * プロジェクトIDとソート条件でカーソルページネーションできること
+     */
+    public function test_it_can_get_project_members_with_cursor_pagination()
+    {
+        // 準備
+        $project1 = Project::factory()->create();
+        $project2 = Project::factory()->create();
+        $users = User::factory()->count(5)->create();
+        
+        $joinedAtList = [
+            '2023-01-01 10:00:00',
+            '2023-01-01 11:00:00',
+            '2023-01-01 12:00:00',
+            '2023-01-01 13:00:00',
+            '2023-01-01 14:00:00',
+        ];
+
+        // プロジェクト1のメンバーを作成
+        foreach ($users as $index => $user) {
+            ProjectMember::factory()->create([
+                'project_id' => $project1->id,
+                'user_id' => $user->id,
+                'joined_at' => $joinedAtList[$index],
+            ]);
+        }
+
+        // プロジェクト2のメンバーも作成（フィルタリング確認用）
+        $extraUser = User::factory()->create();
+        ProjectMember::factory()->create([
+            'project_id' => $project2->id,
+            'user_id' => $extraUser->id,
+        ]);
+
+        // 実行（降順ソート）
+        $sortOrders = ProjectMemberSortOrders::from([
+            ProjectMemberSortOrder::from('joined_at', 'desc')
+        ]);
+        
+        $result = $this->repository->getByProjectId(
+            new ProjectId($project1->id->getValue()),
+            $sortOrders
+        );
+
+        // 検証
+        $this->assertInstanceOf(\Illuminate\Pagination\CursorPaginator::class, $result);
+        $this->assertCount(5, $result->items());
+        
+        // プロジェクト1のメンバーのみが含まれることを確認
+        foreach ($result->items() as $item) {
+            $this->assertEquals($project1->id, $item->project_id);
+        }
+    }
+
+    /**
+     * getByProjectIdで昇順ソートが正しく適用されること
+     */
+    public function test_it_applies_ascending_sort_in_get_by_project_id()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $users = User::factory()->count(3)->create();
+        
+        $joinedAtList = [
+            '2023-01-01 14:00:00', // 最新
+            '2023-01-01 10:00:00', // 最古
+            '2023-01-01 12:00:00', // 中間
+        ];
+
+        foreach ($users as $index => $user) {
+            ProjectMember::factory()->create([
+                'project_id' => $project->id,
+                'user_id' => $user->id,
+                'joined_at' => $joinedAtList[$index],
+            ]);
+        }
+
+        // 実行（昇順ソート）
+        $sortOrders = ProjectMemberSortOrders::from([
+            ProjectMemberSortOrder::from('joined_at', 'asc')
+        ]);
+        
+        $result = $this->repository->getByProjectId(
+            new ProjectId($project->id->getValue()),
+            $sortOrders
+        );
+
+        // 検証
+        $items = $result->items();
+        $this->assertCount(3, $items);
+        
+        // 昇順になっていることを確認（最古→最新）
+        $this->assertEquals('2023-01-01 10:00:00', $items[0]->joined_at->format('Y-m-d H:i:s'));
+        $this->assertEquals('2023-01-01 12:00:00', $items[1]->joined_at->format('Y-m-d H:i:s'));
+        $this->assertEquals('2023-01-01 14:00:00', $items[2]->joined_at->format('Y-m-d H:i:s'));
+    }
+
+    /**
+     * getByProjectIdで降順ソートが正しく適用されること
+     */
+    public function test_it_applies_descending_sort_in_get_by_project_id()
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $users = User::factory()->count(3)->create();
+        
+        $joinedAtList = [
+            '2023-01-01 10:00:00', // 最古
+            '2023-01-01 14:00:00', // 最新
+            '2023-01-01 12:00:00', // 中間
+        ];
+
+        foreach ($users as $index => $user) {
+            ProjectMember::factory()->create([
+                'project_id' => $project->id,
+                'user_id' => $user->id,
+                'joined_at' => $joinedAtList[$index],
+            ]);
+        }
+
+        // 実行（降順ソート）
+        $sortOrders = ProjectMemberSortOrders::from([
+            ProjectMemberSortOrder::from('joined_at', 'desc')
+        ]);
+        
+        $result = $this->repository->getByProjectId(
+            new ProjectId($project->id->getValue()),
+            $sortOrders
+        );
+
+        // 検証
+        $items = $result->items();
+        $this->assertCount(3, $items);
+        
+        // 降順になっていることを確認（最新→最古）
+        $this->assertEquals('2023-01-01 14:00:00', $items[0]->joined_at->format('Y-m-d H:i:s'));
+        $this->assertEquals('2023-01-01 12:00:00', $items[1]->joined_at->format('Y-m-d H:i:s'));
+        $this->assertEquals('2023-01-01 10:00:00', $items[2]->joined_at->format('Y-m-d H:i:s'));
+    }
+
+    /**
+     * getByProjectIdで空のプロジェクトの場合に空の結果が返ること
+     */
+    public function test_it_returns_empty_result_for_project_with_no_members()
+    {
+        // 準備
+        $emptyProject = Project::factory()->create();
+
+        // 実行
+        $sortOrders = ProjectMemberSortOrders::from([
+            ProjectMemberSortOrder::from('joined_at', 'desc')
+        ]);
+        
+        $result = $this->repository->getByProjectId(
+            new ProjectId($emptyProject->id->getValue()),
+            $sortOrders
+        );
+
+        // 検証
+        $this->assertInstanceOf(\Illuminate\Pagination\CursorPaginator::class, $result);
+        $this->assertCount(0, $result->items());
+        $this->assertFalse($result->hasPages());
+    }
+
+    /**
+     * getByProjectIdで他のプロジェクトのメンバーが含まれないこと
+     */
+    public function test_it_filters_by_project_id_correctly()
+    {
+        // 準備
+        $targetProject = Project::factory()->create();
+        $otherProject = Project::factory()->create();
+        
+        $targetUser = User::factory()->create(['name' => 'Target User']);
+        $otherUser = User::factory()->create(['name' => 'Other User']);
+        
+        // 対象プロジェクトのメンバー
+        ProjectMember::factory()->create([
+            'project_id' => $targetProject->id,
+            'user_id' => $targetUser->id,
+        ]);
+        
+        // 他のプロジェクトのメンバー
+        ProjectMember::factory()->create([
+            'project_id' => $otherProject->id,
+            'user_id' => $otherUser->id,
+        ]);
+
+        // 実行
+        $sortOrders = ProjectMemberSortOrders::from([
+            ProjectMemberSortOrder::from('joined_at', 'desc')
+        ]);
+        
+        $result = $this->repository->getByProjectId(
+            new ProjectId($targetProject->id->getValue()),
+            $sortOrders
+        );
+
+        // 検証
+        $this->assertCount(1, $result->items());
+        $this->assertEquals($targetProject->id, $result->items()[0]->project_id);
+        $this->assertEquals($targetUser->id, $result->items()[0]->user_id);
+    }
 } 

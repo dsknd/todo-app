@@ -4,7 +4,7 @@ namespace App\Repositories\Interfaces;
 
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\PaginatorPageCount;
-use App\ValueObjects\ProjectMemberOrderParamList;
+use App\ValueObjects\ProjectMemberSortOrders;
 use App\ReadModels\ProjectMemberReadModel;
 use App\ValueObjects\UserId;
 use App\ValueObjects\ProjectMemberId;
@@ -51,13 +51,13 @@ interface ProjectMemberQueryRepository
      * 
      * @param ProjectId $projectId プロジェクトID
      * @param PaginatorPageCount $pageCount ページあたりの表示件数
-     * @param ProjectMemberOrderParamList $orderParamList ソート順
+     * @param ProjectMemberSortOrders $sortOrders ソート順
      * @return ProjectMemberSearchResultReadModel プロジェクトメンバーのコレクション
      */
     public function search(
         ProjectId $projectId,
         PaginatorPageCount $pageCount,
-        ProjectMemberOrderParamList $orderParamList
+        ProjectMemberSortOrders $sortOrders
     ): ProjectMemberSearchResultReadModel;
 
     /**

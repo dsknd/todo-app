@@ -3,7 +3,7 @@
 namespace App\ValueObjects;
 
 use InvalidArgumentException;
-use App\ValueObjects\ProjectMemberOrderParamList;
+use App\ValueObjects\ProjectMemberSortOrders;
 use App\ValueObjects\ProjectMemberId;
 
 /**
@@ -16,13 +16,13 @@ final class ProjectMemberNextToken
      *
      * @param ProjectId $projectId
      * @param PaginatorPageCount $pageCount
-     * @param ProjectMemberOrderParamList $orderParamList
+     * @param ProjectMemberSortOrders $sortOrders
      * @param ProjectMemberId|null $lastId
      */
     private function __construct(
         private readonly ProjectId $projectId,
         private readonly PaginatorPageCount $pageCount,
-        private readonly ProjectMemberOrderParamList $orderParamList,
+        private readonly ProjectMemberSortOrders $sortOrders,
         private readonly ?ProjectMemberId $lastId = null
     ) {}
 
@@ -31,20 +31,20 @@ final class ProjectMemberNextToken
      * 
      * @param ProjectId $projectId
      * @param PaginatorPageCount $pageCount
-     * @param ProjectMemberOrderParamList $orderParamList
+     * @param ProjectMemberSortOrders $sortOrders
      * @param ProjectMemberId|null $lastId
      * @return self
      */
     public static function from(
         ProjectId $projectId,
         PaginatorPageCount $pageCount,
-        ProjectMemberOrderParamList $orderParamList,
+        ProjectMemberSortOrders $sortOrders,
         ?ProjectMemberId $lastId = null,
     ): self {
         return new self(
             $projectId,
             $pageCount,
-            $orderParamList,
+            $sortOrders,
             $lastId
         );
     }
@@ -65,13 +65,13 @@ final class ProjectMemberNextToken
 
         $projectId = ProjectId::from($data['project_id']);
         $pageCount = PaginatorPageCount::from($data['per_page']);
-        $orderParamList = ProjectMemberOrderParamList::from($data['order']);
+        $sortOrders = ProjectMemberSortOrders::from($data['order']);
         $lastId = isset($data['last_id']) ? ProjectMemberId::from($data['last_id']) : null;
 
         return new self(
             $projectId,
             $pageCount,
-            $orderParamList,
+            $sortOrders,
             $lastId
         );
     }
@@ -86,7 +86,7 @@ final class ProjectMemberNextToken
         $data = [
             'project_id' => $this->projectId->getValue(),
             'per_page' => $this->pageCount->getValue(),
-            'order' => $this->orderParamList,
+            'order' => $this->sortOrders,
         ];
         
         if ($this->lastId) {
@@ -119,11 +119,11 @@ final class ProjectMemberNextToken
     /**
      * ソート条件を取得
      * 
-     * @return ProjectMemberOrderParamList
+     * @return ProjectMemberSortOrders
      */
-    public function getOrderParamList(): ProjectMemberOrderParamList
+    public function getSortOrders(): ProjectMemberSortOrders
     {
-        return $this->orderParamList;
+        return $this->sortOrders;
     }
 
     /**

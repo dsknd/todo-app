@@ -10,7 +10,7 @@ use App\ValueObjects\ProjectMemberId;
 use App\Models\ProjectMember;
 use App\ValueObjects\UserId;
 use App\ValueObjects\PaginatorPageCount;
-use App\ValueObjects\ProjectMemberOrderParamList;
+use App\ValueObjects\ProjectMemberSortOrders;
 use App\ReadModels\ProjectMemberReadModel;
 use App\ReadModels\ProjectMemberSearchResultReadModel;
 use App\ValueObjects\ProjectMemberNextToken;
@@ -136,7 +136,7 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
     public function search(
         ProjectId $projectId,
         PaginatorPageCount $pageCount,
-        ProjectMemberOrderParamList $orderParamList
+        ProjectMemberSortOrders $sortOrders
     ): ProjectMemberSearchResultReadModel
     {
         $query = ProjectMember::query()
@@ -152,13 +152,13 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
             ])
             ->where('project_members.project_id', $projectId->getValue());
 
-        foreach($orderParamList->all() as $orderParam){
-            $column = $orderParam->getColumn();
+        foreach($sortOrders->all() as $sortOrder){
+            $column = $sortOrder->getColumn();
             // JOINクエリのためテーブル名を明示的に指定
             if (in_array($column, ['joined_at', 'created_at', 'updated_at'])) {
                 $column = 'project_members.' . $column;
             }
-            $query->orderBy($column, $orderParam->getDirection());
+            $query->orderBy($column, $sortOrder->getDirection());
         }
 
         // 一意性を保つためにIDで二次ソート（常に昇順）
@@ -185,7 +185,7 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
             $nextPageToken = ProjectMemberNextToken::from(
                 $projectId,
                 $pageCount,
-                $orderParamList,
+                $sortOrders,
                 $lastMember->projectMemberId
             );
         }
@@ -221,13 +221,13 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
         }
 
         // ユーザー指定のソート条件を適用
-        foreach($nextToken->getOrderParamList()->all() as $orderParam){
-            $column = $orderParam->getColumn();
+        foreach($nextToken->getSortOrders()->all() as $sortOrder){
+            $column = $sortOrder->getColumn();
             // JOINクエリのためテーブル名を明示的に指定
             if (in_array($column, ['joined_at', 'created_at', 'updated_at'])) {
                 $column = 'project_members.' . $column;
             }
-            $query->orderBy($column, $orderParam->getDirection());
+            $query->orderBy($column, $sortOrder->getDirection());
         }
 
         // 一意性を保つためにIDで二次ソート（常に昇順）
@@ -254,7 +254,7 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
             $nextPageToken = ProjectMemberNextToken::from(
                 $nextToken->getProjectId(),
                 $nextToken->getPageCount(),
-                $nextToken->getOrderParamList(),
+                $nextToken->getSortOrders(),
                 $lastMember->projectMemberId
             );
         }

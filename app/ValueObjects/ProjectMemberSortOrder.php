@@ -4,7 +4,7 @@ namespace App\ValueObjects;
 
 use InvalidArgumentException;
 
-final class ProjectMemberOrderParam
+final class ProjectMemberSortOrder
 {
     /**
      * ソート可能なカラム一覧

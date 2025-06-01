@@ -10,13 +10,13 @@ use App\ValueObjects\ProjectId;
 use App\ValueObjects\ProjectMemberId;
 use App\ValueObjects\UserId;
 use App\ValueObjects\PaginatorPageCount;
-use App\ValueObjects\ProjectMemberOrderParamList;
-use App\ValueObjects\ProjectMemberOrderParam;
 use App\ReadModels\ProjectMemberReadModel;
 use App\ReadModels\ProjectMemberSearchResultReadModel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
+use App\ValueObjects\ProjectMemberSortOrders;
+use App\ValueObjects\ProjectMemberSortOrder;
 
 /**
  * プロジェクトメンバークエリリポジトリのテスト
@@ -176,14 +176,14 @@ class ProjectMemberQueryRepositoryTest extends TestCase
 
         // 実行（降順ソート、ページサイズ3）
         $pageCount = PaginatorPageCount::from(3);
-        $orderParams = ProjectMemberOrderParamList::from([
-            ProjectMemberOrderParam::createJoinedAtDesc()
+        $sortOrders = ProjectMemberSortOrders::from([
+            ProjectMemberSortOrder::from('joined_at', 'desc')
         ]);
         
         $result = $this->repository->search(
             new ProjectId($project->id->getValue()),
             $pageCount,
-            $orderParams
+            $sortOrders
         );
 
         // 検証
@@ -214,14 +214,14 @@ class ProjectMemberQueryRepositoryTest extends TestCase
 
         // 実行（ページサイズ5で2件のデータ）
         $pageCount = PaginatorPageCount::from(5);
-        $orderParams = ProjectMemberOrderParamList::from([
-            ProjectMemberOrderParam::createJoinedAtDesc()
+        $sortOrders = ProjectMemberSortOrders::from([
+            ProjectMemberSortOrder::from('joined_at', 'desc')
         ]);
         
         $result = $this->repository->search(
             new ProjectId($project->id->getValue()),
             $pageCount,
-            $orderParams
+            $sortOrders
         );
 
         // 検証
@@ -258,14 +258,14 @@ class ProjectMemberQueryRepositoryTest extends TestCase
 
         // 最初のページを取得
         $pageCount = PaginatorPageCount::from(2);
-        $orderParams = ProjectMemberOrderParamList::from([
-            ProjectMemberOrderParam::createJoinedAtAsc()
+        $sortOrders = ProjectMemberSortOrders::from([
+            ProjectMemberSortOrder::from('joined_at', 'asc')
         ]);
         
         $firstPage = $this->repository->search(
             new ProjectId($project->id->getValue()),
             $pageCount,
-            $orderParams
+            $sortOrders
         );
 
         // NextTokenを使って次のページを取得
@@ -296,14 +296,14 @@ class ProjectMemberQueryRepositoryTest extends TestCase
 
         // 実行
         $pageCount = PaginatorPageCount::from(10);
-        $orderParams = ProjectMemberOrderParamList::from([
-            ProjectMemberOrderParam::createJoinedAtDesc()
+        $sortOrders = ProjectMemberSortOrders::from([
+            ProjectMemberSortOrder::from('joined_at', 'desc')
         ]);
         
         $result = $this->repository->search(
             new ProjectId($project->id->getValue()),
             $pageCount,
-            $orderParams
+            $sortOrders
         );
 
         // 検証
@@ -338,14 +338,14 @@ class ProjectMemberQueryRepositoryTest extends TestCase
 
         // 実行（昇順ソート）
         $pageCount = PaginatorPageCount::from(10);
-        $orderParams = ProjectMemberOrderParamList::from([
-            ProjectMemberOrderParam::createJoinedAtAsc()
+        $sortOrders = ProjectMemberSortOrders::from([
+            ProjectMemberSortOrder::from('joined_at', 'asc')
         ]);
         
         $result = $this->repository->search(
             new ProjectId($project->id->getValue()),
             $pageCount,
-            $orderParams
+            $sortOrders
         );
 
         // 検証：昇順ソートされていることを確認

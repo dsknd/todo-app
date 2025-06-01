@@ -456,10 +456,13 @@ namespace App\Models{
 /**
  * 
  *
+ * @property \App\ValueObjects\ProjectMemberId $id
  * @property \App\ValueObjects\ProjectId $project_id
  * @property \App\ValueObjects\UserId $user_id
  * @property \App\ValueObjects\ProjectRoleId $role_id
  * @property \Illuminate\Support\Carbon $joined_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Project $project
  * @property-read \App\Models\ProjectRole $role
  * @property-read \App\Models\User $user
@@ -467,9 +470,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember whereJoinedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember whereProjectId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember whereRoleId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectMember whereUserId($value)
  */
 	class ProjectMember extends \Eloquent {}

@@ -36,7 +36,7 @@ class FetchProjectMemberInteractor implements FetchProjectMemberUseCase
 
         // ソート条件が指定されていない場合は、ソート条件のデフォルト値を設定
         if (!$orderParamList) {
-            $orderJoinedAt = ProjectMemberSortOrder::createJoinedAtDesc();
+            $orderJoinedAt = ProjectMemberSortOrder::joinedAtDesc();
             $orderParamList = ProjectMemberSortOrders::from([$orderJoinedAt]);
         }
 

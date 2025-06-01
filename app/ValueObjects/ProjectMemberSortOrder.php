@@ -126,7 +126,7 @@ final class ProjectMemberSortOrder
     /**
      * デフォルトのソート条件を作成（参加日時の昇順）
      */
-    public static function createJoinedAtAsc(): self
+    public static function joinedAtAsc(): self
     {
         return new self('joined_at', 'asc');
     }
@@ -134,7 +134,7 @@ final class ProjectMemberSortOrder
     /**
      * デフォルトのソート条件を作成（参加日時の降順）
      */
-    public static function createJoinedAtDesc(): self
+    public static function joinedAtDesc(): self
     {
         return new self('joined_at', 'desc');
     }
@@ -142,7 +142,7 @@ final class ProjectMemberSortOrder
     /**
      * デフォルトのソート条件を作成（ユーザーIDの昇順）
      */
-    public static function createUserIdAsc(): self
+    public static function userIdAsc(): self
     {
         return new self('user_id', 'asc');
     }
@@ -150,7 +150,7 @@ final class ProjectMemberSortOrder
     /**
      * デフォルトのソート条件を作成（ユーザーIDの降順）
      */
-    public static function createUserIdDesc(): self
+    public static function userIdDesc(): self
     {
         return new self('user_id', 'desc');
     }
@@ -158,7 +158,7 @@ final class ProjectMemberSortOrder
     /**
      * デフォルトのソート条件を作成（プロジェクトロールIDの昇順）
      */
-    public static function createRoleIdAsc(): self
+    public static function roleIdAsc(): self
     {
         return new self('role_id', 'asc');
     }
@@ -166,7 +166,7 @@ final class ProjectMemberSortOrder
     /**
      * デフォルトのソート条件を作成（プロジェクトロールIDの降順）
      */
-    public static function createRoleIdDesc(): self
+    public static function roleIdDesc(): self
     {
         return new self('role_id', 'desc');
     }
@@ -174,7 +174,7 @@ final class ProjectMemberSortOrder
     /**
      * デフォルトのソート条件を作成（作成日時の昇順）
      */
-    public static function createCreatedAtAsc(): self
+    public static function createdAtAsc(): self
     {
         return new self('created_at', 'asc');
     }
@@ -182,7 +182,7 @@ final class ProjectMemberSortOrder
     /**
      * デフォルトのソート条件を作成（作成日時の降順）
      */
-    public static function createCreatedAtDesc(): self
+    public static function createdAtDesc(): self
     {
         return new self('created_at', 'desc');
     }
@@ -190,7 +190,7 @@ final class ProjectMemberSortOrder
     /**
      * デフォルトのソート条件を作成（更新日時の昇順）
      */
-    public static function createUpdatedAtAsc(): self
+    public static function updatedAtAsc(): self
     {
         return new self('updated_at', 'asc');
     }
@@ -198,7 +198,7 @@ final class ProjectMemberSortOrder
     /**
      * デフォルトのソート条件を作成（更新日時の降順）
      */
-    public static function createUpdatedAtDesc(): self
+    public static function updatedAtDesc(): self
     {
         return new self('updated_at', 'desc');
     }

@@ -54,6 +54,19 @@ class ProjectMemberController extends Controller
     }
 
     /**
+     * プロジェクトメンバー作成に必要な情報を取得します。
+     * 
+     * @param Project $project プロジェクト
+     * @return JsonResponse 作成フォーム用データ
+     */
+    public function create(Project $project)
+    {
+        // TODO: 権限確認
+        // TODO: プロジェクトメンバー作成に必要な情報を取得
+        // TODO: プロジェクトメンバー作成に必要な情報の返却
+    }
+
+    /**
      * プロジェクトメンバーを追加します。
      * 
      * @param Project $project プロジェクト

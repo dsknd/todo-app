@@ -41,37 +41,37 @@ class ProjectMemberReadModel implements JsonSerializable
         return $this->toArray();
     }
 
-    public function projectMemberId(): ProjectMemberId
+    public function getProjectMemberId(): ProjectMemberId
     {
         return $this->projectMemberId;
     }
 
-    public function projectId(): ProjectId
+    public function getProjectId(): ProjectId
     {
         return $this->projectId;
     }
 
-    public function user(): User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function userId(): UserId
+    public function getUserId(): UserId
     {
         return $this->user->id;
     }
 
-    public function userName(): string
+    public function getUserName(): string
     {
         return $this->user->name;
     }
 
-    public function userEmail(): string
+    public function getUserEmail(): string
     {
         return $this->user->email;
     }
 
-    public function joinedAt(): DateTime
+    public function getJoinedAt(): DateTime
     {
         return $this->joinedAt;
     }

@@ -96,6 +96,9 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
         );
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getByProjectId(
         ProjectId $projectId,
         PaginationPageSize $pageSize,
@@ -117,10 +120,32 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
 
         foreach($sortOrders->all() as $sortOrder){
             $column = $sortOrder->getColumn();
+            // JOINクエリのためテーブル名を明示的に指定
+            if (in_array($column, ['joined_at', 'created_at', 'updated_at'])) {
+                $column = 'project_members.' . $column;
+            }
             $query->orderBy($column, $sortOrder->getDirection());
         }
 
-        return $query->cursorPaginate($pageSize->getValue());
+        // 一意性を保つためにIDで二次ソート（常に昇順）
+        $query->orderBy('project_members.id', 'asc');
+
+        $paginator = $query->cursorPaginate($pageSize->getValue());
+
+        // ページネータのアイテムをReadModelに変換
+        $items = $this->convertToReadModels($paginator->items());
+
+        // 新しいCursorPaginatorを作成して返す
+        return new CursorPaginator(
+            $items,
+            $pageSize->getValue(),
+            $paginator->cursor(),
+            [
+                'path' => $paginator->path(),
+                'pageName' => $paginator->getCursorName(),
+                'parameters' => $paginator->getOptions()['parameters'] ?? []
+            ]
+        );
     }
 
     /**
@@ -264,6 +289,11 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
      */
     private function convertToReadModels($results): Collection
     {
+        // $resultsが配列の場合はCollectionに変換
+        if (is_array($results)) {
+            $results = collect($results);
+        }
+
         return $results->map(function ($result) {
             $user = new User();
             $user->id = $result->user_id;

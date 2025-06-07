@@ -59,8 +59,8 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         $this->assertInstanceOf(ProjectMemberReadModel::class, $result);
         $this->assertEquals($projectMember->id, $result->projectMemberId);
         $this->assertEquals($project->id, $result->projectId);
-        $this->assertEquals('田中太郎', $result->userName());
-        $this->assertEquals('tanaka@example.com', $result->userEmail());
+        $this->assertEquals('田中太郎', $result->getUserName());
+        $this->assertEquals('tanaka@example.com', $result->getUserEmail());
     }
 
     /**
@@ -100,8 +100,8 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         // 検証
         $this->assertInstanceOf(ProjectMemberReadModel::class, $result);
         $this->assertEquals($projectMember->id->getValue(), $result->projectMemberId->getValue());
-        $this->assertEquals('鈴木花子', $result->userName());
-        $this->assertEquals('suzuki@example.com', $result->userEmail());
+        $this->assertEquals('鈴木花子', $result->getUserName());
+        $this->assertEquals('suzuki@example.com', $result->getUserEmail());
     }
 
     /**
@@ -369,7 +369,7 @@ class ProjectMemberQueryRepositoryTest extends TestCase
 
         // 実行（降順ソート）
         $sortOrders = ProjectMemberSortOrders::from([
-            ProjectMemberSortOrder::from('joined_at', 'desc')
+            ProjectMemberSortOrder::joinedAtDesc()
         ]);
         
         $result = $this->repository->getByProjectId(
@@ -384,7 +384,7 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         
         // プロジェクト1のメンバーのみが含まれることを確認
         foreach ($result->items() as $item) {
-            $this->assertEquals($project1->id, $item->project_id);
+            $this->assertTrue($item->projectId->equals(ProjectId::from($project1->id)));
         }
     }
 
@@ -427,9 +427,9 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         $this->assertCount(3, $items);
         
         // 昇順になっていることを確認（最古→最新）
-        $this->assertEquals('2023-01-01 10:00:00', $items[0]->joined_at->format('Y-m-d H:i:s'));
-        $this->assertEquals('2023-01-01 12:00:00', $items[1]->joined_at->format('Y-m-d H:i:s'));
-        $this->assertEquals('2023-01-01 14:00:00', $items[2]->joined_at->format('Y-m-d H:i:s'));
+        $this->assertEquals('2023-01-01 10:00:00', $items[0]->getJoinedAt()->format('Y-m-d H:i:s'));
+        $this->assertEquals('2023-01-01 12:00:00', $items[1]->getJoinedAt()->format('Y-m-d H:i:s'));
+        $this->assertEquals('2023-01-01 14:00:00', $items[2]->getJoinedAt()->format('Y-m-d H:i:s'));
     }
 
     /**
@@ -471,9 +471,9 @@ class ProjectMemberQueryRepositoryTest extends TestCase
         $this->assertCount(3, $items);
         
         // 降順になっていることを確認（最新→最古）
-        $this->assertEquals('2023-01-01 14:00:00', $items[0]->joined_at->format('Y-m-d H:i:s'));
-        $this->assertEquals('2023-01-01 12:00:00', $items[1]->joined_at->format('Y-m-d H:i:s'));
-        $this->assertEquals('2023-01-01 10:00:00', $items[2]->joined_at->format('Y-m-d H:i:s'));
+        $this->assertEquals('2023-01-01 14:00:00', $items[0]->getJoinedAt()->format('Y-m-d H:i:s'));
+        $this->assertEquals('2023-01-01 12:00:00', $items[1]->getJoinedAt()->format('Y-m-d H:i:s'));
+        $this->assertEquals('2023-01-01 10:00:00', $items[2]->getJoinedAt()->format('Y-m-d H:i:s'));
     }
 
     /**
@@ -538,7 +538,7 @@ class ProjectMemberQueryRepositoryTest extends TestCase
 
         // 検証
         $this->assertCount(1, $result->items());
-        $this->assertEquals($targetProject->id, $result->items()[0]->project_id);
-        $this->assertEquals($targetUser->id, $result->items()[0]->user_id);
+        $this->assertTrue($result->items()[0]->projectId->equals(ProjectId::from($targetProject->id)));
+        $this->assertTrue($result->items()[0]->getUserId()->equals(UserId::from($targetUser->id)));
     }
 } 

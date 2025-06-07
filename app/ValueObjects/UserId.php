@@ -65,6 +65,36 @@ final class UserId implements JsonSerializable
     }
 
     /**
+     * 整数からUserIdを作成
+     *
+     * @param int|string $id
+     * @return self
+     */
+    public static function from(int|string $id): self
+    {
+        if (is_string($id)) {
+            $id = (int) $id;
+        }
+
+        if (is_int($id)) {
+            return new self($id);
+        }
+
+        throw new InvalidArgumentException('ユーザーIDは数値である必要があります');
+    }
+
+    /**
+     * 整数からUserIdを作成
+     *
+     * @param int|string $id
+     * @return self
+     */
+    public static function fromInt(int $id): self
+    {
+        return new self($id);
+    }
+
+    /**
      * 文字列からUserIdを作成
      *
      * @param string $id

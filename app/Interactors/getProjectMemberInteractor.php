@@ -8,7 +8,7 @@ use App\ValueObjects\PaginationPageSize;
 use App\ValueObjects\ProjectMemberSortOrder;
 use App\ValueObjects\ProjectMemberSortOrders;
 use App\UseCases\GetProjectMemberUseCase;
-use App\ReadModels\ProjectMemberSearchResultReadModel;
+use Illuminate\Pagination\CursorPaginator;
 
 class GetProjectMemberInteractor implements GetProjectMemberUseCase
 {
@@ -29,7 +29,7 @@ class GetProjectMemberInteractor implements GetProjectMemberUseCase
         ProjectId $projectId,
         ?PaginationPageSize $pageSize = null,
         ?ProjectMemberSortOrders $orderParamList = null
-    ): ProjectMemberSearchResultReadModel
+    ): CursorPaginator
     {
         // ページサイズが指定されていない場合は、デフォルト値を設定
         if ($pageSize === null) {
@@ -43,7 +43,7 @@ class GetProjectMemberInteractor implements GetProjectMemberUseCase
         }
 
         // プロジェクトメンバーを取得
-        $projectMembers = $this->projectMemberQueryRepository->search(
+        $projectMembers = $this->projectMemberQueryRepository->getByProjectId(
             $projectId,
             $pageSize,
             $orderParamList

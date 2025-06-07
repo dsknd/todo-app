@@ -5,7 +5,7 @@ namespace App\UseCases;
 use App\ValueObjects\ProjectId;
 use App\ValueObjects\ProjectMemberSortOrders;
 use App\ValueObjects\PaginationPageSize;
-use App\ReadModels\ProjectMemberSearchResultReadModel;
+use Illuminate\Pagination\CursorPaginator;
 
 /**
  * プロジェクトメンバ一覧を取得するユースケース
@@ -29,11 +29,11 @@ interface GetProjectMemberUseCase
      * @param ProjectId $projectId プロジェクトID
      * @param PaginationPageSize|null $pageSize ページあたりの表示件数
      * @param ProjectMemberSortOrders|null $sortOrders ソート順
-     * @return ProjectMemberSearchResultReadModel
+     * @return CursorPaginator
      */
     public function execute(
         ProjectId $projectId,
         ?PaginationPageSize $pageSize = null,
         ?ProjectMemberSortOrders $sortOrders = null
-    ): ProjectMemberSearchResultReadModel;
+    ): CursorPaginator;
 } 

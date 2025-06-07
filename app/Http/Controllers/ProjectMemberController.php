@@ -3,12 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ProjectMember;
 use App\Models\Project;
+use App\UseCases\GetProjectMemberUseCase;
+use App\Http\Resources\ProjectMemberResource;
+use App\Http\Queries\ProjectMemberIndexUrlQueryParams;
+use Illuminate\Http\Response;
 use App\Models\User;
-use Illuminate\Support\Facades\Gate;
+
 class ProjectMemberController extends Controller
 {
+    /**
+     * コンストラクタ
+     *
+     * @param GetProjectMemberUseCase $getProjectMemberUseCase
+     */
+    public function __construct(
+        private readonly GetProjectMemberUseCase $getProjectMemberUseCase
+    ) {
+    }
+
 
     /**
      * プロジェクトメンバーを取得します。
@@ -16,13 +29,26 @@ class ProjectMemberController extends Controller
      * @param Project $project プロジェクト
      * @return JsonResponse プロジェクトメンバー
      */
-    public function index(Project $project)
+    public function index(Project $project, Request $request)
     {
         // TODO: 権限の確認
-        // TODO: プロジェクトメンバーの取得
 
-        // TODO: プロジェクトメンバーの返却
+        // クエリパラメータの取得
+        $urlQueryParams = ProjectMemberIndexUrlQueryParams::fromRequest($request);
 
+        // プロジェクトメンバーの取得
+        $projectMembers = $this->getProjectMemberUseCase->execute(
+            $urlQueryParams->getProjectId(),
+            $urlQueryParams->getPageSize(),
+            $urlQueryParams->getSortOrders()
+        );
+
+        // プロジェクトメンバーの返却
+        return ProjectMemberResource::paginatedCollection(
+            $projectMembers,
+            $request,
+            Response::HTTP_OK
+        );
     }
 
     /**

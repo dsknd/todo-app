@@ -27,56 +27,7 @@ class ProjectMemberReadModel implements JsonSerializable
         // TODO: プロジェクトロールを追加
     ) {}
 
-    public function toArray(): array
-    {
-        return [
-            'project_member_id' => $this->projectMemberId->getValue(),
-            'project_id' => $this->projectId->getValue(),
-            'user' => $this->user->toArray(),
-        ];
-    }
-
-    public function jsonSerialize(): array
-    {
-        return $this->toArray();
-    }
-
-    public function getProjectMemberId(): ProjectMemberId
-    {
-        return $this->projectMemberId;
-    }
-
-    public function getProjectId(): ProjectId
-    {
-        return $this->projectId;
-    }
-
-    public function getUser(): User
-    {
-        return $this->user;
-    }
-
-    public function getUserId(): UserId
-    {
-        return $this->user->id;
-    }
-
-    public function getUserName(): string
-    {
-        return $this->user->name;
-    }
-
-    public function getUserEmail(): string
-    {
-        return $this->user->email;
-    }
-
-    public function getJoinedAt(): DateTime
-    {
-        return $this->joinedAt;
-    }
-
-    /**
+   /**
      * マジックゲッターでsnake_caseのプロパティアクセスをサポート
      * CursorPaginatorがソート用のカラム値にアクセスするために必要
      */
@@ -97,5 +48,99 @@ class ProjectMemberReadModel implements JsonSerializable
             default:
                 throw new \Exception("Property {$name} does not exist");
         }
+    }
+
+    /**
+     * 配列に変換
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'project_member_id' => $this->projectMemberId->getValue(),
+            'project_id' => $this->projectId->getValue(),
+            'user' => $this->user->toArray(),
+        ];
+    }
+
+    /**
+     * 配列に変換
+     *
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * プロジェクトメンバーIDを取得
+     *
+     * @return ProjectMemberId
+     */
+    public function getProjectMemberId(): ProjectMemberId
+    {
+        return $this->projectMemberId;
+    }
+
+    /**
+     * プロジェクトIDを取得
+     *
+     * @return ProjectId
+     */
+    public function getProjectId(): ProjectId
+    {
+        return $this->projectId;
+    }
+
+    /**
+     * ユーザーを取得
+     *
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    /**
+     * ユーザーIDを取得
+     *
+     * @return UserId
+     */
+    public function getUserId(): UserId
+    {
+        return $this->user->id;
+    }
+
+    /**
+     * ユーザー名を取得
+     *
+     * @return string
+     */
+    public function getUserName(): string
+    {
+        return $this->user->name;
+    }
+
+    /**
+     * ユーザーのメールアドレスを取得
+     *
+     * @return string
+     */
+    public function getUserEmail(): string
+    {
+        return $this->user->email;
+    }
+
+    /**
+     * 参加日時を取得
+     *
+     * @return DateTime
+     */
+    public function getJoinedAt(): DateTime
+    {
+        return $this->joinedAt;
     }
 }

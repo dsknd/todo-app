@@ -132,20 +132,20 @@ class EloquentProjectMemberQueryRepository implements ProjectMemberQueryReposito
 
         $paginator = $query->cursorPaginate($pageSize->getValue());
 
-        // ページネータのアイテムをReadModelに変換
-        $items = $this->convertToReadModels($paginator->items());
+        // throughメソッドを使用してアイテムを変換
+        return $paginator->through(function ($result) {
+            $user = new User();
+            $user->id = $result->user_id;
+            $user->name = $result->user_name;
+            $user->email = $result->user_email;
 
-        // 新しいCursorPaginatorを作成して返す
-        return new CursorPaginator(
-            $items,
-            $pageSize->getValue(),
-            $paginator->cursor(),
-            [
-                'path' => $paginator->path(),
-                'pageName' => $paginator->getCursorName(),
-                'parameters' => $paginator->getOptions()['parameters'] ?? []
-            ]
-        );
+            return new ProjectMemberReadModel(
+                ProjectMemberId::from($result->member_id),
+                ProjectId::from($result->project_id),
+                $user,
+                $result->joined_at
+            );
+        });
     }
 
     /**

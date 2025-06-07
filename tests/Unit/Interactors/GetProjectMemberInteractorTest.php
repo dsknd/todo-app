@@ -60,33 +60,33 @@ class GetProjectMemberInteractorTest extends TestCase
         $this->assertEquals($members[2]->id->getValue(), $result->items()[2]->projectMemberId->getValue());
     }
 
-    // public function test_execute_uses_custom_page_size(): void
-    // {
-    //     // 準備
-    //     $project = Project::factory()->create();
-    //     $users = User::factory()->count(5)->create();
+    public function test_execute_uses_custom_page_size(): void
+    {
+        // 準備
+        $project = Project::factory()->create();
+        $users = User::factory()->count(5)->create();
         
-    //     // 5人のプロジェクトメンバーを作成
-    //     foreach ($users as $user) {
-    //         ProjectMember::factory()->create([
-    //             'project_id' => $project->id,
-    //             'user_id' => $user->id,
-    //         ]);
-    //     }
+        // 5人のプロジェクトメンバーを作成
+        foreach ($users as $user) {
+            ProjectMember::factory()->create([
+                'project_id' => $project->id,
+                'user_id' => $user->id,
+            ]);
+        }
 
-    //     // 実行（ページサイズ3で取得）
-    //     $pageSize = PaginationPageSize::from(3);
-    //     $result = $this->interactor->execute(
-    //         ProjectId::from($project->id->getValue()),
-    //         $pageSize
-    //     );
+        // 実行（ページサイズ3で取得）
+        $pageSize = PaginationPageSize::from(3);
+        $result = $this->interactor->execute(
+            ProjectId::from($project->id->getValue()),
+            $pageSize
+        );
 
-    //     // 検証
-    //     $this->assertInstanceOf(ProjectMemberSearchResultReadModel::class, $result);
-    //     $this->assertCount(3, $result->members); // ページサイズ通り
-    //     $this->assertTrue($result->hasNextPage()); // 残り2件があるので次ページあり
-    //     $this->assertNotNull($result->nextToken);
-    // }
+        // 検証
+        $this->assertInstanceOf(CursorPaginator::class, $result);
+        $this->assertCount(3, $result->items()); // ページサイズ通り
+        $this->assertTrue($result->hasMorePages()); // 残り2件があるので次ページあり
+        $this->assertNotNull($result->nextCursor());
+    }
 
     // public function test_execute_uses_custom_sort_orders(): void
     // {

@@ -75,4 +75,27 @@ class ProjectMemberReadModel implements JsonSerializable
     {
         return $this->joinedAt;
     }
+
+    /**
+     * マジックゲッターでsnake_caseのプロパティアクセスをサポート
+     * CursorPaginatorがソート用のカラム値にアクセスするために必要
+     */
+    public function __get($name)
+    {
+        switch ($name) {
+            case 'project_member_id':
+                return $this->projectMemberId;
+            case 'project_id':
+                return $this->projectId;
+            case 'user_id':
+                return $this->user->id;
+            case 'joined_at':
+            case 'project_members.joined_at':  // テーブル名付きのアクセスもサポート
+                return $this->joinedAt;
+            case 'project_members.id':  // テーブル名付きのIDアクセスもサポート
+                return $this->projectMemberId->getValue();
+            default:
+                throw new \Exception("Property {$name} does not exist");
+        }
+    }
 }

@@ -3,9 +3,12 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Traits\Paginatable;
 
-class ProjectMemberResource extends PaginatableResource
+class ProjectMemberResource extends JsonResource
 {
+    use Paginatable;
     /**
      * @param Request $request
      * @return array<string, mixed>

@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Traits;
 
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\CursorPaginator;
 
-abstract class PaginatableResource extends JsonResource
+trait Paginatable
 {
     /**
      * カーソルページネーション付きのコレクションレスポンスを作成

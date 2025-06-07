@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectRoleController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\ProjectMemberController;
+
 // パブリックルート
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -17,7 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/projects', ProjectController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
 
     // プロジェクトメンバ
-    // Route::apiResource('/projects/{project}/members', ProjectTaskCategoryController::class)->only(['index', 'create', 'show', 'store', 'update', 'destroy']);
+    Route::apiResource('/projects/{project}/members', ProjectMemberController::class)->only(['index']);
 
     // プロジェクトロール
     // Route::apiResource('/projects/{project}/roles', ProjectRoleController::class)->only(['index', 'create', 'show', 'store', 'update', 'destroy']);

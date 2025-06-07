@@ -9,6 +9,8 @@ use App\Http\Resources\ProjectMemberResource;
 use App\Http\Queries\ProjectMemberIndexUrlQueryParams;
 use Illuminate\Http\Response;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectMemberController extends Controller
 {
@@ -31,7 +33,8 @@ class ProjectMemberController extends Controller
      */
     public function index(Project $project, Request $request)
     {
-        // TODO: 権限の確認
+        // 権限の確認
+        Gate::authorize('viewAny', $project);
 
         // クエリパラメータの取得
         $urlQueryParams = ProjectMemberIndexUrlQueryParams::fromRequest($request);

@@ -24,7 +24,6 @@ class ProjectMemberController extends Controller
     ) {
     }
 
-
     /**
      * プロジェクトメンバーを取得します。
      * 

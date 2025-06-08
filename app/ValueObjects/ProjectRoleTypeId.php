@@ -17,9 +17,7 @@ class ProjectRoleTypeId implements JsonSerializable
      */
     public function __construct(int $value)
     {
-        if ($value <= 0) {
-            throw new InvalidArgumentException('プロジェクトロールタイプIDは正の整数である必要があります。');
-        }
+        self::validate($value);
 
         $this->value = $value;
     }
@@ -65,19 +63,15 @@ class ProjectRoleTypeId implements JsonSerializable
         return $this->value;
     }
 
-    /**
-     * 文字列からProjectRoleTypeIdを生成
-     *
-     * @param string $id 文字列ID
-     * @return self
-     * @throws InvalidArgumentException IDが数値でない場合
-     */
-    public static function fromString(string $id): self
+    public static function from(int $value): self
     {
-        if (!is_numeric($id)) {
-            throw new InvalidArgumentException('プロジェクトロールタイプIDは数値である必要があります。');
-        }
+        return new self($value);
+    }
 
-        return new self((int) $id);
+    private static function validate(int $value): void
+    {
+        if ($value <= 0) {
+            throw new InvalidArgumentException('プロジェクトロールタイプIDは正の整数である必要があります。');
+        }
     }
 }

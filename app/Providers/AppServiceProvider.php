@@ -39,6 +39,8 @@ use App\Repositories\Interfaces\ProjectMemberQueryRepository;
 use App\Repositories\EloquentProjectMemberQueryRepository;
 use App\UseCases\GetProjectMemberUseCase;
 use App\Interactors\GetProjectMemberInteractor;
+use App\Repositories\Interfaces\ProjectRoleTypeQueryRepository;
+use App\Repositories\EloquentProjectRoleTypeRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -92,6 +94,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Permission
         $this->app->bind(PermissionRepository::class, EloquentPermissionRepository::class);
+
+        // ProjectRoleType
+        $this->app->bind(ProjectRoleTypeQueryRepository::class, EloquentProjectRoleTypeRepository::class);
     }
 
     /**

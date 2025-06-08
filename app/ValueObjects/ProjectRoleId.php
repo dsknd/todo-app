@@ -88,6 +88,27 @@ class ProjectRoleId implements JsonSerializable
         return $this->getValue();
     }
 
+    /**
+     * 整数またはDefaultProjectRoleEnumからProjectRoleIdを作成
+     *
+     * @param int|DefaultProjectRoleEnum $value
+     * @return self
+     */
+    public static function from(int|DefaultProjectRoleEnum $value): self
+    {
+        if ($value instanceof DefaultProjectRoleEnum) {
+            return self::fromEnum($value);
+        }
+
+        return new self($value);
+    }
+
+    /**
+     * DefaultProjectRoleEnumからProjectRoleIdを作成
+     *
+     * @param DefaultProjectRoleEnum $enum
+     * @return self
+     */
     public static function fromEnum(DefaultProjectRoleEnum $enum): self
     {
         return new self($enum->value);

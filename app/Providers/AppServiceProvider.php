@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\UseCases\CheckProjectRolePermissionUseCase;
-use App\UseCases\Implementations\CheckProjectRolePermission;
 use App\Interactors\CreateProjectInteractor;
 use App\UseCases\CreateProjectUseCase;
 use App\Interactors\CreateTaskInteractor;
@@ -37,6 +35,14 @@ use App\Interactors\AuthorizeProjectPermissionInteractor;
 use App\UseCases\AuthorizeProjectPermissionUseCase;
 use App\Repositories\EloquentProjectMemberPermissionQueryRepository;
 use App\Repositories\Interfaces\ProjectMemberPermissionQueryRepository;
+use App\Repositories\Interfaces\ProjectMemberQueryRepository;
+use App\Repositories\EloquentProjectMemberQueryRepository;
+use App\UseCases\GetProjectMemberUseCase;
+use App\Interactors\GetProjectMemberInteractor;
+use App\Repositories\Interfaces\ProjectRoleTypeQueryRepository;
+use App\Repositories\EloquentProjectRoleTypeRepository;
+use App\UseCases\GetProjectRoleTypeUseCase;
+use App\Interactors\GetProjectRoleTypeInteractor;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -45,31 +51,57 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-
-        // ユースケース
+        /**-------------------------------
+         * UseCase
+         --------------------------------*/
+        // project
         $this->app->bind(CreateProjectUseCase::class, CreateProjectInteractor::class);
         $this->app->bind(FindProjectUseCase::class, FindProjectInteractor::class);
         $this->app->bind(FetchOwnedProjectsUseCase::class, FetchOwnedProjectsInteractor::class);
         $this->app->bind(FetchParticipatingProjectsUseCase::class, FetchParticipatingProjectsInteractor::class);
-        $this->app->bind(CreateTaskUseCase::class, CreateTaskInteractor::class);
         $this->app->bind(UpdateProjectUseCase::class, UpdateProjectInteractor::class);
         $this->app->bind(DeleteProjectUseCase::class, DeleteProjectInteractor::class);
+
+        // projectMember
+        $this->app->bind(GetProjectMemberUseCase::class, GetProjectMemberInteractor::class);
+
+        // projectPermission
         $this->app->bind(AuthorizeProjectPermissionUseCase::class, AuthorizeProjectPermissionInteractor::class);
-        // createProjectInteractorで使用するリポジトリ
-        $this->app->bind(ProjectRepository::class, EloquentProjectRepository::class);
-        $this->app->bind(ProjectMemberRepository::class, EloquentProjectMemberRepository::class);
+
+        // task
+        $this->app->bind(CreateTaskUseCase::class, CreateTaskInteractor::class);
+
+        // projectRoleType
+        $this->app->bind(GetProjectRoleTypeUseCase::class, GetProjectRoleTypeInteractor::class);
         
-        // リポジトリ
+        /**-------------------------------
+         * Repository
+         --------------------------------*/
+        // Project
         $this->app->bind(ProjectRepository::class, EloquentProjectRepository::class);
+        
+        // ProjectMember
         $this->app->bind(ProjectMemberRepository::class, EloquentProjectMemberRepository::class);
+        $this->app->bind(ProjectMemberQueryRepository::class, EloquentProjectMemberQueryRepository::class);
+        $this->app->bind(ProjectMemberPermissionQueryRepository::class, EloquentProjectMemberPermissionQueryRepository::class);
+
+        // ProjectRole
         $this->app->bind(ProjectRoleRepository::class, EloquentProjectRoleRepository::class);
+
+        // DefaultProjectRole
         $this->app->bind(DefaultProjectRoleRepository::class, EloquentDefaultProjectRoleRepository::class);
+
+        // CustomProjectRole
         $this->app->bind(CustomProjectRoleRepository::class, EloquentCustomProjectRoleRepository::class);
+
+        // ProjectRolePermission
         $this->app->bind(ProjectRolePermissionRepository::class, EloquentProjectRolePermissionRepository::class);
+
+        // Permission
         $this->app->bind(PermissionRepository::class, EloquentPermissionRepository::class);
 
-        // readmodel
-        $this->app->bind(ProjectMemberPermissionQueryRepository::class, EloquentProjectMemberPermissionQueryRepository::class);
+        // ProjectRoleType
+        $this->app->bind(ProjectRoleTypeQueryRepository::class, EloquentProjectRoleTypeRepository::class);
     }
 
     /**

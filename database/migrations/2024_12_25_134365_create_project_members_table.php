@@ -16,10 +16,12 @@ return new class extends Migration
     {
         Schema::create('project_members', function (Blueprint $table) {
             // カラム定義
-            $table->unsignedBigInteger('project_id');      // プロジェクトID
-            $table->unsignedBigInteger('user_id');         // ユーザID
-            $table->unsignedBigInteger('role_id');         // ロールID
-            $table->timestamp('joined_at')->useCurrent(); // プロジェクト参画日時
+            $table->id();                                    // 主キーID（AUTO_INCREMENT）
+            $table->unsignedBigInteger('project_id');        // プロジェクトID
+            $table->unsignedBigInteger('user_id');           // ユーザID
+            $table->unsignedBigInteger('role_id');           // ロールID
+            $table->timestamp('joined_at')->useCurrent();    // プロジェクト参画日時
+            $table->timestamps();                            // 作成日時, 更新日時
 
             // 外部キー制約
             $table->foreign('project_id')
@@ -37,8 +39,8 @@ return new class extends Migration
                 ->on('project_roles')
                 ->cascadeOnDelete();
 
-            // 主キー制約
-            $table->primary(['project_id', 'user_id']);
+            // ユニークキー制約（重複メンバー防止）
+            $table->unique(['project_id', 'user_id']);
 
             // インデックス
             $table->index('role_id');

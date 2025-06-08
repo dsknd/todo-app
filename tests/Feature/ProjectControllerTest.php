@@ -178,7 +178,7 @@ class ProjectControllerTest extends TestCase
                         ]);
 
         $firstResponse->assertStatus(Response::HTTP_CREATED);
-        $secondResponse->assertStatus(Response::HTTP_INTERNAL_SERVER_ERROR);
+        $secondResponse->assertStatus(Response::HTTP_BAD_REQUEST);
         $secondResponse->assertHeader('Content-Type', 'application/problem+json');
         $secondResponse->assertJsonStructure([
             'type',
@@ -234,6 +234,13 @@ class ProjectControllerTest extends TestCase
     public function test_destroy_success(): void
     {
         $project = Project::factory()->create();
+
+        ProjectMember::factory()->create([
+            'project_id' => $project->id,
+            'user_id' => $this->user->id,
+            'role_id' => new ProjectRoleId(DefaultProjectRoleEnum::OWNER->value),
+        ]);
+
         $response = $this->actingAs($this->user)
                          ->deleteJson('/api/projects/' . $project->id);
         $response->assertStatus(Response::HTTP_NO_CONTENT);

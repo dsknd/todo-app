@@ -9,6 +9,8 @@ use App\ValueObjects\UserId;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\ValueObjects\ProjectOrderParam;
+use Illuminate\Database\QueryException;
+use App\Repositories\Exceptions\DuplicateProjectNameException;
 
 class EloquentProjectRepository implements ProjectRepositoryInterface
 {
@@ -64,7 +66,15 @@ class EloquentProjectRepository implements ProjectRepositoryInterface
      */
     public function create(array $attributes): Project
     {
-        return Project::create($attributes);
+        try {
+            return Project::create($attributes);
+        } catch (QueryException $e) {
+            if ($e->getCode() === '23000' && str_contains($e->getMessage(), 'Duplicate entry')) {
+                throw new DuplicateProjectNameException($e);
+            }
+
+            throw $e;
+        }
     }
 
     /**

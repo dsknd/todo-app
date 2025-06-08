@@ -11,7 +11,6 @@ use App\Models\AppLog;
 use App\Models\Project;
 use App\Models\ProjectPermission;
 use App\Models\ProjectRole;
-use App\UseCases\CheckProjectRolePermissionUseCase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

@@ -44,4 +44,12 @@ return [
             ],
         ],
     ],
+    'create_project_failure' => [
+        'title' => 'Create Project Failure.',
+        'detail' => 'Internal server error occurred.',
+    ],
+    'duplicate_project_name' => [
+        'title' => 'Duplicate Project Name.',
+        'detail' => 'The specified project name is already taken.',
+    ],
 ];

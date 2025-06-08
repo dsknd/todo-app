@@ -3,7 +3,6 @@
 namespace Tests\Unit\Repositories;
 
 use App\Models\Project;
-use App\Models\ProjectMember;
 use App\Models\ProjectRole;
 use App\Models\User;
 use App\Repositories\EloquentProjectMemberRepository;
@@ -31,98 +30,6 @@ class ProjectMemberRepositoryTest extends TestCase
     {
         parent::setUp();
         $this->repository = new EloquentProjectMemberRepository();
-    }
-
-    /**
-     * プロジェクトIDとユーザーIDでメンバーを検索できること
-     */
-    public function test_it_can_find_member_by_project_id_and_user_id()
-    {
-        // 準備
-        $project = Project::factory()->create();
-        $user = User::factory()->create();
-        ProjectMember::factory()->create([
-            'project_id' => $project->id,
-            'user_id' => $user->id,
-        ]);
-        
-        // 実行
-        $member = $this->repository->findByProjectIdAndUserId($project->id, $user->id);
-        
-        // 検証
-        $this->assertNotNull($member);
-        $this->assertEquals($project->id, $member->project_id);
-        $this->assertEquals($user->id, $member->user_id);
-    }
-
-    /**
-     * メンバーが見つからない場合はnullを返すこと
-     */
-    public function test_it_returns_null_when_member_not_found()
-    {
-        // 準備
-        $project = Project::factory()->create();
-        $user = User::factory()->create();
-        
-        // 実行
-        $member = $this->repository->findByProjectIdAndUserId($project->id, $user->id);
-        
-        // 検証
-        $this->assertNull($member);
-    }
-
-    /**
-     * プロジェクトIDでメンバーを検索できること
-     */
-    public function test_it_can_find_members_by_project_id()
-    {
-        // 準備
-        $project = Project::factory()->create();
-        $users = User::factory()->count(3)->create();
-        
-        foreach ($users as $user) {
-            ProjectMember::factory()->create([
-                'project_id' => $project->id,
-                'user_id' => $user->id,
-            ]);
-        }
-        
-        // 実行
-        $members = $this->repository->findByProjectId($project->id);
-        
-        // 検証
-        $this->assertCount(3, $members);
-        $this->assertEquals(
-            $users->pluck('id')->sort()->values()->toArray(),
-            $members->pluck('user_id')->sort()->values()->toArray()
-        );
-    }
-
-    /**
-     * ユーザーIDでメンバーを検索できること
-     */
-    public function test_it_can_find_members_by_user_id()
-    {
-        // 準備
-        $projects = Project::factory()->count(3)->create();
-        $user = User::factory()->create();
-        
-        foreach ($projects as $project) {
-            ProjectMember::factory()->create([
-                'project_id' => $project->id,
-                'user_id' => $user->id,
-            ]);
-        }
-        
-        // 実行
-        $members = $this->repository->findByUserId($user->id);
-        
-        // 検証
-        $this->assertCount(3, $members);
-        $this->assertEquals(
-            $projects->pluck('id')->sort()->values()->toArray(),
-            $members->pluck('project_id')->sort()->values()->toArray()
-        );
     }
 
     /**

@@ -8,7 +8,7 @@ use App\ValueObjects\UserId;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\ValueObjects\ProjectOrderParam;
-
+use App\Repositories\Exceptions\DuplicateProjectNameException;
 interface ProjectRepository
 {
     /**
@@ -50,6 +50,7 @@ interface ProjectRepository
      *
      * @param array $attributes
      * @return Project
+     * @throws DuplicateProjectNameException
      */
     public function create(array $attributes): Project;
 

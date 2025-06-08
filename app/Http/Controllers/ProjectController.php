@@ -20,6 +20,12 @@ use App\UseCases\DeleteProjectUseCase;
 use App\Models\Project;
 use App\UseCases\FindProjectUseCase;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Exceptions\DuplicateProjectNameException;
+use App\Http\ExceptionHandlers\ApplicationExceptionHandler;
+
+/**
+ * プロジェクトコントローラー
+ */
 class ProjectController extends Controller
 {
     private CreateProjectUseCase $createProjectUseCase;
@@ -28,6 +34,7 @@ class ProjectController extends Controller
     private UpdateProjectUseCase $updateProjectUseCase;
     private DeleteProjectUseCase $deleteProjectUseCase;
     private FindProjectUseCase $findProjectUseCase;
+
     public function __construct(
         CreateProjectUseCase $createProjectUseCase,
         FetchOwnedProjectsUseCase $fetchOwnedProjectsUseCase,
@@ -83,6 +90,7 @@ class ProjectController extends Controller
      * 
      * @param CreateProjectRequest $request プロジェクト作成リクエスト
      * @return JsonResponse プロジェクトリソース
+     * @throws DuplicateProjectNameException プロジェクト名が重複している場合
      */
     public function store(CreateProjectRequest $request): JsonResponse
     {
@@ -91,7 +99,9 @@ class ProjectController extends Controller
 
         // プロジェクトの作成
         $createProjectDto = CreateProjectDto::fromRequest($request);
-        $project = $this->createProjectUseCase->execute($createProjectDto);
+        $project = ApplicationExceptionHandler::handle(function () use ($createProjectDto) {
+            return $this->createProjectUseCase->execute($createProjectDto);
+        });
 
         // レスポンス
         return new ProjectResource($project)->response()->setStatusCode(Response::HTTP_CREATED);
@@ -126,7 +136,13 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project): JsonResponse
     {
+        // プロジェクトの削除権限を確認
+        Gate::authorize('delete', $project);
+
+        // プロジェクトの削除
         $this->deleteProjectUseCase->execute($project->id);
+
+        // レスポンス
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }

@@ -41,6 +41,8 @@ use App\UseCases\GetProjectMemberUseCase;
 use App\Interactors\GetProjectMemberInteractor;
 use App\Repositories\Interfaces\ProjectRoleTypeQueryRepository;
 use App\Repositories\EloquentProjectRoleTypeRepository;
+use App\UseCases\GetProjectRoleTypeUseCase;
+use App\Interactors\GetProjectRoleTypeInteractor;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -68,6 +70,9 @@ class AppServiceProvider extends ServiceProvider
 
         // task
         $this->app->bind(CreateTaskUseCase::class, CreateTaskInteractor::class);
+
+        // projectRoleType
+        $this->app->bind(GetProjectRoleTypeUseCase::class, GetProjectRoleTypeInteractor::class);
         
         /**-------------------------------
          * Repository
